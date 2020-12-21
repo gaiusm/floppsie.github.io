@@ -1,0 +1,331 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:20 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Random numbers
+<a name="1. Random numbers"></a>
+</h2>
+
+
+<p><ul type=disc> <li> see the
+<tt><small>random</small></tt> module for details and extent
+of creating random numbers <li> the method
+<tt><small>random.randint</small></tt> can be used to
+generate random integers <li> any easy example usage is:
+<li></p>
+<pre>#!/usr/bin/env python3
+
+import random
+
+
+print (&quot;your die roll was&quot;, random.randint (1, 6))</pre>
+
+
+<p></ul></p><hr>
+
+<h2>2. Sounds
+<a name="2. Sounds"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+
+sound = pygame.mixer.Sound (&quot;mysound.wav&quot;)
+sound.play ()</pre>
+
+
+<p><li> please see the
+<a href="https://www.pygame.org/docs/ref/mixer.html">pygame</a>
+web site for more detail <br>
+</ul></p><hr>
+
+<h2>3. Adding Cities to your game
+<a name="3. Adding Cities to your game"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the tutorial asked you to add cities
+and guns to your program <li></p>
+
+<pre>class city:
+    def __init__ (self, pos):
+        self._pos = pos
+        self._epicenter = [pos[0] + int (city_length/2), pos[1]-city_height]
+        self._exploding = False
+        self._explosion = None
+        self.draw_city ()</pre>
+
+
+<p><li></p>
+
+<pre>    def draw_city (self):
+        pygame.draw.rect (screen, wood_light, (self._pos[0], self._pos[1], city_length, city_height), 0)
+    def update (self):
+        pass
+    def ignite (self, p):
+        return self._exploding
+    def erase (self):
+        pygame.draw.rect (screen, black, (self._pos[0], self._pos[1], city_length, city_height), 0)</pre>
+
+
+<p><li></p>
+
+<pre>    def check (self, p, radius):
+        if (not self._exploding) and sqr (radius) &gt; sqr (p[0]- self._epicenter[0]) + sqr (p[1]- self._epicenter[1]):
+            self._exploding = True
+            createExplosion (p, grey)
+            createExplosion (self._epicenter, light_grey)
+            globalRemove (self)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. Using cities in your code
+<a name="4. Using cities in your code"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>city_list = []
+city_length =  90
+city_height =  25
+attack_number = 5
+rate_of_attack = 400
+
+def make_cities ():
+    global city_list
+
+
+    for p in [[100, 768-city_height], [200, 768-city_height], [300, 768-city_height],
+              [600, 768-city_height], [700, 768-city_height], [800, 768-city_height]]:
+        c = city (p)
+        city_list += [c]</pre>
+
+
+<p><li></p>
+
+<pre>def check_cities_guns (pos, radius):
+    for c in city_list:
+        c.check (pos, radius)</pre>
+
+
+<p><li></p>
+
+<pre>def spawn_attack ():
+    global attack_number
+    if attack_number &gt; 0:
+        if random.randint (1, rate_of_attack) == 1:
+            attack_number -= 1
+            c = city_list [random.randint (0, 5)]
+            createMissile ([random.randint (1, 1000), 0],
+                           c._epicenter)</pre>
+
+
+<p><li></p>
+
+<pre>def no_of_cities ():
+    n = 0
+    for c in city_list:
+        if not c._exploding:
+            n += 1
+    return n</pre>
+
+
+<p><li></p>
+
+<pre>def check_finished ():
+    if attack_number == 0 and len (allObjects) == 0:
+        n = no_of_cities ()
+        if n == 0:
+            print (&quot;you lost!&quot;)
+        elif n == 1:
+            print (&quot;you survived with 1 city left&quot;)
+        else:
+            print (&quot;you survived with&quot;, n, &quot;cities left&quot;)
+        sys.exit (0)</pre>
+
+
+<p><li></p>
+
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    make_cities ()
+    wait_for_event ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. Guns
+<a name="5. Guns"></a>
+</h2>
+
+
+<p><ul type=disc> <li> guns in missile command are rather
+similar to cities <li> we need another class, with similar
+methods <ul type=square> <li> it might be possible to
+inherit code - but that is left for another day </ul>
+<li></p>
+
+<pre>ammo_per_silo = 20
+gun_length = 90
+gun_height = 25
+gun_list = []</pre>
+
+
+<p><li></p>
+
+<pre>class gun:
+    def __init__ (self, pos):
+        global screen
+        self._ammo = ammo_per_silo
+        self._pos = pos
+        self._epicenter = [pos[0] + int (gun_length/2), pos[1]-gun_height]
+        self._exploding = False
+        self._explosion = None
+        self.draw_gun ()</pre>
+
+
+<p><li></p>
+
+<pre>    def draw_gun (self):
+        global screen
+        print (&quot;rect&quot;, self._pos, gun_length, gun_height)
+        pygame.draw.rect (screen, dark_blue, (self._pos[0], self._pos[1], gun_length, gun_height), 0)
+    def fire (self):
+        if self._ammo &gt; 0 and (not self._exploding):
+            self._ammo -= 1
+            createMissile (self._epicenter, pygame.mouse.get_pos ())</pre>
+
+
+<p><li></p>
+
+<pre>    def update (self):
+        pass
+    def ignite (self, p):
+        return self._exploding
+    def erase (self):
+        pygame.draw.rect (screen, black, (self._pos[0], self._pos[1], gun_length, gun_height), 0)
+    def check (self, p, radius):
+        if (not self._exploding) and sqr (radius) &gt; sqr (p[0]- self._epicenter[0]) + sqr (p[1]- self._epicenter[1]):
+            self._exploding = True
+            createExplosion (p, grey)
+            createExplosion (self._epicenter, light_grey)
+            globalRemove (self)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. Linking up guns to the game
+<a name="6. Linking up guns to the game"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def check_cities_guns (pos, radius):
+    for c in city_list:
+        c.check (pos, radius)
+    for g in gun_list:
+        g.check (pos, radius)</pre>
+
+
+<p><li></p>
+
+<pre>def spawn_attack ():
+    global attack_number
+    if attack_number &gt; 0:
+        if random.randint (1, rate_of_attack) == 1:
+            attack_number -= 1
+            c = city_list [random.randint (0, 5)]
+            createMissile ([random.randint (1, 1000), 0],
+                           c._epicenter)</pre>
+
+
+<p><li></p>
+
+<pre>        if random.randint (1, rate_of_attack) == 1:
+            attack_number -= 1
+            g = gun_list [random.randint (0, 2)]
+            createMissile ([random.randint (1, 1000), 0],
+                           g._epicenter)</pre>
+
+
+<p><li></p>
+
+<pre>def make_guns ():
+    global gun_list
+    for p in silos:
+        g = gun (p)
+        gun_list += [g]</pre>
+
+
+<p><li></p>
+
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    make_cities ()
+    make_guns ()
+    wait_for_event ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. Tutorial
+<a name="7. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> add this code to your game <li>
+comment the code <li> observe the similarity between guns
+and cities <li> add scoring, sounds and features</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Random numbers">1. Random numbers</a><br>
+<a href="#2. Sounds">2. Sounds</a><br>
+<a href="#3. Adding Cities to your game">3. Adding Cities to your game</a><br>
+<a href="#4. Using cities in your code">4. Using cities in your code</a><br>
+<a href="#5. Guns">5. Guns</a><br>
+<a href="#6. Linking up guns to the game">6. Linking up guns to the game</a><br>
+<a href="#7. Tutorial">7. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

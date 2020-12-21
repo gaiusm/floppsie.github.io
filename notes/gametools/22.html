@@ -1,0 +1,354 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:23 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. File export and integrating with chisel part 1
+<a name="1. File export and integrating with chisel part 1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> would be good to modify touchmap so
+that it <ul type=square> <li> exports (saves the map file)
+<li> runs chisel and/or runs doom3</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Exporting the file
+<a name="2. Exporting the file"></a>
+</h2>
+
+
+<p><ul type=disc> <li> would be good to keep a list of
+assets <ul type=square> <li> only write out the assets the
+map is using </ul> <li></p>
+
+<pre>asset_list = []  # list of assets
+asset_desc = {}  # dictionary of asset descriptions
+asset_count = {}  # how many of each asset are we using?</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. Asset set functions
+<a name="3. Asset set functions"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def include_asset (a, desc):
+    global asset_list, asset_desc, asset_count
+    if not (a in asset_list):
+        asset_list += [a]
+    asset_desc[a] = desc
+    if asset_count.has_key (a):
+        asset_count[a] += 1
+    else:
+        asset_count[a] = 1</pre>
+
+
+<p><li></p>
+
+<pre>def exclude_asset (a):
+    global asset_list, asset_count
+    if asset_count.has_key (a):
+        asset_count[a] -= 1
+        if asset_count[a] == 0:
+            del asset_count[a]
+            asset_list.remove (a)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. Export callback function
+<a name="4. Export callback function"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def myexport (name, tap):
+    pygame.display.update ()
+    save_map (current_map_name)
+
+
+def save_map (name):
+    f = open (name, &quot;w&quot;)
+    f = write_assets (f)
+    f.write (&quot;\n&quot;)  # add blank line for eye candy
+    f = write_map (f)
+    f.close ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. Writing assets to the file
+<a name="5. Writing assets to the file"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def write_asset (f, a):
+    s = &quot;define %s %s\n&quot; % (a, asset_desc[a])
+    f.write (s)
+    return f
+
+
+def write_assets (f):
+    for a in asset_list:
+        f = write_asset (f, a)
+    return f</pre>
+
+
+<p><li> notice that the file object
+<tt><small>f</small></tt> is returned, this ensures that
+future writes occur in order! <ul type=square> <li>
+unambiguous code (will work if an object were passed by
+value rather than by reference) </ul> <li></p>
+
+<pre>def write_map (f):
+    m = &quot;&quot;
+    mdict = {&quot;v&quot;:&quot;#&quot;, &quot;h&quot;:&quot;#&quot;, &quot;-&quot;:&quot;.&quot;, &quot;|&quot;:&quot;.&quot;, &quot; &quot;:&quot; &quot;, &quot;S&quot;:&quot;S&quot;, &quot;H&quot;:&quot;H&quot;}
+    x, y = cell_array.high ()
+    for j in range (y):
+        for i in range (x):
+            m += mdict[cell_array.get (i, j)]
+        m += &quot;\n&quot;
+    f.write (m)
+    return f</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. hellknight callback
+<a name="6. hellknight callback"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def hellknight (name, tap):
+    global next_tile
+    pygame.display.update ()
+    if tap == 1:
+        next_tile = hell_t
+
+
+def assets ():
+    return [touchgui.image_tile (private_list (&quot;hellknight&quot;),
+                                 touchgui.posX (0.95), touchgui.posY (0.9),
+                                 100, 100, hellknight),
+            touchgui.image_tile (private_list (&quot;tick&quot;),
+                                 touchgui.posX (0.95), touchgui.posY (0.8),
+                                 100, 100, myquit)]</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. Changing cellback
+<a name="7. Changing cellback"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def cellback (param, tap):
+    global clicked, cell_array, button_array, double_tapped_cell
+    clicked = True
+    mouse = pygame.mouse.get_pos ()
+    x, y = get_cell (mouse)
+    old = cell_array.get (x + xoffset, y + yoffset)
+    button = button_array.get (x + xoffset, y + yoffset)</pre>
+
+
+<p><li></p>
+
+<pre>    if old == &quot; &quot;:
+        # blank -&gt; next_tile
+        function_create[next_tile] (button)
+    elif old == &quot;v&quot;:
+        # wall -&gt; door
+        button.to_door ()
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot;|&quot;)
+    elif old == &quot;|&quot;:
+        # door -&gt; blank
+        button.to_blank ()
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot; &quot;)
+    elif old in [&quot;H&quot;, &quot;S&quot;]:
+        # remove asset
+        button.to_blank ()
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot; &quot;)
+        exclude_asset (old)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>8. Extending class button
+<a name="8. Extending class button"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>    def to_hell (self):
+        self._tile.set_images (private_list (&quot;hellknight&quot;))
+    def to_spawn (self):
+        self._tile = touchgui.text_tile (black, light_grey, white, mid_grey,
+                                         &rsquo;S&rsquo;, self._size,
+                                         self._x, self._y,
+                                         self._size, self._size, delspawn, &quot;worldspawn&quot;)
+    def spawn_to_blank (self):
+        self._tile = touchgui.image_tile (blank_list (&quot;wallv&quot;, self._size),
+                                          self._x, self._y,
+                                          self._size, self._size, cellback)</pre>
+
+
+<p><small></ul></small></p><hr>
+
+<h2>9. Reverting a cell to a blank
+<a name="9. Reverting a cell to a blank"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def delspawn (param, tap):
+    global clicked, cell_array, button_array, double_tapped_cell
+    clicked = True
+    mouse = pygame.mouse.get_pos ()
+    x, y = get_cell (mouse)
+    button = button_array.get (x + xoffset, y + yoffset)
+    button.spawn_to_blank ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>10. test.txt created by touchmap
+<a name="10. test.txt created by touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>define S worldspawn
+define H monster monster_demon_hellknight
+
+
+    #####
+    # S #
+    #   #
+    #   #
+    # H #
+    #####</pre>
+
+
+<p></ul></p><hr>
+
+<h2>11. Introducing new images into touchmap
+<a name="11. Introducing new images into touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li> place the new images in
+<tt><small>$HOME/Sandpit/touchmap-0.2/images</small></tt>
+<li> alter <tt><small>$HOME/Sandpit/Makefile.am</small></tt>
+to copy this image into the build directory <li></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">all: doorh.png doorv.png doorh-bw.png doorv-bw.png hingeh.png \
+     wallh.png wallv.png wallh-bw.png wallv-bw.png hellknight.png tick.png
+
+hellknight.png: $(srcdir)/images/hellknight.png
+     convert -resize 100x100 $&lt; $@
+
+
+tick.png: $(srcdir)/images/tick.png
+     convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>12. Tutorial
+<a name="12. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> integrate
+these changes into your touchmap code <li> add a room
+button, so that the room information is generated, ie:
+<li></font></p>
+<pre>define S worldspawn
+define H monster monster_demon_hellknight
+define 1 room 1
+
+
+    #####
+    # S #
+    #   #
+    # 1 #
+    # H #
+    #####</pre>
+
+
+<p><font color="#000000"><li> your room button should keep
+a record of the rooms allocated <ul type=square> <li>
+remember which rooms are deleted and reuse the number </ul>
+<li> add other assets into touchmap <ul type=square> <li>
+lights, tick, ammo, rockets, rocket launcher <li>
+<a href="https://doom.fandom.com/wiki/Doom_3">Doom3 asset list</a>
+</ul> <li> add a doom3 button which will shutdown touchmap
+and then run doom3 <ul type=square> <li> make this button
+also run chisel to generate the tiny.map before running
+doom3</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. File export and integrating with chisel part 1">1. File export and integrating with chisel part 1</a><br>
+<a href="#2. Exporting the file">2. Exporting the file</a><br>
+<a href="#3. Asset set functions">3. Asset set functions</a><br>
+<a href="#4. Export callback function">4. Export callback function</a><br>
+<a href="#5. Writing assets to the file">5. Writing assets to the file</a><br>
+<a href="#6. hellknight callback">6. hellknight callback</a><br>
+<a href="#7. Changing cellback">7. Changing cellback</a><br>
+<a href="#8. Extending class button">8. Extending class button</a><br>
+<a href="#9. Reverting a cell to a blank">9. Reverting a cell to a blank</a><br>
+<a href="#10. test.txt created by touchmap">10. test.txt created by touchmap</a><br>
+<a href="#11. Introducing new images into touchmap">11. Introducing new images into touchmap</a><br>
+<a href="#12. Tutorial">12. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:46 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Thoughts on Checkpointing and forward/next
+<a name="1. Thoughts on Checkpointing and forward/next"></a>
+</h2>
+
+
+<p><ul type=disc> <li> assuming that basic saving and
+loading is complete <ul type=square> <li> we notice that it
+saves to a file <tt><small>current_map_name</small></tt>
+<li> therefore we can take advantage of this and create
+temporary filenames <li> save periodically </ul> <li> might
+be good for <tt><small>touchmap</small></tt> to create a
+directory <tt><small>$HOME/.cache/touchmap</small></tt>
+<ul type=square> <li> under which the checkpoint files might
+be kept <li> notice that many applications keep their file
+cache contents under <tt><small>$HOME/.cache</small></tt>
+(including <tt><small>touchgui</small></tt> ) </ul> <li> it
+would be possible to have a and button to cycle through the
+checkpoint files <ul type=square> <li> maybe the application
+should create a new checkpoint file every 5th action? </ul>
+<li> might implement a naming scheme <ul type=square> <li>
+for example: <tt><small>touchmap-%03d.txt</small></tt> </ul>
+<li> using <li></p>
+
+<pre>cp_name = os.path.join (&quot;.cache&quot;, &quot;touchmap&quot;)
+cp_name = os.path.join (cp_name, &quot;touchmap-%03d.txt&quot; % cp_num)
+cp_name = os.path.join (os.getenv (&quot;HOME&quot;), cp_name)</pre>
+
+
+<p><li> notice the <tt><small>cp_num</small></tt> which is
+the check point number and this should cycle
+<tt><small>0-999</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Thoughts on Checkpointing and forward/next">1. Thoughts on Checkpointing and forward/next</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

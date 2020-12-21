@@ -1,0 +1,87 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:48 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Semantic checking in Touchmap
+<a name="1. Semantic checking in Touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there are a number of semantic
+checks which might be performed <ul type=square> <li> there
+should be a single spawn entry per map <li> each room needs
+a room number <li> minimum door width of two glyphs </ul>
+<li> implement the simpler ideas first</p>
+
+<p></ul></p><hr>
+
+<h2>2. Checking a spawn entry
+<a name="2. Checking a spawn entry"></a>
+</h2>
+
+
+<p><ul type=disc> <li> can be achieved by checking the
+asset set before the write/export</p>
+
+<p></ul></p><hr>
+
+<h2>3. Door checking
+<a name="3. Door checking"></a>
+</h2>
+
+
+<p><ul type=disc> <li> see if you can make your touchmap
+implementation detect and enforce doors to be at least two
+characters wide <li> it might be good to write two functions
+<ul type=square> <li> one to search the map for horizontal
+doors <li> one to search the map for vertical doors </ul>
+<li> you might solve this by: <ul type=square> <li> scanning
+the room by row and column to find horizontal doors (using a
+nested for loop) <li> scanning the room by column and row to
+find the vertical doors (again using a nested for loop)
+</ul> <li> in both cases you could need to keep a record of:
+<ul type=square> <li> whether a wall block has been seen
+prior to the door <li> the door length </ul> <li> when the
+wall continues after the door - you would check the
+length</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Semantic checking in Touchmap">1. Semantic checking in Touchmap</a><br>
+<a href="#2. Checking a spawn entry">2. Checking a spawn entry</a><br>
+<a href="#3. Door checking">3. Door checking</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

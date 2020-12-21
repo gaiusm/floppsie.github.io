@@ -1,0 +1,225 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:19 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial: Missile help
+<a name="1. Tutorial: Missile help"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python
+
+import pygame, sys, time, random, bres
+from pygame.locals import *
+
+ramp_one, ramp_two, ramp_three = None, None, None
+
+wood_light = (166, 124, 54)
+wood_dark = (76, 47, 0)
+blue = (0, 100, 255)
+dark_red = (166, 25, 50)
+dark_green = (25, 100, 50)
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+white = (255, 255, 255)
+yellow = (240, 230, 140)
+grey = (153, 153, 153)
+
+width, height = 1024, 768
+screen = None
+
+
+maxRadius = 60
+allObjects = []
+delay = 15   # number of milliseconds delay before generating a USEREVENT
+missileSize = 3
+
+silos = [[80, 700], [500, 700], [1000, 700]]
+
+
+def sqr (x):
+    return x*x
+
+class explosion:
+    def __init__ (self, pos, colour):
+        self._radius = 1
+        self._maxRadius = maxRadius
+        self._increasing = True
+        self._pos = pos
+        self._colour = colour
+    def update (self):
+        if self._increasing:
+            pygame.draw.circle (screen, self._colour, self._pos, self._radius, 0)
+            self._radius += 1
+            if self._radius == self._maxRadius:
+                self._increasing = False
+        else:
+            pygame.draw.circle (screen, black, self._pos, self._radius, 0)
+            self._radius -= 1
+            if self._radius &gt; 0:
+                pygame.draw.circle (screen, self._colour, self._pos, self._radius, 0)
+            else:
+                globalRemove (self)
+    def erase (self):
+        pygame.draw.circle (screen, black, self._pos, self._radius, 0)
+    def ignite (self, p):
+        return sqr (self._pos[0]-p[0]) + sqr (self._pos[1]-p[1]) &lt; sqr (self._radius)
+
+def drawTrail (p):
+    pygame.draw.rect (screen, white, (p[0], p[1], missileSize, missileSize), 0)
+
+def drawMissile (p):
+    pygame.draw.rect (screen, yellow, (p[0], p[1], missileSize, missileSize), 0)
+
+def eraseBlock (p):
+    pygame.draw.rect (screen, black, (p[0], p[1], missileSize, missileSize), 0)
+
+
+class missile:
+    def __init__ (self, start_pos, end_pos):
+        self.route = bres.bres (start_pos, end_pos)
+        self.erase_route = bres.bres (start_pos, end_pos)
+    def update (self):
+        if self.route.finished ():
+            globalRemove (self)
+            createExplosion (self.route.get_current_pos (), white)
+        elif ignites (self.route.get_current_pos ()):
+            createExplosion (self.route.get_current_pos (), grey)
+        drawTrail (self.route.get_current_pos ())
+        drawMissile (self.route.get_next ())
+    def erase (self):
+        while not self.erase_route.finished ():
+            eraseBlock (self.erase_route.get_next ())
+    def ignite (self, p):
+        return False
+
+
+def ignites (p):
+    for o in allObjects:
+        if o.ignite (p):
+            return True
+    return False
+
+def createMissile (start_pos, end_pos):
+    global allObjects
+    allObjects += [missile (start_pos, end_pos)]
+    pygame.time.set_timer (USEREVENT+1, delay)
+
+def createExplosion (pos, colour):
+    global allObjects
+    allObjects += [explosion (pos, colour)]
+    pygame.time.set_timer (USEREVENT+1, delay)
+
+
+def globalRemove (e):
+    global allObjects
+    e.erase ()
+    allObjects.remove (e)
+    pygame.display.flip ()
+
+
+def updateAll ():
+    if allObjects != []:
+        for e in allObjects:
+            e.update ()
+    if allObjects != []:
+        pygame.display.flip ()
+        pygame.time.set_timer (USEREVENT+1, delay)
+
+
+def wait_for_event ():
+    global screen
+    while True:
+        event = pygame.event.wait ()
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
+            sys.exit (0)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button &gt;= 1 and event.button &lt;= 3:
+                createMissile (silos[event.button-1], pygame.mouse.get_pos ())
+        if event.type == USEREVENT+1:
+            updateAll ()
+
+
+def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    wait_for_event ()
+
+
+main ()</pre>
+
+<p></ul></p><hr>
+
+<h2>2. Tutorial
+<a name="2. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> extend your missile command program
+to include a <tt><small>city</small></tt> class <li> give
+your city class an <tt><small>__init__</small></tt> ,
+<tt><small>update</small></tt> ,
+<tt><small>ignite</small></tt> ,
+<tt><small>erase</small></tt> and
+<tt><small>check</small></tt> method <li> the method
+prototypes are: <li></p>
+
+<pre>    # create a city at pos
+    # calculcate the epicenter of the city
+    # store it in the class
+    def __init__ (self, pos):
+    # draw the city
+    def draw_city (self):
+    # remove the city
+    def erase (self):
+    # determine whether city should catch fire given exposion at p with a radius
+    def check (self, p, radius):</pre>
+
+
+<p><li> extend your game to include cities and their
+destuction! <li> now create a <tt><small>gun</small></tt>
+class (which will be very similar to the city class)</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Tutorial: Missile help">1. Tutorial: Missile help</a><br>
+<a href="#2. Tutorial">2. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

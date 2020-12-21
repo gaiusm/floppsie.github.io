@@ -1,0 +1,364 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:24 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. File export/File import/Next/Back
+<a name="1. File export/File import/Next/Back"></a>
+</h2>
+
+
+<p><ul type=disc> <li> improving the export function and
+coordinating the result of an unsuccessful export with the
+doom button <ul type=square> <li> if the export should fail,
+then the doom3 button should be frozen </ul> <li></p>
+<pre>def save_map (name):
+    f = open (name, &quot;w&quot;)
+    f = write_assets (f)
+    f.write (&quot;\n&quot;)  # add blank line for eye candy
+    f = write_map (f)
+    f.close ()
+
+
+def myexport (name, tap):
+    pygame.display.update ()
+    save_map (current_map_name)
+    check_export ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>2. check_export
+<a name="2. check_export"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def check_export ():
+  etc</pre>
+
+<p></ul></p><hr>
+
+<h2>3. write_map
+<a name="3. write_map"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there is currently a problem with
+<tt><small>write_map</small></tt> and
+<tt><small>chisel</small></tt> <ul type=square> <li> if the
+map has leading spaces <tt><small>chisel</small></tt> will
+fail <li> if the map has trailing spaces then
+<tt><small>chisel</small></tt> will also fail </ul> <li>
+while this is a bug in chisel <ul type=square> <li> we can
+avoid it by trimming spaces from our file in
+<tt><small>write_map</small></tt> <li> this is common
+practice - in software engineering </ul> <li></p>
+
+<pre>def write_map (f):
+    left, right = determine_range ()
+    m = &quot;&quot;
+    mdict = {&quot;v&quot;:&quot;#&quot;, &quot;h&quot;:&quot;#&quot;, &quot;-&quot;:&quot;.&quot;, &quot;|&quot;:&quot;.&quot;, &quot; &quot;:&quot; &quot;,
+             &quot;H&quot;:&quot;H&quot;, &quot;S&quot;:&quot;S&quot;, &quot;T&quot;:&quot;T&quot;}
+    x, y = cell_array.high ()
+    for j in range (y):
+        for i in range (left, right+1):
+            if mdict.has_key (cell_array.get (i, j)):
+                m += mdict[cell_array.get (i, j)]
+            else:
+                m += cell_array.get (i, j)
+        # skip blank lines
+        m = m.rstrip ()
+        if len (m) &gt; 0:
+            m += &quot;\n&quot;
+    f.write (m)
+    return f</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. determine_range
+<a name="4. determine_range"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>def determine_range ():
+    left = -1
+    x, y = cell_array.high ()
+    right = x
+    for j in range (y):
+        for i in range (x):
+            if cell_array.get (i, j) != &quot; &quot;:
+                if (left == -1) or (i &lt; left):
+                    left = i
+                if i &gt; right:
+                    right = i
+    return left, right</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui/touchgui.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  create_cache - Pre-condition:  None.
+#                 Post-condition:  directory $HOME/.cache/touchgui created.
+#
+
+
+def _create_cache ():
+    d = os.path.join (os.path.join (os.environ[&quot;HOME&quot;], &quot;.cache&quot;), &quot;touchgui&quot;)
+    os.system (&quot;mkdir -p %s&quot; % (d))</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui/touchgui.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  reset_cache - Pre-condition:  None.
+#                Post-condition:  all contents of $HOME/.cache/touchgui are deleted.
+#
+
+def reset_cache ():
+    d = os.path.join (os.path.join (os.environ[&quot;HOME&quot;], &quot;.cache&quot;), &quot;touchgui&quot;)
+    _safe_system (&quot;rm -r %s&quot; % (d))
+    _create_cache ()
+
+reset_cache ()</pre>
+
+<p><font color="#000000"><li> you should enable</font>
+<tt><small><font color="#A51933">reset_cache()</font></small></tt>
+<font color="#000000">which will delete the cache and create
+an empty cache directory <br>
+</ul></font></p><hr>
+
+<h2>5. Adding double tap to construct walls
+<a name="5. Adding double tap to construct walls"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> it would be
+good to add the ability for users to double tap and create
+walls along an axis <li> requires a change to
+<tt><small>cell_back</small></tt> and keeping track of the
+<tt><small>last_pos</small></tt> tapped <li></font></p>
+<pre>last_pos = [] # the last saved position
+
+#
+#  save_wall_pos - saves the coordinate [x, y] to last_pos
+#
+
+def save_wall_pos (x, y):
+    global last_pos
+    last_pos = [x, y]
+
+#
+#  match_line - return True if [x, y] is the same as the last_pos
+#
+
+
+def match_line (x, y):
+    return (last_pos != []) and ((last_pos[0] == x) or (last_pos[1] == y))</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def cellback (param, tap):
+    global clicked, cell_array, button_array, last_pos
+    clicked = True
+    mouse = pygame.mouse.get_pos ()
+    x, y = get_cell (mouse)
+    old = cell_array.get (x + xoffset, y + yoffset)
+    button = button_array.get (x + xoffset, y + yoffset)
+    if (old in [&quot;v&quot;, &quot; &quot;]) and (tap == 2):
+        save_wall_pos (x + xoffset, y + yoffset)
+    elif old == &quot; &quot;:
+        # blank -&gt; next_tile
+        if match_line (x + xoffset, y + yoffset):
+            draw_line (x + xoffset, y + yoffset)
+        else:
+            function_create[next_tile] (button)
+        last_pos = []  # forget about last_pos
+    ...</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  draw_line - draw a line from the last_pos to, [x, y] providing [x, y]
+#              lies on the same axis.
+#
+
+
+def draw_line (x, y):
+    global cell_array, button_array
+    if last_pos != []:
+        if last_pos[0] == x:
+            for j in range (min (y, last_pos[1]), max (y, last_pos[1])+1):
+                old = cell_array.get (x, j)
+                button = button_array.get (x, j)
+                if old == &quot; &quot;:
+                    button.to_wall ()
+                    cell_array.set_contents (x, j, &quot;v&quot;)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>        elif last_pos[1] == y:
+            for i in range (min (x, last_pos[0]), max (x, last_pos[0])+1):
+                old = cell_array.get (i, y)
+                button = button_array.get (i, y)
+                if old == &quot; &quot;:
+                    button.to_wall ()
+                    cell_array.set_contents (i, y, &quot;v&quot;)</pre>
+
+
+<p><font color="#000000"><small></ul></small></font></p><hr>
+
+<h2>6. Implementing a safe export
+<a name="6. Implementing a safe export"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> it would be
+good if the export facility checked to see that the map
+exported was successfully converted by chisel
+<ul type=square> <li> <tt><small>chisel</small></tt> like
+all GNU/Linux and Unix programs exits with status 0 on
+success <li> and non zero on failure <li> we can test this
+and change the doom3 button (freeze it) </ul> <li> we need
+to change: <tt><small>myexport</small></tt> and add
+<tt><small>try_export</small></tt> which can also be called
+from the <tt><small>mydoom3</small></tt> callback
+<li></font></p>
+<pre>def myexport (name, tap):
+    pygame.display.update ()
+    save_map (current_map_name)
+    try_export (os.getcwd (), current_map_name)
+
+
+def try_export (directory, map_name):
+    os.chdir (os.path.join (os.getenv (&quot;HOME&quot;), &quot;Sandpit/chisel/python&quot;))
+    r = os.system (&quot;./developer-txt2map &quot; + os.path.join (directory, map_name))
+    os.chdir (directory)
+    if r == 0:
+        print &quot;all ok&quot;
+        doom_button.set_images (private_list (&quot;doom3&quot;))
+    else:
+        doom_button.set_images (error_list (&quot;doom3&quot;))</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def mydoom3 (param, tap):
+    pygame.display.update ()
+    pygame.time.delay (toggle_delay * 2)
+    try_export (os.getcwd (), &quot;test.txt&quot;)
+    pygame.quit ()
+    dmap ()
+    exec_doom_map ()
+    quit ()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Conclusion and tutorial
+<a name="7. Conclusion and tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> integrate some
+of these changes into your <tt><small>touchmap</small></tt>
+<li> consider how you might also <ul type=square> <li> read
+a map file into <tt><small>touchmap</small></tt></font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>8. Extra graphic assets for touchmap
+<a name="8. Extra graphic assets for touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the tick and
+hellknight are available
+<a href="http://floppsie.comp.glam.ac.uk/download/targz/touchmap-extra-assets.gz">touchmap-extra-assets</a>
+<li> you can download and extract them by: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+$HOME/Sandpit/touchmap/images</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/touchmap-extra-assets.gz</b>
+<tt><br>
+$</tt> <b>tar zxf touchmap-extra-assets.gz</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>9. Script to automatically build and run touchmap
+<a name="9. Script to automatically build and run touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> here is a
+script you can run from the command line to automatically
+rebuild and run your touchmap
+<a href="http://floppsie.comp.glam.ac.uk/download/targz/run">http://floppsie.comp.glam.ac.uk/download/targz/run</a>
+<li> you can install it via: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/run</b>
+<tt><br>
+$</tt> <b>chmod 755 run</b> <li> you can run it via: <li>
+<tt><br>
+$</tt> <b>./run</b></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt></ul></tt></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. File export/File import/Next/Back">1. File export/File import/Next/Back</a><br>
+<a href="#2. check_export">2. check_export</a><br>
+<a href="#3. write_map">3. write_map</a><br>
+<a href="#4. determine_range">4. determine_range</a><br>
+<a href="#5. Adding double tap to construct walls">5. Adding double tap to construct walls</a><br>
+<a href="#6. Implementing a safe export">6. Implementing a safe export</a><br>
+<a href="#7. Conclusion and tutorial">7. Conclusion and tutorial</a><br>
+<a href="#8. Extra graphic assets for touchmap">8. Extra graphic assets for touchmap</a><br>
+<a href="#9. Script to automatically build and run touchmap">9. Script to automatically build and run touchmap</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

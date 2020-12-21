@@ -1,0 +1,287 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:24 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Creating a Debian Game Package
+<a name="1. Creating a Debian Game Package"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these notes do not include actually
+writing the game! <ul type=square> <li> the game is assumed
+to be written and full debugged </ul> <li> all we are
+considering is how best to package the source, data
+<ul type=square> <li> and how to install the game
+sensibly</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Why use packages at all?
+<a name="2. Why use packages at all?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in the past source code was
+downloaded and built from <tt><small>foo.tar.gz</small></tt>
+(often called tarballs) <ul type=square> <li> some
+distributions still use this mechanism <li> normally an
+activity reserved for enthusiasts or developers </ul> <li>
+although occasionally experienced GNU/Linux users will do
+this to work around a bug or dependency problem <li> Debian
+package management software is superb</p>
+
+<p></ul></p><hr>
+
+<h2>3. Advantage of Debian packages
+<a name="3. Advantage of Debian packages"></a>
+</h2>
+
+
+<p><ul type=disc> <li> can reference multiple repositories
+in <tt><small>/etc/apt/sources.list</small></tt> <li></p>
+<pre>deb http://ftp.uk.debian.org/debian/ stretch main contrib non-free
+deb-src http://ftp.uk.debian.org/debian/ stretch main contrib non-free
+
+deb http://security.debian.org/ stretch/updates main contrib non-free
+deb-src http://security.debian.org/ stretch/updates main contrib non-free
+
+# deb http://www.debian-multimedia.org stretch main non-free
+
+
+#
+#  GNU Modula-2 repo
+#
+deb http://floppsie.comp.glam.ac.uk/debian/ stretch main
+deb-src http://floppsie.comp.glam.ac.uk/debian/ stretch main</pre>
+
+
+<p><li> possible to request a machine to update its
+complete list of packages and install updates
+<ul type=square> <li> each time it boots up <li> this is
+done in the labs, and nobody notices the updates <li>
+contrast this with shutting down a Windows client :-) </ul>
+<li> a well formed Debian package allow you to
+<ul type=square> <li> rebuild it with minimal effort <li>
+obtain the source </ul> <li> rev the source and rebuild
+<ul type=square> <li> possibly support multiple
+architectures <li> includes all correct package dependencies
+<br>
+</ul> </ul></p><hr>
+
+<h2>4. Example
+<a name="4. Example"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>sudo apt-get update</b> <li> <tt><br>
+$</tt> <b>sudo apt-get install halma</b> <li> installs the
+package <tt><small>halma</small></tt> <ul type=square> <li>
+it will also ensure the dependencies Python/PyGame are
+installed </ul> <li> <tt><br>
+$</tt> <b>sudo apt-get remove halma</b> <li> <tt><br>
+$</tt> <b>apt-get source halma</b> <li> obtains the current
+source for the package <tt><small>halma</small></tt> <br>
+</ul></p><hr>
+
+<h2>5. Halma package contents
+<a name="5. Halma package contents"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>apt-get source halma</b> <tt><br>
+$</tt> <b>ls -ld halma*</b></p>
+
+<pre>drwxr-xr-x 6 fred  fred   4096 Mar 17  2011 halma-0.0.1
+-rw-r--r-- 1 fred  fred    524 Nov 22 18:12 halma_0.0.1-1.10.dsc
+-rw-r--r-- 1 fred  fred  94023 Nov 22 18:13 halma_0.0.1-1.10.tar.gz</pre>
+
+
+<p><li> <tt><small>halma_0.0.1-1.10.dsc</small></tt> a
+description of the package, including version, maintainers
+email address, dependencies, tarball filename <li> <tt><br>
+$</tt> <b>ls halma-0.0.1</b></p>
+
+<pre>config.guess  configure      data            desktop
+Makefile      version.c      config.sub      configure.in
+debian        gameEngine.py  gui.py          halma.in
+halma.mod     Makefile.in    pixmaps</pre>
+
+
+<p><li> examine these files during lab times <br>
+</ul></p><hr>
+
+<h2>6. Package related files
+<a name="6. Package related files"></a>
+</h2>
+
+
+<p><ul type=disc> <li> held in the directory
+<tt><small>debian</small></tt> <li></p>
+
+<p><tt>$</tt> <b>ls -ltr halma-0.0.1/debian/</b></p>
+
+<pre>-rw-r--r-- 1 fred  fred    18 Mar 15  2011 dirs
+-rwxr-xr-x 1 fred  fred   441 Mar 16  2011 rules
+-rw-r--r-- 1 fred  fred    91 Mar 16  2011 menu
+-rw-r--r-- 1 fred  fred   764 Mar 17  2011 control
+-rw-r--r-- 1 fred  fred  1886 Mar 17  2011 changelog</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. dirs
+<a name="7. dirs"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>usr/bin
+usr/share</pre>
+
+<p><li> details the subdirectories where the contents will
+reside once installed <br>
+</ul></p><hr>
+
+<h2>8. menu
+<a name="8. menu"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>cat halma-0.0.1/debian/menu</b></p>
+
+<pre>?package(halma):needs=&quot;X11&quot; section=&quot;Games/Toys&quot; \
+  title=&quot;halma&quot; command=&quot;/usr/bin/halma&quot;</pre>
+
+
+<p></ul></p><hr>
+
+<h2>9. ChangeLog
+<a name="9. ChangeLog"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>cat halma-0.0.1/debian/changelog</b></p>
+<pre> -- Fred &lt;fred@somewhere.org&gt;  Wed, 16 Mar 2011 20:47:24 +0000
+
+halma (0.0.1-1.4) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * corrected menu entry.</pre>
+
+<p></ul></p><hr>
+
+<h2>10. Control
+<a name="10. Control"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt><small>$</small></tt> <small><b>cat
+halma-0.0.1/debian/control</b></small></p>
+<pre>Source: halma
+Section: games
+Priority: extra
+Maintainer: Fred &lt;fred@somewhere.org&gt;
+Build-Depends: debhelper (&gt;= 5), autotools-dev, dbs (&gt;=0.22), texinfo, \
+gcc, python, python-pygame, gm2
+Standards-Version: 3.7.2
+
+
+Package: halma
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-pygame, python-pexpect
+Suggests:
+Conflicts:
+Description: The Victorian board game Halma.
+ A two player game where the object is to move your pieces into the
+ base of the opposing player.  In this variant of the game (Kangaroo Halma)
+ you may jump multiple squares so long as both sides are symmetrical.
+ A tactical game which typically lasts between 10 and 15 minutes.  You
+ play red, the computer plays blue and the computer will make a move
+ every 10 seconds.</pre>
+
+
+<p></ul></p><hr>
+
+<h2>11. Building the package
+<a name="11. Building the package"></a>
+</h2>
+
+
+<p><ul type=disc> <li> further reading
+<a href="http://www.nongnu.org/gm2/creating_packages.html#section9">http://www.nongnu.org/gm2/creating_packages.html#section9</a>
+and
+<a href="http://people.connexer.com/~roberto/howtos/debcustomize">http://people.connexer.com/~roberto/howtos/debcustomize</a>
+<li> install pbuilder and re-create an up to date copy
+<li></p>
+
+<p><tt>$</tt> <b>sudo pbuilder create</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/scripts/myrevdeb</b>
+<tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/scripts/mypdebbuild</b>
+<tt><br>
+$</tt> <b>cd halma-0.0.1</b> <tt><br>
+$</tt> <b>bash ../myrevdeb</b> <tt><br>
+$</tt> <b>bash ../mypdebbuild</b> <li> will build a new
+version of halma which is placed into
+<tt><small>/usr/local/src/results</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Creating a Debian Game Package">1. Creating a Debian Game Package</a><br>
+<a href="#2. Why use packages at all?">2. Why use packages at all?</a><br>
+<a href="#3. Advantage of Debian packages">3. Advantage of Debian packages</a><br>
+<a href="#4. Example">4. Example</a><br>
+<a href="#5. Halma package contents">5. Halma package contents</a><br>
+<a href="#6. Package related files">6. Package related files</a><br>
+<a href="#7. dirs">7. dirs</a><br>
+<a href="#8. menu">8. menu</a><br>
+<a href="#9. ChangeLog">9. ChangeLog</a><br>
+<a href="#10. Control">10. Control</a><br>
+<a href="#11. Building the package">11. Building the package</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

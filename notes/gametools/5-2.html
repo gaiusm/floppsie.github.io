@@ -1,0 +1,151 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:31 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Drawing objects: rectangle
+<a name="1. Drawing objects: rectangle"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, sys
+from pygame.locals import *
+
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+
+height = 300
+width = 400</pre>
+
+<p><li></p>
+<pre>pygame.init ()
+screen = pygame.display.set_mode([width, height])
+pygame.draw.rect (screen, dark_blue, (50, 50, 60, 60), 0)
+pygame.display.flip()
+
+
+while True:
+    for event in pygame.event.get ():
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                sys.exit (0)</pre>
+
+
+<p><li> the line <li></p>
+
+<pre>pygame.draw.rect (screen, dark_blue, (50, 50, 60, 60), 0)</pre>
+
+
+<p><li> means: <ul type=square> <li> call the
+<tt><small>rect</small></tt> method and draw on
+<tt><small>screen</small></tt> a rectangle of colour
+<tt><small>dark_blue</small></tt> <li> which has a top left
+corner of <tt><small>50, 50</small></tt> <li> and a bottom
+right corner of <tt><small>60, 60</small></tt> <li> this
+rectangle will be completely filled (boarder size of
+<tt><small>0</small></tt> ) </ul> <li> notice that in both
+the circle and rectangle examples nothing is displayed until
+you flip the buffer <li></p>
+<pre>pygame.display.flip()</pre>
+
+<p><li> using a common technique of double buffering
+<ul type=square> <li> your application draws everything off
+screen and then it is flipped onto the screen, giving the
+illusion everything is drawn at once <br>
+</ul> </ul></p><hr>
+
+<h2>2. Drawing objects: polygon
+<a name="2. Drawing objects: polygon"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, sys
+from pygame.locals import *
+
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+
+height = 300
+width = 400</pre>
+
+<p><li></p>
+<pre>pygame.init ()
+screen = pygame.display.set_mode([width, height])
+pygame.draw.polygon (screen, dark_blue, [[50, 50], [100, 100], [50, 100]], 0)
+pygame.display.flip()
+
+
+while True:
+    for event in pygame.event.get ():
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                sys.exit (0)</pre>
+
+
+<p><li> the line <li></p>
+
+<pre>pygame.draw.polygon (screen, dark_blue, [[50, 50],
+                                         [100, 100],
+                                         [50, 100]], 0)</pre>
+
+
+<p><li> means: <ul type=square> <li> call the
+<tt><small>polygon</small></tt> method and draw on
+<tt><small>screen</small></tt> a polygon of colour
+<tt><small>dark_blue</small></tt> <li> which has a top left
+corner of <tt><small>50, 50</small></tt> <li> a corner at
+<tt><small>100, 100</small></tt> <li> and a final corner at
+<tt><small>50, 100</small></tt> <li> this polygon will be
+completely filled (boarder size of <tt><small>0</small></tt>
+) </ul> <li> the list of corners is often called a list of
+vertices as it also describes the lines (verticies of the
+polygon)</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Drawing objects: rectangle">1. Drawing objects: rectangle</a><br>
+<a href="#2. Drawing objects: polygon">2. Drawing objects: polygon</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:41 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 17-1
+<a name="1. Lecture: 17-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+16-1, 16-2 and 16-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Implementation of Touchmap 0.2
+<a name="2. Implementation of Touchmap 0.2"></a>
+</h2>
+
+
+<p><ul type=disc> <li> last week we adpated
+<tt><small>touchmap-0.1</small></tt> to use an indirect
+function call to implement a spawn button
+<ul type=square> <li> this worked and could be extended to
+implement many other buttons </ul> <li> however it is an
+ugly implementation <ul type=square> <li> although it was
+very minimal (in terms of code line changes) </ul> <li> it
+would be cleaner to adopt an object oriented approach
+<ul type=square> <li> albeit the number of lines of code
+will increase </ul> <li> one of the major issues of a
+<tt><small>touchmap</small></tt> implementation is the
+ability to change a tile in the grid <ul type=square> <li>
+currently it changes: <ul type=circle> <li> a blank to a
+wall <li> a wall to a door <li> a door to a blank </ul>
+</ul> <li> we need a spawn, hellknight, ammo, ticks etc
+<ul type=square> <li> the indirect function call can do this
+but it will result in messy code</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Touchmap 0.2
+<a name="3. Touchmap 0.2"></a>
+</h2>
+
+
+<p><ul type=disc> <li> removes the indirect function call
+<ul type=square> <li> but introduces a new class
+<tt><small>button</small></tt> <li> and about 20 lines of
+extra code </ul> <li> <tt><small>touchmap-0.2</small></tt>
+can be downloaded using: <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/touchmap-0.2.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf touchmap-0.2.tar.gz</b> <tt><br>
+$</tt> <b>ls touchmap-0.2</b> <li> and can be built using:
+<li> <tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>rm -rf build-touchmap</b> <tt><br>
+$</tt> <b>mkdir build-touchmap</b> <tt><br>
+$</tt> <b>cd build-touchmap</b> <tt><br>
+$</tt> <b>../touchmap-0.2/configure</b> <tt><br>
+$</tt> <b>make</b> <li> and you can run it via: <li>
+<tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/build-touchmap</b> <tt><br>
+$</tt> <b>./localrun.sh touchmap.py</b></p>
+
+<p style="margin-top: 1em"><tt></ul></tt></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><tt><a name="index"></a></tt></p>
+<a href="#1. Lecture: 17-1">1. Lecture: 17-1</a><br>
+<a href="#2. Implementation of Touchmap 0.2">2. Implementation of Touchmap 0.2</a><br>
+<a href="#3. Touchmap 0.2">3. Touchmap 0.2</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

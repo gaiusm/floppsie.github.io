@@ -1,0 +1,165 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:39 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Single glyph button example using touchgui
+<a name="1. Single glyph button example using touchgui"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, touchgui, touchguipalate, touchguiconf, math, os
+from pygame.locals import *
+
+
+# display_width, display_height = 1920, 1080
+display_width, display_height = 800, 600
+display_width, display_height = 1920, 1080
+full_screen = False
+full_screen = True
+toggle_delay = 250</pre>
+
+
+<p><li></p>
+<pre>def event_test (event):
+    if (event.type == KEYDOWN) and (event.key == K_ESCAPE):
+        myquit (None)
+
+
+def myquit (name = None, tap = 1):
+    print (&quot;quit called&quot;)
+    pygame.display.update ()  # need this to see the button pressed before we quit
+    pygame.time.delay (toggle_delay * 2) #  delay program so we see the button change
+    pygame.quit ()  #  now shutdown pygame
+    quit ()  #  and shutdown python
+
+
+
+def myreturn (name, tap):
+    print (&quot;return called&quot;)</pre>
+
+
+<p><li> the function <tt><small>myquit</small></tt> is a
+callback which is called when the off button is pressed
+<ul type=square> <li> both parameters are optional <li> a
+single parameter is allowed and then
+<tt><small>tap</small></tt> will be assigned to
+<tt><small>1</small></tt> </ul> <li></p>
+<pre>def imagedir (name):
+    return os.path.join (touchguiconf.touchguidir, name)
+
+
+def button_list (name):
+    return [touchgui.image_gui (imagedir (&quot;images/PNG/White/2x/%s.png&quot;) \
+                % (name)).white2grey (.5),
+            touchgui.image_gui (imagedir (&quot;images/PNG/White/2x/%s.png&quot;) \
+                % (name)).white2grey (.1),
+            touchgui.image_gui (imagedir (&quot;images/PNG/White/2x/%s.png&quot;) \
+                % (name)),
+            touchgui.image_gui (imagedir (&quot;images/PNG/White/2x/%s.png&quot;) \
+                % (name)).white2rgb (.1, .2, .4)]</pre>
+
+
+<p><li> note the <tt><small>\</small></tt> is a line
+continuation character <li>
+<tt><small>button_list</small></tt> is a function which
+returns a list of four images <li> the four images in order
+represent the four states <ul type=square> <li> frozen,
+active, activated or pressed state </ul> <li>
+<tt><small>button_list</small></tt> takes a single white
+image and produces four images <ul type=square> <li>
+darkgrey using <tt><small>white2grey (.5)</small></tt>
+representing frozen <li> lightgrey using
+<tt><small>white2grey (.1)</small></tt> representing active
+<li> brillant white representing activated <li> dark blue
+<tt><small>white2rgb (.1, .2, .4)</small></tt> representing
+pressed </ul> <li></p>
+<pre>#
+#  buttons - create two buttons and return them as a list.
+#
+
+
+def buttons ():
+    return [touchgui.image_tile (button_list (&quot;power&quot;),
+                                 touchgui.posX (0.95), touchgui.posY (1.0),
+                                 100, 100, myquit),
+            touchgui.image_tile (button_list (&quot;return&quot;),
+                                 touchgui.posX (0.0), touchgui.posY (1.0),
+                                 100, 100, myreturn)]</pre>
+
+
+<p><li></p>
+<pre>def main ():
+    pygame.init ()
+    if full_screen:
+        gameDisplay = pygame.display.set_mode ((display_width, display_height), \
+                                               FULLSCREEN)
+    else:
+        gameDisplay = pygame.display.set_mode ((display_width, display_height))
+
+    pygame.display.set_caption (&quot;Simple Test&quot;)
+    touchgui.set_display (gameDisplay, display_width, display_height)
+
+    forms = buttons ()
+    gameDisplay.fill (touchguipalate.black)
+    touchgui.select (forms, event_test)
+
+main ()</pre>
+
+<p><li> <tt><small>touchgui.select</small></tt> can take 2
+parameters (it can also take more - in future weeks this
+will be covered) <li> the second parameter allows you to
+test <tt><small>pygame</small></tt> events <li> the first
+parameter is a list of buttons on the touch device
+<ul type=square> <li> only buttons in this list can be
+activated (mouse over) and/or tapped </ul> <li>
+<tt><small>touchgui.image_tile</small></tt> takes 6
+parameters <ul type=square> <li>
+<tt><small>button_list</small></tt> is the list of the four
+state images <li> <tt><small>touchgui.posX</small></tt> and
+<tt><small>touchgui.posY</small></tt> converts a floating
+point value in the range <tt><small>0.0..1.0</small></tt>
+onto the X or Y resolution of the screen (or window) <li>
+parameters 4 and 5 are the x and y image size <li> parameter
+6 is the call back if tapped or double tapped</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Single glyph button example using touchgui">1. Single glyph button example using touchgui</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

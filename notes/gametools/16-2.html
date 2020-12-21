@@ -1,0 +1,180 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:41 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Extending touchgui: adding a worldspawn button
+<a name="1. Extending touchgui: adding a worldspawn button"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def worldspawn (name, tap):
+    pygame.display.update ()
+    if tap == 1:
+        print (&quot;worldspawn called&quot;, name, tap)
+
+
+def glyphs ():
+    return [touchgui.text_tile (dark_grey, light_grey, white, mid_grey,
+                                &rsquo;s&rsquo;, touchgui.unitY (0.05),
+                                touchgui.posX (0.5), touchgui.posY (1.0),
+                                100, 100, worldspawn, &quot;worldspawn&quot;)]</pre>
+
+
+<p><li></p>
+<pre>def main ():
+    global players, grid, cell_size
+
+    pygame.init ()
+    if full_screen:
+        gameDisplay = pygame.display.set_mode ((display_width, display_height),\
+                   FULLSCREEN)
+    else:
+        gameDisplay = pygame.display.set_mode ((display_width, display_height))
+
+    touchgui.set_display (gameDisplay, display_width, display_height)
+    controls = buttons () + glyphs ()
+
+
+    gameDisplay.fill (touchguipalate.black)
+    while True:
+        grid = button_grid (cell_size)
+        forms = controls + grid
+        touchgui.select (forms, event_test, finished)</pre>
+
+
+<p><font color="#000000"><li> at this point the call back
+<tt><small>worldspawn</small></tt> is in place
+<ul type=square> <li> <tt><small>worldspawn</small></tt> can
+be made turn on worldspawn mode </ul> <li> then
+<tt><small>cellback</small></tt> can be modified to detect
+this mode and add the appropriate tile <li> hint it might be
+sensible to use an indirect function <ul type=square> <li>
+<tt><small>empty_cell_click</small></tt> <li> which is
+initially set to <tt><small>empty_to_wall</small></tt> <li>
+and can be changed to
+<tt><small>empty_to_worldspawn</small></tt> </ul> <li> this
+technique allows <tt><small>touchmap</small></tt> to be
+extended to place hellknights, imps, ticks and pickups <br>
+</ul></font></p><hr>
+
+<h2>2. Local images
+<a name="2. Local images"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> local images
+should be placed inside the <tt><small>touchmap</small></tt>
+directory <ul type=square> <li> for example:
+<tt><small>touchmap-0.1/images</small></tt> <li> these
+images are kept in the source directory
+<tt><small>touchmap-0.1</small></tt> </ul> <li> our build
+occurs in: <tt><small>build-touchmap</small></tt>
+<ul type=square> <li> therefore the
+<tt><small>Makefile.am</small></tt> needs to have rules
+inside it to copy the images from the into the build
+directory</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>3. Build directory
+<a name="3. Build directory"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> should be
+treated as volatile <ul type=square> <li> can be destroyed
+and created </ul> <li> therefore all assets and source files
+<b>must</b> be kept in the
+<tt><small>touchmap-0.1</small></tt> directory</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. autotools
+<a name="4. autotools"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> are used to
+configure and maintain the building rules
+<ul type=square> <li> see
+<tt><small>Makefile.am</small></tt> and
+<tt><small>configure.ac</small></tt> </ul> <li> the file
+<tt><small>Makefile.am</small></tt> contains the building
+rules <li> in our case we just need extend
+<tt><small>Makefile.am</small></tt> to copy the image from
+the source directory into the build directory
+<li></font></p>
+
+
+<p><b><small><small><font color="#196633">touchmap-0.1/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">all: doorh.png doorv.png doorh-bw.png doorv-bw.png hingeh.png \
+  wallh.png wallv.png wallh-bw.png wallv-bw.png \
+  newname.png
+
+
+newimage.png: $(srcdir)/images/newimage.png
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li> notice that
+<tt><small>&deg;</small></tt> needs to be replaced by a
+single tab character <ul type=square> <li> you might need to
+alter preferences in gedit to allow you to add a tab
+character </ul> <li></font>
+<b><small><small><font color="#196633"><br>
+touchmap-0.1/Makefile.am</font></small></small></b></p>
+<pre style="margin-top: 1em">all: doorh.png doorv.png doorh-bw.png doorv-bw.png hingeh.png \
+  wallh.png wallv.png wallh-bw.png wallv-bw.png \
+  newname.png
+
+
+newimage.png: $(srcdir)/images/newimage.png
+     cp -p $&lt; $@  # this line must start with a tab character</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Extending touchgui: adding a worldspawn button">1. Extending touchgui: adding a worldspawn button</a><br>
+<a href="#2. Local images">2. Local images</a><br>
+<a href="#3. Build directory">3. Build directory</a><br>
+<a href="#4. autotools">4. autotools</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

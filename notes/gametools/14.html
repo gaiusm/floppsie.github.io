@@ -1,0 +1,268 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:21 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Game tools
+<a name="1. Game tools"></a>
+</h2>
+
+
+<p><ul type=disc> <li> second coursework is to produce a
+level editor for a tablet <li> we will be exploring many
+aspects of tools <ul type=square> <li> python <li> python
+pygame <li> touchgui <li>
+<font color="#193399">touchmap</font>
+<font color="#000000"><li> debian package management <li>
+GNU/Linux build tools</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>2. Touchmap
+<a name="2. Touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> a tablet tool
+for creating maps for: <ul type=square> <li> penguin tower
+2D <li> isometric penguin tower <li> doom3 </ul> <li> you
+will start with a prototype <tt><small>touchmap</small></tt>
+<ul type=square> <li> and extend it in a variety of methods
+</ul> <li> is written in Python and uses the library
+<tt><small>touchgui</small></tt> <li> you can download the
+<tt><small>touchmap</small></tt> and
+<tt><small>touchgui</small></tt> source code
+<ul type=square> <li> you can change the touchgui code if
+you wish</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>3. Touchgui
+<a name="3. Touchgui"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> a small gui
+for a tablet written in Python using Pygame <li>
+<a href="http://floppsie.comp.glam.ac.uk/touchgui/homepage.html">touchgui documentation</a>
+<li> try out the
+<a href="http://floppsie.comp.glam.ac.uk/touchgui/examples.html">examples</a></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Obtaining touchmap
+<a name="4. Obtaining touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you can obtain
+the skeleton <tt><small>touchmap</small></tt> using the
+terminal and the command line <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir -p Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/touchmap-0.1.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf touchmap-0.1.tar.gz</b> <tt><br>
+$</tt> <b>ls touchmap-0.1</b> <li> some of these commands
+act silently (as is the UNIX default) <ul type=square> <li>
+write down a summary of each command line (hint use
+<tt><small>man</small></tt> ) </ul> <li> in the directory
+<tt><small>touchmap-0.1</small></tt> there are a number of
+files <ul type=square> <li>
+<tt><small>touchmap.py</small></tt> is the main program <li>
+there are a number of simpler versions of the same program
+<tt><small>touchmap-1.py</small></tt> ,
+<tt><small>touchmap-2.py</small></tt> ,
+<tt><small>touchmap-3.py</small></tt> and
+<tt><small>touchmap-4.py</small></tt> </ul> <li> these
+simpler versions might be interesting to examine as they
+show how the main program was developed
+<ul type=square> <li> they also serve to show how the GUI
+touchgui works <br>
+</ul> </ul></font></p><hr>
+
+<h2>5. Building touchmap in the University laboratories
+<a name="5. Building touchmap in the University laboratories"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you will need
+to have downloaded touchmap as above before attempting these
+command here <li> to build touchmap, you should use the
+command line terminal: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd $HOME/Sandpit</b>
+<tt><br>
+$</tt> <b>rm -rf build-touchmap</b> <tt><br>
+$</tt> <b>mkdir build-touchmap</b> <tt><br>
+$</tt> <b>cd build-touchmap</b> <tt><br>
+$</tt> <b>../touchmap-0.1/configure</b> <tt><br>
+$</tt> <b>make</b> <li> again make a summary of these
+command lines in a notebook (see <tt><small>man</small></tt>
+) <li> these commands build some of the map assets
+<ul type=square> <li> in particular the door, wall png
+images which are used by <tt><small>touchmap</small></tt>
+</ul> <li> <b>note that anything placed inside the
+directory</b> <tt><small>build-touchmap</small></tt> <b>is
+temporary</b> <ul type=square> <li> examine the contents of
+<tt><small>build-touchmap</small></tt> (we can see the png
+images for walls and doors) <li> these images are built from
+<tt><small>groff</small></tt> scripts! <br>
+</ul> </ul></font></p><hr>
+
+<h2>6. Output from the build
+<a name="6. Output from the build"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt>
+<b>../touchmap-0.1/configure</b></font></p>
+
+<pre>checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+...</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>make</b></font></p>
+
+<pre>groff -I../touchmap-0.1 &lt; ../touchmap-0.1/doorh.ms &gt; t.ps
+echo &quot;&quot; | gs -q -dBATCH -dSAFER -sDEVICE=pnmraw -r100 -sOutputFile=t.pnm t.ps
+&gt;&gt;showpage, press &lt;return&gt; to continue&lt;&lt;
+pnmcrop t.pnm &gt; doorh.pnm
+rm -f t.ps t.pnm
+pnmscale -xsize=100 -ysize=100 doorh.pnm &gt; t.pnm
+pnmtopng t.pnm &gt; doorh.png
+pnmtopng: 1 colors found
+rm -f t.pnm
+...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Running touchmap
+<a name="7. Running touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+$HOME/Sandpit/build-touchmap</b> <tt><br>
+$</tt> <b>./localrun.sh touchmap.py</b> <li> notice the
+capital <tt><small>S</small></tt> for
+<tt><small>Sandpit</small></tt> <li> notice the
+<tt><small>./</small></tt> before
+<tt><small>localrun.sh</small></tt> <ul type=square> <li>
+this is required as it means use
+<tt><small>localrun.sh</small></tt> in this directory <br>
+</ul> </ul></font></p><hr>
+
+<h2>8. Controlling touchmap
+<a name="8. Controlling touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the quit
+button at the top right, terminate the program <li> the
+return button at the top left, displays the current map (to
+stdout) <li> the expand and shrink buttons zoom in and out
+of the map <li> you can create a map by clicking in the
+middle of the screen <ul type=square> <li> a tap will create
+a wall, a further single tap converts a wall into a door
+<li> another tap will convert a door into a space </ul> <li>
+a double tap defines the start of a wall
+<ul type=square> <li> the next wall square created along a
+straight line will create a long wall (rather than an
+individual block)</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>9. Tutorial
+<a name="9. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> download and
+build <tt><small>touchmap</small></tt> using the commands
+from the lecture <li> run touchmap <li> explore the files in
+the <tt><small>touchmap</small></tt> package directory and
+make notes on the function of each file</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Bug in touchgui
+<a name="10. Bug in touchgui"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you will need
+to perform this command in the terminal before you run
+<tt><small>touchgui</small></tt> for the first time
+<li></font></p>
+<pre>mkdir -p $HOME/.cache/touchgui</pre>
+
+<p><font color="#000000"><li> this command creates the
+directories: <tt><small>.cache/touchgui</small></tt> in your
+<tt><small>$HOME</small></tt> <ul type=square> <li> this
+directory is used as an image cache by
+<tt><small>touchgui</small></tt></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Game tools">1. Game tools</a><br>
+<a href="#2. Touchmap">2. Touchmap</a><br>
+<a href="#3. Touchgui">3. Touchgui</a><br>
+<a href="#4. Obtaining touchmap">4. Obtaining touchmap</a><br>
+<a href="#5. Building touchmap in the University laboratories">5. Building touchmap in the University laboratories</a><br>
+<a href="#6. Output from the build">6. Output from the build</a><br>
+<a href="#7. Running touchmap">7. Running touchmap</a><br>
+<a href="#8. Controlling touchmap">8. Controlling touchmap</a><br>
+<a href="#9. Tutorial">9. Tutorial</a><br>
+<a href="#10. Bug in touchgui">10. Bug in touchgui</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

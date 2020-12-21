@@ -1,0 +1,702 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:15 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Python Classes
+<a name="1. Python Classes"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you can use the
+<tt><small>class</small></tt> keyword to create your own
+classes <li> here is a tiny example of a class <li></p>
+
+
+<p><b><small><small><font color="#196633">tinyclass.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python3
+
+import math
+
+
+class vector:
+    def __init__ (self, pair):
+        self.pair = pair
+    def get_x (self):
+        return self.pair[0]
+    def get_y (self):
+        return self.pair[1]
+    def get_pair (self):
+        return self.pair
+    def get_length (self):
+        return math.sqrt(sqr(self.pair[0]) + sqr(self.pair[1]))</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def sqr (x):
+    return x*x
+
+
+v = vector ([3, 4])
+print (&quot;using the Pythagorean theory the hypotenuse&quot;, end=&rsquo; &rsquo;)
+print (&quot;(or magnitude) of the vector&quot;, end=&rsquo; &rsquo;)
+print (v.get_pair(), &quot;=&quot;, v.get_length())</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>2. Extending last weeks tutorial to use classes
+<a name="2. Extending last weeks tutorial to use classes"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> create a ball
+class with a constructor which has an initial position and a
+velocity vector <li></font></p>
+<pre>#!/usr/bin/env python3
+
+import sys, pygame, random
+
+class ball:
+    def __init__ (self, initial_position, velocity):
+        self.curpos = initial_position
+        self.velocity = velocity
+        self.ball = pygame.image.load(&quot;ball.png&quot;).convert ()
+        self.ballrect = self.ball.get_rect ()
+        self.ballrect = self.ballrect.move (initial_position)
+
+
+    def update (self, surface):
+        self.ballrect = self.ballrect.move (self.velocity)
+        if self.ballrect.left &lt; 0 or self.ballrect.right &gt; width:
+            self.velocity[0] = -self.velocity[0]
+        if self.ballrect.top &lt; 0 or self.ballrect.bottom &gt; height:
+            self.velocity[1] = -self.velocity[1]
+        surface.blit (self.ball, self.ballrect)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>width = 1900
+height= 1000
+black = (0, 0, 0)
+
+pygame.init ()
+screen = pygame.display.set_mode([width, height])
+
+
+bl = []
+for i in range (80):
+    bl += [ball ([random.randint (0, width-1),
+                  random.randint (0, height-1)],
+                 [random.randint(-2, 2),
+                  random.randint(-2, 2)])]</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>while True:
+    for event in pygame.event.get ():
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+
+
+    screen.fill (black)
+    for b in bl:
+        b.update (screen)
+    pygame.display.flip()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. PyGame Sprites
+<a name="3. PyGame Sprites"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> these notes
+show how sprites can be created <ul type=square> <li>
+without object orientation <li> and also with object
+orientation </ul> <li> they re-implement the bouncing ball
+demo which we covered in earlier weeks <ul type=square> <li>
+using sprites rather than images </ul> <li> sprites are
+quite complicated <ul type=square> <li> in my experience
+this is due to their close association with object
+orientation <li> you can use sprites without object
+orientation <li> for a small number of sprites this is easy
+enough and the code is smaller than its object orientated
+counterpart (and much simpler) <li> for any reasonable
+number of sprites &gt;= 3 then should use OO as the
+reduction in code probably offsets the OO complication </ul>
+<li> use object orientated sprites when implementing Missile
+Command</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. When to use sprites in PyGame
+<a name="4. When to use sprites in PyGame"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> when you have:
+<ul type=square> <li> many instances of an object on the
+screen at a time <li> some objects that you need to track
+closely (e.g. collision detection) <ul type=circle> <li>
+sprites have a <tt><small>self.rect</small></tt> attribute,
+which can be passed to the function
+<tt><small>colliderect</small></tt> so Pygame will handle
+all collisions </ul> <li> a sprite&rsquo;s
+<tt><small>update()</small></tt> method, with a time
+argument, makes it easy to deal with a dynamic environment
+</ul> <li> you can easily kill sprites if collisions occur
+(or create sounds) <ul type=square> <li> sprites can be
+thought of as semi autonomous</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>5. When not to use sprites
+<a name="5. When not to use sprites"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> when your:
+<ul type=square> <li> objects don&rsquo;t share much (if
+any) code <ul type=circle> <li> and if you rarely have more
+than one copy of each object instantiated at a time </ul>
+<li> game entities (images) never move <i>by themselves</i>
+(eg. card decks) </ul> <li> simple user interfaces are often
+easier to do with surfaces than with sprites</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Creating a simple sprite
+<a name="6. Creating a simple sprite"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
+
+import pygame
+from pygame.locals import KEYDOWN
+
+width  = 320
+height = 240
+size   = [width, height]
+pygame.init()
+screen = pygame.display.set_mode(size)
+background = pygame.Surface(screen.get_size())
+
+b = pygame.sprite.Sprite() # create sprite
+b.image = pygame.image.load(&quot;ball.png&quot;).convert() # load ball image
+b.rect = b.image.get_rect() # use image extent values
+b.rect.topleft = [0, 0] # put the ball in the top left corner
+screen.blit(b.image, b.rect)
+
+
+pygame.display.update()
+while pygame.event.poll().type != KEYDOWN:
+    pygame.time.delay(100)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. The sprite in PyGame
+<a name="7. The sprite in PyGame"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> is an object
+that contains both: <ul type=square> <li> an image (a
+surface) <li> and a location at which to draw that image (a
+Rect) </ul> <li> term <i>sprite</i> is actually a holdover
+from older display systems that did such manipulations
+directly in hardware <ul type=square> <li> Commodore 64,
+Commodore Amiga used this technique in early 1980s to early
+1990s <li> other manufactures did exactly the same, Atari
+etc </ul> <li> sprites work well in object-oriented
+languages like Python <ul type=square> <li> you have a
+standard sprite interface
+<tt><small>pygame.sprite.Sprite</small></tt> , and extend
+those classes as specific sprites </ul> <li> see the
+<tt><small>BallSprite</small></tt> class in the example
+later on <li> sprites have two important instance variables
+<ul type=square> <li> <tt><small>self.image</small></tt> and
+<tt><small>self.rect</small></tt> <li>
+<tt><small>self.image</small></tt> is a surface, which is
+the current image that will be displayed. self.rect is the
+location at which this image will be displayed when the
+sprite is drawn to the screen </ul> <li> sprites also have
+one important instance method,
+<tt><small>self.update</small></tt> .</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Creating a simple sprite using an extra Class
+<a name="8. Creating a simple sprite using an extra Class"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/env python3
+
+import pygame
+from pygame.locals import KEYDOWN
+
+class BallSprite(pygame.sprite.Sprite):
+    image = None
+
+    def __init__(self, location):
+        pygame.sprite.Sprite.__init__(self)
+
+        if BallSprite.image is None:
+            # This is the first time this class has been
+            # instantiated. So, load the image for this and
+            # all subsequence instances.
+            BallSprite.image = pygame.image.load(&quot;ball.png&quot;)
+        self.image = BallSprite.image
+
+
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.topleft = location</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>pygame.init()
+screen = pygame.display.set_mode([320, 320])
+b = BallSprite([0, 0]) # put the ball in the top left corner
+screen.blit(b.image, b.rect)
+pygame.display.update()
+while pygame.event.poll().type != KEYDOWN:
+    pygame.time.delay(10)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Bouncing ball using sprites and no user defined classes
+<a name="9. Bouncing ball using sprites and no user defined classes"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/env python3
+
+import pygame
+from pygame.locals import KEYDOWN
+
+width  = 320
+height = 240
+size   = [width, height]
+ydir = 1
+xdir = 1
+xpos = 0
+ypos = 0
+pygame.init()
+screen = pygame.display.set_mode(size)
+background = pygame.Surface(screen.get_size())
+
+
+b = pygame.sprite.Sprite() # create sprite
+b.image = pygame.image.load(&quot;ball.png&quot;).convert()  # load image
+b.rect = b.image.get_rect() # use image extent values
+b.rect.topleft = [xpos, ypos] # put the ball in the top left corner
+screen.blit(b.image, b.rect)
+slow = 0</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def gravity(y):
+    global height
+    return int (((height+height/20) * 3) / y)
+
+pygame.display.update()
+while pygame.event.poll().type != KEYDOWN:
+    pygame.time.delay(gravity(ypos))
+    # If we&rsquo;re at the top or bottom of the screen,
+    # switch directions.
+
+
+    if b.rect.bottom&gt;=height:
+        ydir = -1
+    elif ypos == 0:
+        ydir = 1
+    if xpos == 0:
+        xdir = 1
+    elif b.rect.right&gt;=width:
+        xdir = -1</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>    if slow:
+        screen.fill([0, 0, 0]) # blank the screen
+    else:
+        rectlist = [screen.blit(background, b.rect)]
+
+    # Move our position up or down by one pixel
+    xpos += xdir
+    ypos += ydir
+    b.rect.topleft = [xpos, ypos]
+
+
+    if slow:
+        screen.blit(b.image, b.rect)
+        pygame.display.update()
+    else:
+        rectlist += [screen.blit(b.image, b.rect)]
+        pygame.display.update(rectlist)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#!/usr/bin/env python3
+
+import pygame
+from pygame.locals import KEYDOWN
+
+class BallSprite(pygame.sprite.Sprite):
+    image = None
+
+    def __init__(self, initial_position):
+        pygame.sprite.Sprite.__init__(self)
+        if BallSprite.image is None:
+            BallSprite.image = pygame.image.load(&quot;ball.png&quot;)
+        self.image = BallSprite.image
+
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = initial_position
+        self.going_down = True # Start going downwards
+        self.next_update_time = 0 # update() hasn&rsquo;t been called yet.</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>    def update(self, current_time, bottom):
+        # Update every 10 milliseconds = 1/100th of a second.
+        if self.next_update_time &lt; current_time:
+
+            # If we&rsquo;re at the top or bottom of the screen, switch directions.
+            if self.rect.bottom == bottom - 1: self.going_down = False
+            elif self.rect.top == 0: self.going_down = True
+
+            # Move our position up or down by one pixel
+            if self.going_down: self.rect.top += 1
+            else: self.rect.top -= 1
+
+
+            self.next_update_time = current_time + 10</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>pygame.init()
+boxes = []
+for location in [[0, 0],
+                 [60, 60],
+                 [120, 120]]:
+    boxes.append(BallSprite(location))
+
+screen = pygame.display.set_mode([150, 150])
+while pygame.event.poll().type != KEYDOWN:
+    screen.fill([0, 0, 0]) # blank the screen.
+
+
+    time = pygame.time.get_ticks()
+    for b in boxes:
+        b.update(time, 150)
+        screen.blit(b.image, b.rect)
+    pygame.display.update()</pre>
+
+
+<p><font color="#000000"><li> it is worth noting that the
+OO solution uses processor resources efficiently <br>
+</ul></font></p><hr>
+
+<h2>10. The event loop
+<a name="10. The event loop"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>while True:
+    event = pygame.event.wait()
+    if event.type == pygame.QUIT:
+        sys.exit(0)
+    if event.type == KEYDOWN:
+        if event.key == K_ESCAPE:
+            sys.exit (0)</pre>
+
+
+<p><font color="#000000"><li> consider the above section of
+code <ul type=square> <li> it waits for an event to occur
+and then acts upon the event <li> an event will be mouse
+movement, mouse click, key up/down etc </ul> <li> what
+happens if there is no event present? <li> various event
+retrieval mechanisms in Pygame <ul type=square> <li> read
+the documentation for ideas </ul> <li> how do we handle the
+problem of no events occuring? <br>
+</ul></font></p><hr>
+
+<h2>11. USEREVENTS
+<a name="11. USEREVENTS"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> one mechanism
+is to poll the event queue <ul type=square> <li> this is a
+lazy programming mechanism and cpu intensive </ul> <li> a
+better solution is to introduce
+<tt><small>USEREVENT</small></tt> s</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>12. USEREVENT example code (snippet)
+<a name="12. USEREVENT example code (snippet)"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>def updateAll ():
+    if allExplosions != []:
+        for e in allExplosions:
+            e.update ()
+        pygame.display.flip ()
+        pygame.time.set_timer (USEREVENT+1, delay)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def wait_for_event ():
+    global screen
+    while True:
+        event = pygame.event.wait ()
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
+            sys.exit (0)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            createExplosion (pygame.mouse.get_pos ())
+        if event.type == USEREVENT+1:
+            updateAll ()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>13. Tutorial
+<a name="13. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> try out the
+example code given in the lecture <li> make sure you
+completed last weeks tutorial and adapt this code and
+<ul type=square> <li> without using sprites, implement an
+explosion class <li> which is activated at the cursor
+position on the screen </ul> <li> an explosion can be
+visually generated by drawing expanding circles
+<ul type=square> <li> and then by reversing the size
+(remembering to blank out the larger ones)</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>14. explosions.py
+<a name="14. explosions.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, sys, time, random
+from pygame.locals import *
+
+ramp_one, ramp_two, ramp_three = None, None, None
+
+
+wood_light = (166, 124, 54)
+wood_dark = (76, 47, 0)
+blue = (0, 100, 255)
+dark_red = (166, 25, 50)
+dark_green = (25, 100, 50)
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+white = (255, 255, 255)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>width, height = 1024, 768
+screen = None
+
+maxRadius = 60
+allExplosions = []
+delay = 100   # number of milliseconds delay before generating a USEREVENT
+
+
+class explosion:
+    def __init__ (self, pos):
+        self._radius = 1
+        self._maxRadius = maxRadius
+        self._increasing = True
+        self._pos = pos</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>    def update (self):
+        if self._increasing:
+            pygame.draw.circle (screen, white, self._pos, self._radius, 0)
+            self._radius += 1
+            if self._radius == self._maxRadius:
+                self._increasing = False
+        else:
+            pygame.draw.circle (screen, black, self._pos, self._radius, 0)
+            self._radius -= 1
+            if self._radius &gt; 0:
+                pygame.draw.circle (screen, white, self._pos, self._radius, 0)
+            else:
+                globalRemove (self)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def createExplosion (pos):
+    global allExplosions
+    allExplosions += [explosion (pos)]
+    pygame.time.set_timer (USEREVENT+1, delay)
+
+
+def globalRemove (e):
+    global allExplosions
+    allExplosions.remove (e)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def updateAll ():
+    if allExplosions != []:
+        for e in allExplosions:
+            e.update ()
+        pygame.display.flip ()
+        pygame.time.set_timer (USEREVENT+1, delay)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def wait_for_event ():
+    global screen
+    while True:
+        event = pygame.event.wait ()
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
+            sys.exit (0)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            createExplosion (pygame.mouse.get_pos ())
+        if event.type == USEREVENT+1:
+            updateAll ()</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    wait_for_event ()
+
+main ()</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>15. Homework
+<a name="15. Homework"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> firstly get
+the <tt><small>explosions.py</small></tt> to work <li> now
+comment each function <li> comment each class and its use
+<li> familiarise yourself with the game missile command <li>
+see if you can extend this code to place six cities and 3
+missile silos statically at the bottom of the
+screen</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>16. Homework 2
+<a name="16. Homework 2"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> write a Python
+program to print out all permutations of a string <li> for
+example <tt><small>ab</small></tt> <li></font></p>
+<pre>ab
+ba</pre>
+
+<p><font color="#000000"><li> for example
+<tt><small>abc</small></tt> <li></font></p>
+<pre>abc
+acd
+bac
+bca
+cab
+cba</pre>
+
+<p><font color="#000000"><li> your program should be able
+to take any size string with unique characters and print out
+all permutations</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Python Classes">1. Python Classes</a><br>
+<a href="#2. Extending last weeks tutorial to use classes">2. Extending last weeks tutorial to use classes</a><br>
+<a href="#3. PyGame Sprites">3. PyGame Sprites</a><br>
+<a href="#4. When to use sprites in PyGame">4. When to use sprites in PyGame</a><br>
+<a href="#5. When not to use sprites">5. When not to use sprites</a><br>
+<a href="#6. Creating a simple sprite">6. Creating a simple sprite</a><br>
+<a href="#7. The sprite in PyGame">7. The sprite in PyGame</a><br>
+<a href="#8. Creating a simple sprite using an extra Class">8. Creating a simple sprite using an extra Class</a><br>
+<a href="#9. Bouncing ball using sprites and no user defined classes">9. Bouncing ball using sprites and no user defined classes</a><br>
+<a href="#10. The event loop">10. The event loop</a><br>
+<a href="#11. USEREVENTS">11. USEREVENTS</a><br>
+<a href="#12. USEREVENT example code (snippet)">12. USEREVENT example code (snippet)</a><br>
+<a href="#13. Tutorial">13. Tutorial</a><br>
+<a href="#14. explosions.py">14. explosions.py</a><br>
+<a href="#15. Homework">15. Homework</a><br>
+<a href="#16. Homework 2">16. Homework 2</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

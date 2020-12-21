@@ -1,0 +1,320 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:22 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Work flow for touchmap, chisel, penguin tower, doom3 usage
+<a name="1. Work flow for touchmap, chisel, penguin tower, doom3 usage"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>touchmap</small></tt>
+should be able produce a text map which is suitable for
+penguin tower, isometric penguin tower and doom3 <li> all
+maps are in text, doom3 maps and penguin tower maps can be
+produced using touchmap and chisel <li> using a terminal in
+J109 type: <li></p>
+
+<p><tt>$</tt> <b>j109-d3</b> <li> this will take a few
+seconds and will: <ul type=square> <li> create a set of
+configuration files for doom3 <li> download the chisel
+source code from github and place it into:
+<tt><small>$HOME/Sandpit/chisel</small></tt> </ul> <li> it
+then starts up doom3 <br>
+</ul></p><hr>
+
+<h2>2. chisel
+<a name="2. chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> after the doom3 window appears open
+up another command line terminal and type: <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>ls ../maps</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/three.txt</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>3. Chisel map: three.txt
+<a name="3. Chisel map: three.txt"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/maps/three.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define 3 room 3
+define s worldspawn
+define o monster monster_demon_imp
+define h monster monster_demon_hellknight
+define S monster monster_demon_tick
+
+
+###############################
+# 1              # 2          #
+#                #            #
+# s         o    .            #
+#                .            #
+#          #######         h  #
+#          #                  #
+#          #                  #
+##################..###########
+# 3                           #
+#    S                        #
+#                             #
+###############################</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Touchmap
+<a name="4. Touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> should
+eventually generate text files similar to
+<tt><small>three.txt</small></tt> <li>
+<tt><small>chisel</small></tt> will produce doom3 and
+penguin tower equivalents from your text map <li> now return
+to the doom3 window and press the tilde key
+<tt><small>~</small></tt> <ul type=square> <li> this enables
+the in game doom3 console </ul> <li> in this console type:
+<tt><small>dmap tiny.map</small></tt> <ul type=square> <li>
+<tt><small>dmap</small></tt> bsp compiles the tiny.map </ul>
+<li> once this is complete, type in the doom3 console:
+<tt><small>map tiny.map</small></tt> <ul type=square> <li>
+which loads in the bsp compiled map
+<tt><small>tiny.map</small></tt> </ul> <li> notice that the
+output from <tt><small>chisel</small></tt> is always
+<tt><small>tiny.map</small></tt> <ul type=square> <li> this
+is for convenience and configuration <li>
+<tt><small>chisel</small></tt> can output the file into any
+named file if necessary</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>5. Penguin Tower
+<a name="5. Penguin Tower"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> is a
+multiplayer 2 dimensional game <ul type=square> <li>
+inspired by
+<a href="http://www.mobygames.com/game/dunjonquest-morlocs-tower">Morloc Tower</a>
+although Penguin Tower is very different </ul> <li> however
+the screen layout and many of the key commands are the same
+<li> you can download a copy of the game from
+<a href="http://floppsie.comp.glam.ac.uk/download/penguin-tower/penguin-tower-1.0.tar.gz">here</a>.
+<li> you then need to extract the archive using the
+following command line: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>mkdir
+$HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/penguin-tower/penguin-tower-1.0.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxvf penguin-tower-1.0.tar.gz</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>6. Creating important directories
+<a name="6. Creating important directories"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> these
+directories need to created before penguin tower can be
+built <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>mkdir -p
+$HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>mkdir -p $HOME/opt/bin</b> <tt><br>
+$</tt> <b>mkdir -p build-ptower</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>7. Building Penguin Tower
+<a name="7. Building Penguin Tower"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you should be
+able to build it by typing: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd $HOME/Sandpit</b>
+<tt><br>
+$</tt> <b>mkdir -p build-ptower</b> <tt><br>
+$</tt> <b>cd build-ptower</b> <tt><br>
+$</tt> <b>../penguin-tower-1.0/configure
+--prefix=$HOME/opt</b> <tt><br>
+$</tt> <b>make</b> <tt><br>
+$</tt> <b>cd ..</b> <li></font> <font color="#A51933">you
+need to check that the make program above exited with no
+error messages</font> <font color="#000000"><li> note the
+build will recreate all images in the build directory. <br>
+</ul></font></p><hr>
+
+<h2>8. Installing your own copy of Penguin Tower
+<a name="8. Installing your own copy of Penguin Tower"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you can
+install your own copy of Penguin Tower into your directory (
+<tt><small>$HOME/opt</small></tt> ) specified by the
+<tt><small>--prefix</small></tt> to the
+<tt><small>./configure</small></tt> command <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd $HOME/Sandpit</b>
+<tt><br>
+$</tt> <b>mkdir -p build-ptower</b> <tt><br>
+$</tt> <b>cd build-ptower</b> <tt><br>
+$</tt> <b>make install</b> <tt><br>
+$</tt> <b>cd ..</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>9. Penguin Tower keyboard controls
+<a name="9. Penguin Tower keyboard controls"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<a href="ptower.html">keyboard controls</a>.</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Running the client of Penguin Tower
+<a name="10. Running the client of Penguin Tower"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you should be
+able to run the client like this: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt>
+<b>$HOME/opt/bin/penguin-tower
+mcgreg.comp.glam.ac.uk:7000</b> <li> also consider running
+it in fullscreen by: <li> <tt><br>
+$</tt> <b>$HOME/opt/bin/penguin-tower -f
+mcgreg.comp.glam.ac.uk:7000</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>11. Configure notes
+<a name="11. Configure notes"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you only need
+to execute <tt><small>../penguin-tower-1.0/configure
+--prefix=$HOME/opt</small></tt> once ever in this directory
+(unless you modify the package) <li> check out the
+documentation <a href="ptower.html">here</a>. <li> you can
+also run the system installed version by typing:
+<li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>penguin-tower
+mcgreg.comp.glam.ac.uk:7000</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>12. Running your own Penguin Tower server
+<a name="12. Running your own Penguin Tower server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> can be done by
+opening a terminal and typing the following: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>./opt/bin/ptower-server
+./opt/share/ptower/maps/star</b> <li> to stop the server,
+type <tt><small>^C</small></tt> (press down the control key
+and then press the <tt><small>c</small></tt> key, now
+release both keys) <li> there are a number of maps in the
+<tt><small>$HOME/opt/share/penguin-tower/maps</small></tt>
+directory <ul type=square> <li> <tt><small>m1</small></tt> ,
+<tt><small>star</small></tt> and
+<tt><small>glover</small></tt> <li>
+<tt><small>star</small></tt> is the smallest (5 rooms) <br>
+</ul> </ul></font></p><hr>
+
+<h2>13. Tutorial work
+<a name="13. Tutorial work"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+chisel file input file
+<tt><small>$HOME/Sandpit/chisel/maps/three.txt</small></tt>
+<li> examine the chisel file output
+<tt><small>$HOME/Sandpit/chisel/python/tiny.pen</small></tt>
+<li> try making a simple change to
+<tt><small>$HOME/Sandpit/chisel/maps/three.txt</small></tt>
+and bsp compile the map and load it into doom3 <li> examine
+many of the files in
+<tt><small>$HOME/Sandpit/chisel/maps</small></tt> what
+mapping features does the chisel program seem to provide
+<ul type=square> <li> write a list of
+<tt><small>chisel</small></tt> features you would like to
+utilise in your <tt><small>touchmap</small></tt>
+tool</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Work flow for touchmap, chisel, penguin tower, doom3 usage">1. Work flow for touchmap, chisel, penguin tower, doom3 usage</a><br>
+<a href="#2. chisel">2. chisel</a><br>
+<a href="#3. Chisel map: three.txt">3. Chisel map: three.txt</a><br>
+<a href="#4. Touchmap">4. Touchmap</a><br>
+<a href="#5. Penguin Tower">5. Penguin Tower</a><br>
+<a href="#6. Creating important directories">6. Creating important directories</a><br>
+<a href="#7. Building Penguin Tower">7. Building Penguin Tower</a><br>
+<a href="#8. Installing your own copy of Penguin Tower">8. Installing your own copy of Penguin Tower</a><br>
+<a href="#9. Penguin Tower keyboard controls">9. Penguin Tower keyboard controls</a><br>
+<a href="#10. Running the client of Penguin Tower">10. Running the client of Penguin Tower</a><br>
+<a href="#11. Configure notes">11. Configure notes</a><br>
+<a href="#12. Running your own Penguin Tower server">12. Running your own Penguin Tower server</a><br>
+<a href="#13. Tutorial work">13. Tutorial work</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:35 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 8-1
+<a name="1. Lecture: 8-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+7-1, 7-2 and 7-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Sprites and collisions
+<a name="2. Sprites and collisions"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need to save these images
+in the same directory as the code: <ul type=square> <li>
+<a href="ball.png">gun.png</a> <li>
+<a href="ball.png">arrow.png</a> <li>
+<a href="ball.png">ball.png</a> </ul> <li> sprites are
+created and normally placed into a list
+<ul type=square> <li> and referred to as a group </ul> <li>
+you can then test for a collision between another sprite
+via: <li></p>
+<pre>inter = spritecollide(foo, bar, dokill)</pre>
+
+<p><li> <tt><small>inter</small></tt> is a list of all
+sprites from list <tt><small>bar</small></tt> which have
+collided with the single sprite <tt><small>foo</small></tt>
+<li> the <tt><small>dokill</small></tt> parameter is either
+<tt><small>True</small></tt> or
+<tt><small>False</small></tt> and if it was
+<tt><small>True</small></tt> the the
+<tt><small>kill</small></tt> method is called for every
+sprite in the list <tt><small>inter</small></tt> <li></p>
+
+<pre>for bomb in sprite.spritecollide(player, bombs, True):
+    boom_sound.play()</pre>
+
+
+<p><li> notice that this example tests whether a single
+sprite <tt><small>player</small></tt> has collided with any
+sprite in the <tt><small>bombs</small></tt> list <br>
+</ul></p><hr>
+
+<h2>3. Managing collisions between two groups of sprites
+<a name="3. Managing collisions between two groups of sprites"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can detect whether a collision
+occurs between two groups of sprites by using the following
+function: <li></p>
+<pre>groupcollide(list1, list2, dokill1, dokill2)</pre>
+
+<p><li> this function returns a dictionary
+<ul type=square> <li> each key in the dictionary is a sprite
+in <tt><small>list1</small></tt> and its value is a list of
+sprites from <tt><small>list2</small></tt> with which it has
+collided <li> the <tt><small>dokill1</small></tt> ,
+<tt><small>dokill2</small></tt> arguments determine whether
+the <tt><small>kill</small></tt> method should be called in
+<tt><small>list1</small></tt> or
+<tt><small>list2</small></tt> </ul> <li></p>
+
+<pre>for alien in sprite.groupcollide(aliens, bullets, True, True).keys()
+   boom_sound.play()
+   kills += 1</pre>
+
+
+<p><li> the code checks for the collisions between bullets
+and all the aliens <li> in this case we only loop over the
+dictionary keys <ul type=square> <li> but we could loop over
+the <tt><small>values()</small></tt> or
+<tt><small>items()</small></tt> <li> if we wanted to do
+something to the specific shots that collided with aliens
+</ul> <li> if we did loop over the
+<tt><small>values()</small></tt> we would be looping through
+lists that contain sprites <li> note that the same sprite
+may even appear more than once in these different loops,
+since the same <tt><small>bullet</small></tt> could have
+collided against multiple <tt><small>aliens</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Lecture: 8-1">1. Lecture: 8-1</a><br>
+<a href="#2. Sprites and collisions">2. Sprites and collisions</a><br>
+<a href="#3. Managing collisions between two groups of sprites">3. Managing collisions between two groups of sprites</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

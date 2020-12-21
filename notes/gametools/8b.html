@@ -1,0 +1,398 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:18 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. PGE Introduction
+<a name="1. PGE Introduction"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PGE is a Predictive physics Game
+Engine <ul type=square> <li> it operates by predicting the
+time of next collision rather than using a frame based
+approach</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. PGE Screen and world coordinates 1m x 1m
+<a name="2. PGE Screen and world coordinates 1m x 1m"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-141292.png" alt="Image grohtml-141292.png"></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>3. PGE works with Python and Pygame
+<a name="3. PGE works with Python and Pygame"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PGE allows you to create an object
+and give it physical attributes and pygame will draw the
+image <ul type=square> <li> the object will behave as it
+would in the real world (almost!) </ul> <li> you can
+interfere with the object using mouse and keyboard input
+<li> your program can also modify the PGE world</p>
+
+<p></ul></p><hr>
+
+<h2>4. PGE Python API
+<a name="4. PGE Python API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is powerful enough to implement
+breakout in about 2 hours <li> the Python interface allows
+you to: <ul type=square> <li> define call backs to occur
+when objects collide <li> define timer functions to execute
+in the future </ul> <li> you can also change an objects
+attribute (velocity/acceleration) in Python</p>
+
+<p></ul></p><hr>
+
+<h2>5. PGE Objects
+<a name="5. PGE Objects"></a>
+</h2>
+
+
+<p><ul type=disc> <li> colour <li> circle
+<ul type=square> <li> can be declared at any level </ul>
+<li> polygon <ul type=square> <li> can be declared at any
+level </ul> <li> text <ul type=square> <li> can be declared
+at any level other than level 0 </ul> <li> springs
+<ul type=square> <li> can only be declared at level 0 </ul>
+<li> only objects at level 0 are handled by the physics
+engine <ul type=square> <li> objects declared at any level
+&lt; 0 are in the background <li> objects declared at any
+level &gt; 0 are in the foreground </ul> <li> all objects
+are drawn in level order <li> you <b>must</b> include a
+boarder to the PGE world <ul type=square> <li> a picture
+frame to enclose all objects </ul> <li> you <b>must</b> give
+a mass to non fixed objects</p>
+
+<p></ul></p><hr>
+
+<h2>6. Simple example
+<a name="6. Simple example"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">tinypge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python
+
+import pge, sys
+from pygame.locals import *
+
+
+print &quot;starting pge&quot;
+# pge.batch ()
+pge.interactive ()
+
+
+wood_light = pge.rgb (166.0/256.0, 124.0/256.0, 54.0/256.0)
+wood_dark = pge.rgb (76.0/256.0, 47.0/256.0, 0.0)
+red = pge.rgb (1.0, 0.0, 0.0)
+ball_size = 0.05
+boarder = 0.01</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+tinypge.py</font></small></small></b></p>
+<pre style="margin-top: 1em">def myquit (e):
+    print &quot;goodbye&quot;
+    sys.exit (0)
+
+def key_pressed (e):
+    if e.key == K_ESCAPE:
+        myquit (e)
+
+
+def placeBoarders (thickness, color):
+    print &quot;placeBoarders&quot;
+    floor = pge.box (0.0, 0.0, 1.0, thickness, color).fix ()
+    left = pge.box (0.0, 0.0, thickness, 1.0, color).fix ()
+    right = pge.box (1.0-thickness, 0.0, thickness, 1.0, color).fix ()
+    top = pge.box (0.0, 1.0-thickness, 1.0, thickness, color).fix ()
+    return floor, left, right, top</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+tinypge.py</font></small></small></b></p>
+<pre style="margin-top: 1em">def main ():
+    pge.slow_down (6.0)  # slows down real time by a factor of
+    top, left, right, top = placeBoarders (boarder, wood_dark)
+    pge.circle (0.6, 0.7, ball_size, red).mass (1.0)
+
+    print &quot;before run&quot;
+    pge.gravity ()
+    pge.draw_collision (True, False)
+    pge.register_handler (myquit, [QUIT])
+    pge.register_handler (key_pressed, [KEYDOWN])
+    pge.display_set_mode ([800, 800])
+    pge.run (10.0)
+    pge.finish_record ()
+
+print &quot;before main()&quot;
+main ()</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Current limitations of PGE
+<a name="7. Current limitations of PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the screen
+must be square <ul type=square> <li> xresolution must be the
+same as the yresolution </ul> <li> only circles cannot be
+fixed</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Features
+<a name="8. Features"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> PGE can be
+asked to record the game <ul type=square> <li> you can play
+it back again using the command line tool
+<tt><small>pgeplayback</small></tt> <li> useful if you want
+to debug your code </ul> <li> it can generate frames at the
+time of impact, giving a greater sense of visual realism
+<li> can slow down simulated time to make the game
+easier</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Tutorial work and homework
+<a name="9. Tutorial work and homework"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> try out the
+examples in these notes and read the code
+<ul type=square> <li> comment each line of code and read the
+<a href="http://floppsie.comp.glam.ac.uk/Glamorgan/gaius/pge/homepage.html">documentation</a>
+to PGE aid your understanding</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>10. Balls bouncing ramps example
+<a name="10. Balls bouncing ramps example"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python
+
+import pge, sys
+from pygame.locals import *
+
+
+print &quot;starting pge&quot;
+# pge.batch ()
+pge.interactive ()</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">t = pge.rgb (1.0/2.0, 2.0/3.0, 3.0/4.0)
+wood_light = pge.rgb (166.0/256.0, 124.0/256.0, 54.0/256.0)
+wood_dark = pge.rgb (76.0/256.0, 47.0/256.0, 0.0)
+red = pge.rgb (1.0, 0.0, 0.0)
+green = pge.rgb (0.0, 1.0, 0.0)
+blue = pge.rgb (0.0, 0.0, 1.0)
+blue_dark = pge.rgb (0.1, 0.1, 0.8)
+steel = pge.rgb (0.5, 0.5, 0.5)
+copper = pge.rgb (0.5, 0.3, 0.2)
+gold = pge.rgb (0.8, 0.6, 0.15)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">ball_size = 0.02
+boarder = 0.01
+white = pge.rgb (1.0, 1.0, 1.0)
+gap = 0.01
+captured = None
+sides = []
+seconds_left = 120
+previous = None</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+<pre style="margin-top: 1em">def myquit (e):
+    print &quot;goodbye&quot;
+    sys.exit (0)
+
+def key_pressed (e):
+    if e.key == K_ESCAPE:
+        myquit (e)
+
+
+def delete_ball (o, e):
+    for b in e.collision_between ():
+        if b != o:
+            b.rm ()
+            new_barrel ()</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def placeBoarders (thickness, color):
+    print &quot;placeBoarders&quot;
+    floor = pge.box (0.0, 0.0, 1.0, thickness, color).fix ().on_collision (delete_ball)
+    e2 = pge.box (0.0, 0.0, thickness, 1.0, color).fix ()
+    e3 = pge.box (1.0-thickness, 0.0, thickness, 1.0, color).fix ()
+    e4 = pge.box (0.0, 1.0-thickness, 1.0, thickness, color).fix ()
+    return floor, e2, e3, e4</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def placeRamps ():
+    bot = pge.poly4 (0.95, 0.2,
+                     0.15, 0.18,
+                     0.15, 0.17,
+                     0.95, 0.19, wood_dark).fix ()
+    mid = pge.poly4 (0.85, 0.4,
+                     0.05, 0.42,
+                     0.05, 0.43,
+                     0.85, 0.41, wood_dark).fix ()
+    top = pge.poly4 (0.95, 0.7,
+                     0.15, 0.68,
+                     0.15, 0.67,
+                     0.95, 0.69, wood_dark).fix ()</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def timer (e = None, param = None):
+    global seconds_left, previous
+    if seconds_left &gt;= 0:
+        pge.at_time (1.0, timer)
+        s = &quot;%d&quot; % seconds_left
+        if previous != None:
+            previous.rm ()
+        previous = pge.text (0.8, 0.9, s, white, 100, 1)
+        seconds_left -= 1</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def new_barrel (e = None, param = None):
+    global gb
+    gb = pge.circle (0.9, 0.85, 0.03, steel).mass (1.25)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+<pre style="margin-top: 1em">def main ():
+    global gb, sides
+
+    placeRamps ()
+    pge.slow_down (6.0)  # slows down real time by a factor of
+    timer ()
+    new_barrel ()
+    b1, b2, b3, b4 = placeBoarders (boarder, wood_dark)
+
+
+    print &quot;before run&quot;
+    pge.gravity ()
+    pge.draw_collision (False, False)
+    pge.register_handler (myquit, [QUIT])
+    pge.register_handler (key_pressed, [KEYDOWN])
+    pge.display_set_mode ([800, 800])
+    pge.run (seconds_left/6.0+4.0)
+    pge.finish_record ()</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+marblepge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">print &quot;before main()&quot;
+main ()</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. PGE Introduction">1. PGE Introduction</a><br>
+<a href="#2. PGE Screen and world coordinates 1m x 1m">2. PGE Screen and world coordinates 1m x 1m</a><br>
+<a href="#3. PGE works with Python and Pygame">3. PGE works with Python and Pygame</a><br>
+<a href="#4. PGE Python API">4. PGE Python API</a><br>
+<a href="#5. PGE Objects">5. PGE Objects</a><br>
+<a href="#6. Simple example">6. Simple example</a><br>
+<a href="#7. Current limitations of PGE">7. Current limitations of PGE</a><br>
+<a href="#8. Features">8. Features</a><br>
+<a href="#9. Tutorial work and homework">9. Tutorial work and homework</a><br>
+<a href="#10. Balls bouncing ramps example">10. Balls bouncing ramps example</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

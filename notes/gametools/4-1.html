@@ -1,0 +1,207 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Dec 21 19:59:29 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 4-1
+<a name="1. Lecture: 4-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+3-1 and 3-2.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Python scopes
+<a name="2. Python scopes"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a declaration occurs when an object
+is created <li> by default usage is confined to the current
+scope <li></p>
+
+
+<p><b><small><small><font color="#196633">myfunc.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+s = &quot;hello world&quot;  #  s is declared as a string
+i = 42             #  i is an int
+
+def func (j):
+   i = 1           #  another variable, i, local
+   print(j * 2)     #  to func
+
+func (2)
+print(i)</pre>
+
+<p><font color="#000000"><li> notice how the scope changes
+with indentation <li> <tt><br>
+$</tt> <b>python3 myfunc.py</b></font></p>
+<pre>4
+42</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Accessing global variables from a function
+<a name="3. Accessing global variables from a function"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">myfunc2.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+s = &quot;hello world&quot;  #  s is declared as a string
+i = 42             #  i is an int
+
+def func (j):
+   global i        #  reference global scope i
+   i = 1           #  assign to global variable
+   print(j * 2)
+
+func (2)
+print(i)</pre>
+
+<p><font color="#000000"><li> a common error is to forget
+the <tt><small>global</small></tt> keyword in a function
+<br>
+</ul></font></p><hr>
+
+<h2>4. Python dictionaries
+<a name="4. Python dictionaries"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> recall from
+our first python lecture that python has a dictionary type
+<li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+
+print(d[&quot;eggs&quot;])</pre>
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>python3 py13.py</b></font></p>
+<pre>10</pre>
+
+<p><font color="#000000"><li> dictionaries can be altered
+<ul type=square> <li> by adding new entries <li> by changing
+values <li> by removing entries </ul> <li> we can test for
+the presence of an entry within the dictionary
+<li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+print(d[&quot;eggs&quot;])
+
+
+d[&quot;eggs&quot;]=12
+d[&quot;bacon&quot;]=1
+print(d[&quot;bacon&quot;])
+print(d)</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>python3 py14.py</b></font></p>
+
+<pre>10
+1
+{&quot;spam&quot;: 2, &quot;ham&quot;: 1, &quot;bacon&quot;: 1, &quot;eggs&quot;: 12}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Dictionary initialisation
+<a name="5. Dictionary initialisation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we can create
+an empty dictionary by: <li></font></p>
+<pre>d = {}</pre>
+
+<p><font color="#000000"><li> we can add to a dictionary
+by: <li></font></p>
+<pre>d[&quot;foobar&quot;] = 4</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Dictionary modification
+<a name="6. Dictionary modification"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we can remove
+an entry via: <li></font></p>
+<pre>del d[&quot;eggs&quot;]</pre>
+
+<p><font color="#000000"><li> we can test whether an item
+exists in the dictionary <li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+
+if &quot;eggs&quot; in d:
+    print(&quot;we have some eggs&quot;)
+else:
+    print(&quot;we do not have any eggs&quot;)
+
+
+if &quot;flour&quot; in d:
+    print(&quot;we have some flour&quot;)
+else:
+    print(&quot;we do not have any flour&quot;)</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Lecture: 4-1">1. Lecture: 4-1</a><br>
+<a href="#2. Python scopes">2. Python scopes</a><br>
+<a href="#3. Accessing global variables from a function">3. Accessing global variables from a function</a><br>
+<a href="#4. Python dictionaries">4. Python dictionaries</a><br>
+<a href="#5. Dictionary initialisation">5. Dictionary initialisation</a><br>
+<a href="#6. Dictionary modification">6. Dictionary modification</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>
