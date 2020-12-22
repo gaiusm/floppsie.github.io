@@ -1,0 +1,131 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Tue Dec 22 10:42:27 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. GCC and operating systems
+<a name="1. GCC and operating systems"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a compiler and operating systems are
+often co-dependant <li> during this weeks lecture we have
+examined the implementation of
+<tt><small>SYSTEM_TRANSFER</small></tt> in GNU LuK <li> copy
+the following code into the C file suggested <li></p>
+
+
+<p><b><small><small><font color="#196633">testgcc.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">void interruptsOn (void)
+{
+   asm volatile (&quot;sti&quot;);
+}
+
+void interruptsOff (void)
+{
+   asm volatile (&quot;cli&quot;);
+}
+
+unsigned int getFlags (void)
+{
+   unsigned int b;
+
+
+   asm volatile(&quot;pushf ; popl %%ebx ; movl %%ebx, %[b]&quot; : [b] &quot;=rm&quot; (b) :: &quot;ebx&quot;);
+   return b;
+}</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+testgcc.c</font></small></small></b></p>
+<pre style="margin-top: 1em">typedef void *PROCESS;
+
+int turnInterrupts (int oo)
+{
+   unsigned int flags = getFlags();
+   if (oo)
+      interruptsOn ();
+   else
+      interruptsOff ();
+
+   return (flags &amp; (1 &lt;&lt; 9)) != 0;
+}</pre>
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+testgcc.c</font></small></small></b></p>
+<pre style="margin-top: 1em">void SYSTEM_TRANSFER (PROCESS *p1, PROCESS p2)
+{
+   int toOldState;
+
+
+   toOldState = turnInterrupts (0);
+   asm volatile (&quot;pusha ; pushf&quot;);   /* push all registers */
+   /* remember p1 is **void */
+   asm volatile (&quot;movl %[p1], %%eax ; movl %%esp, (%%eax)&quot;
+      :: [p1] &quot;rm&quot; (p1));            /* p1 := top of stack  */
+   asm volatile (&quot;movl %[p2], %%eax ; movl %%eax, %%esp&quot;
+      :: [p2] &quot;rm&quot; (p2));            /* top of stack := p2 */
+   asm volatile (&quot;popf ; popa&quot;);     /* restore all registers */
+   toOldState = turnInterrupts (toOldState);
+}</pre>
+
+
+<p><font color="#000000"><li> compile this program using
+<li> <tt><br>
+$</tt> <b>gcc -o testgcc-unoptimized.s -m32 -S testgcc.c</b>
+<li> produce an instruction by instruction commentary of the
+function <tt><small>SYSTEM_TRANSFER</small></tt>
+<ul type=square> <li> the output of the compiler is placed
+into <tt><small>testgcc-unoptimized.s</small></tt> </ul>
+<li> now recompile the program using: <li> <tt><br>
+$</tt> <b>gcc -O3 -o testgcc-optimized.s -m32 -S
+testgcc.c</b> <li> the output from the compiler is placed
+into <tt><small>testgcc-optimized.s</small></tt> <li>
+produce an instruction by instruction commentary of the
+function <tt><small>SYSTEM_TRANSFER</small></tt>
+<ul type=square> <li> which is easier to understand, the
+optimised or unoptimised assembly output?</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. GCC and operating systems">1. GCC and operating systems</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

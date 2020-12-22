@@ -1,0 +1,336 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Tue Dec 22 10:42:28 2020 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. How does an operating system boot?
+<a name="1. How does an operating system boot?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly we need to understand the
+minimum details as to how the IBM-PC boots <li> secondly we
+need to understand the desired final outcome at the end of
+the boot phase <li> thirdly we can examine a specific
+example to better understand the steps taken to achieve the
+outcome</p>
+
+<p></ul></p><hr>
+
+<h2>2. How does an IBM-PC boot?
+<a name="2. How does an IBM-PC boot?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the bios settings dictates the boot
+device order <li> the bios attempts to load in the first 512
+bytes (boot sector) from the various devices in order <li>
+not all devices may be present: usb memory stick, floppy
+disk <li> the bios loads in the 512 bytes from the first
+found device at 0x7c00 <ul type=square> <li> it sets
+register: <tt><small>dl</small></tt> to the device number
+<li> the bios then jumps to location 0x7c00</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Boot sector code charactistics and functionality
+<a name="3. Boot sector code charactistics and functionality"></a>
+</h2>
+
+
+<p><ul type=disc> <li> it remembers the bios boot device
+(usb/floppy/harddisk) in a processor register
+<tt><small>dl</small></tt> <li> it copies itself into a
+sensible location (typically out of the way in high memory)
+<li> it reassigns the stack to a consistant location <li> it
+loads in the secondary boot stage of the operating system (a
+sector at a time) <li> it may perform very limited checking
+as each subsequent sector/track is read from the device into
+memory <li> finally it jumps to the start of the secondary
+code.</p>
+
+<p></ul></p><hr>
+
+<h2>4. The language used to implement the bootsector (first)
+<a name="4. The language used to implement the bootsector (first)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the boot sector (
+<tt><small>first</small></tt> ) is not normally written in a
+high level language as it needs the ability to:
+<ul type=square> <li> copy its code segment, reassign the
+stack (change the <tt><small>SP</small></tt> and stack
+segment registers) <li> the ability to jump to a physical
+location and it must fit in 512 bytes</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Final desired outcome after all the boot phases are complete
+<a name="5. Final desired outcome after all the boot phases are complete"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>6. Example: LuK booting
+<a name="6. Example: LuK booting"></a>
+</h2>
+
+
+<p><ul type=disc> <li> LuK consists of a collection of
+modules <li> the microkernel only links the modules actually
+required at runtime <li> the mixture of the modules required
+for different targets and applications may be different</p>
+
+<p></ul></p><hr>
+
+<h2>7. Linker
+<a name="7. Linker"></a>
+</h2>
+
+
+<p><ul type=disc> <li> uses the file
+<tt><small>init</small></tt> to generate a list of modules
+and generates an ELF <tt><small>32</small></tt> bit
+<tt><small>x86</small></tt> executable which contains data,
+code and symbol information <ul type=square> <li> for
+example we will name this, <i>application</i>
+<tt><small>.third</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. Boot phases
+<a name="8. Boot phases"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in the build directory you would see
+<ul type=square> <li> <tt><small>first</small></tt> ,
+<tt><small>second</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>9. first
+<a name="9. first"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>first</small></tt> is a
+tiny model 8086 executable, written in assembly language
+<li> see <tt><small>luk-1.0.3/boot/BAS/boot.S</small></tt>
+<ul type=square> <li> watch out as the assembler uses:
+<tt><small>mov dest, src</small></tt> </ul> <li> its total
+size (data + code) must not exceed 512 bytes <li> its duty
+is threefold <ul type=square> <li> pretend to be a fat12
+file system! <li> move itself to a sane location <li> load
+in <tt><small>second</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. second
+<a name="10. second"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is written in Modula-2, which is
+compiled and linked into a tiny model 8086 executable <li>
+tiny model <ul type=square> <li> sets all segment registers
+to the same value <li> total size of data + code + stack
+must not exceed 64K </ul> <li> in fact due to legacy booting
+via the floppy disk it cannot be more than 7K <li> its duty
+is to load in the <i>application</i>
+<tt><small>.third</small></tt> <li> set up protected mode
+and move from tiny model into 32 bits <li> pass various
+system parameters into <i>application</i>
+<tt><small>.third</small></tt> <ul type=square> <li> such as
+memory size, video memory start </ul> <li> finally jump to
+the start of <i>application</i>
+<tt><small>.third</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>11. Goal of the overall boot procedure
+<a name="11. Goal of the overall boot procedure"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p style="margin-top: 1em"><li> notice that no tiny model
+code will exist in the end <li> all code is 32 bit and
+belongs to the core microkernel <li>
+<tt><small>first</small></tt> and
+<tt><small>second</small></tt> will be overwritten <br>
+</ul></p><hr>
+
+<h2>12. Overview of the boot stages
+<a name="12. Overview of the boot stages"></a>
+</h2>
+
+
+<p><ul type=disc> <li> three boot phases
+<ul type=square> <li> <i>first</i> boot stage (boot sector,
+1 sector, assembly language) <li> <i>second</i> boot stage
+(up to 14 sectors 8088 small mode Modula-2) <li> <i>LuK</i>
+(up to 512K of <tt><small>32</small></tt> bit code, Modula-2
+and C) </ul> <li></p>
+
+<p></ul></p><hr>
+
+<h2>13. LuK boot first
+<a name="13. LuK boot first"></a>
+</h2>
+
+
+<p><ul type=disc> <li> (program
+<tt><small>first</small></tt> ) <li> 512 bytes boot sector
+is small! Just enough space to place an assembly language
+program which loads in a larger program
+<ul type=square> <li> loads in <i>secondary</i> boot stage
+at 0x90200 <li> jumps to 0x90200 </ul> <li> <i>secondary</i>
+boot stage (program <tt><small>second</small></tt> )
+<ul type=square> <li> consists of limited amounts of
+assembly language <li> most of the code is written in
+Modula-2 but compiled to small mode 8088 <li> the secondary
+stage may be up to 14 sectors in size (14 * 512 bytes)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>14. Secondary boot stage
+<a name="14. Secondary boot stage"></a>
+</h2>
+
+
+<p><ul type=disc> <li> purpose of <i>secondary</i> boot
+stage is to load in your <i>application</i>
+<tt><small>.third</small></tt> code as quickly as possible
+<ul type=square> <li> it uses whole track reads whenever
+possible (fast) <li> the <i>primary</i> boot stage only used
+single sector loads (slow) <li> it loads in the LuK
+<tt><small>32</small></tt> bit executable
+(<i>application</i> <tt><small>.third</small></tt> ) into
+location 0x10000 <li> collects vital statistics about the PC
+(how much memory the PC contains and where video memory
+starts) <li> saves this information <li> turns the floppy
+disk motor off </ul> <li> finally <i>second</i> puts the
+microprocessor into 32 bit mode and calls <i>application</i>
+<tt><small>.third</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>15. Boot phase in more detail
+<a name="15. Boot phase in more detail"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <i>how</i> do you put
+<tt><small>LuK</small></tt> in the right place?
+<ul type=square> <li> tip, think backwards </ul> <li> start
+with the final position you desire <ul type=square> <li> and
+consider how you can achieve it <li> draw memory maps of the
+different <tt><small>LuK</small></tt> bootstage intermediate
+positions</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>16. Final memory map for LuK
+<a name="16. Final memory map for LuK"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>17. Second memory map for LuK
+<a name="17. Second memory map for LuK"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>18. Boot memory map for LuK
+<a name="18. Boot memory map for LuK"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>19. Conclusion
+<a name="19. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> this technique works <li> it is not
+the most efficient, it might be possible to make
+<tt><small>first</small></tt> perform the actions of
+<tt><small>second</small></tt> <li> however the approach
+presented here allows us to: <ul type=square> <li> execute
+high level language code sooner </ul> <li> some of the older
+limits should be removed now that booting floppy disks is no
+longer needed <li> maybe it would be sensible to move LuK to
+start at 1MB upwards <ul type=square> <li> would allow LuK
+to expand</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. How does an operating system boot?">1. How does an operating system boot?</a><br>
+<a href="#2. How does an IBM-PC boot?">2. How does an IBM-PC boot?</a><br>
+<a href="#3. Boot sector code charactistics and functionality">3. Boot sector code charactistics and functionality</a><br>
+<a href="#4. The language used to implement the bootsector (first)">4. The language used to implement the bootsector (first)</a><br>
+<a href="#5. Final desired outcome after all the boot phases are complete">5. Final desired outcome after all the boot phases are complete</a><br>
+<a href="#6. Example: LuK booting">6. Example: LuK booting</a><br>
+<a href="#7. Linker">7. Linker</a><br>
+<a href="#8. Boot phases">8. Boot phases</a><br>
+<a href="#9. first">9. first</a><br>
+<a href="#10. second">10. second</a><br>
+<a href="#11. Goal of the overall boot procedure">11. Goal of the overall boot procedure</a><br>
+<a href="#12. Overview of the boot stages">12. Overview of the boot stages</a><br>
+<a href="#13. LuK boot first">13. LuK boot first</a><br>
+<a href="#14. Secondary boot stage">14. Secondary boot stage</a><br>
+<a href="#15. Boot phase in more detail">15. Boot phase in more detail</a><br>
+<a href="#16. Final memory map for LuK">16. Final memory map for LuK</a><br>
+<a href="#17. Second memory map for LuK">17. Second memory map for LuK</a><br>
+<a href="#18. Boot memory map for LuK">18. Boot memory map for LuK</a><br>
+<a href="#19. Conclusion">19. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>
