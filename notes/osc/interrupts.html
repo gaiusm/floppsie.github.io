@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:29:37 2022 -->
+<!-- CreationDate: Wed Oct 26 17:33:34 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -38,10 +38,15 @@ will examine them in turn</p>
 </h2>
 
 
-<p><ul type=disc> <li> <li> the user programs and hardware
-communicates with the kernel through interrupts</p>
+<p><ul type=disc> <li></p>
 
-<p></ul></p><hr>
+
+<p align="left"><img src="grohtml-30730423.png" alt="Image grohtml-30730423.png"></p>
+
+<p style="margin-top: 1em"><li> the user programs and
+hardware communicates with the kernel through interrupts
+<br>
+</ul></p><hr>
 
 <h2>3. Four different kinds of interrupts
 <a name="3. Four different kinds of interrupts"></a>
@@ -213,11 +218,15 @@ void Process2 (void)
 
 <p><ul type=disc> <li> firstly let us look at a
 conventional program running in memory (single program
-running on a computer) <li> four main components
-<ul type=square> <li> code <li> data <li> stack <li>
-processor registers (volatiles)</p>
+running on a computer)</p>
 
-<p></ul> </ul></p><hr>
+
+<p align="left"><img src="grohtml-30730424.png" alt="Image grohtml-30730424.png"></p>
+
+<p style="margin-top: 1em"><li> four main components
+<ul type=square> <li> code <li> data <li> stack <li>
+processor registers (volatiles) <br>
+</ul> </ul></p><hr>
 
 <h2>9. Concurrency
 <a name="9. Concurrency"></a>
@@ -255,7 +264,10 @@ dedicated to process 1 <li> now copying some new volatiles
 from memory dedicated to process 2 into the processor
 registers</p>
 
-<p></ul> </ul></p><hr>
+
+<p align="left"><img src="grohtml-30730425.png" alt="Image grohtml-30730425.png"></p>
+
+<p style="margin-top: 1em"><big></ul> </ul></big></p><hr>
 
 <h2>11. Implementing concurrency
 <a name="11. Implementing concurrency"></a>
@@ -312,8 +324,12 @@ level functions: <ul type=circle> <li> for example:
 extern void SYSTEM_TRANSFER (PROCESS *p1, PROCESS p2);</pre>
 
 
-<p><li> and it performs the following action: <br>
-</ul></p><hr>
+<p><li> and it performs the following action:</p>
+
+
+<p align="left"><img src="grohtml-30730426.png" alt="Image grohtml-30730426.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
 
 <h2>14. IOTRANSFER
 <a name="14. IOTRANSFER"></a>

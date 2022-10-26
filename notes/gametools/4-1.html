@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:29:17 2022 -->
+<!-- CreationDate: Wed Oct 26 17:33:12 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -45,8 +45,20 @@ scope <li></p>
 
 <p><b><small><small><font color="#196633">myfunc.py</font></small></small></b></p>
 
-<p style="margin-top: 1em"><font color="#000000"><li>
-notice how the scope changes with indentation <li> <tt><br>
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+s = &quot;hello world&quot;  #  s is declared as a string
+i = 42             #  i is an int
+
+def func (j):
+   i = 1           #  another variable, i, local
+   print(j * 2)     #  to func
+
+func (2)
+print(i)</pre>
+
+<p><font color="#000000"><li> notice how the scope changes
+with indentation <li> <tt><br>
 $</tt> <b>python3 myfunc.py</b></font></p>
 <pre>4
 42</pre>
@@ -63,9 +75,22 @@ $</tt> <b>python3 myfunc.py</b></font></p>
 
 <p><b><small><small><font color="#196633">myfunc2.py</font></small></small></b></p>
 
-<p style="margin-top: 1em"><font color="#000000"><li> a
-common error is to forget the <tt><small>global</small></tt>
-keyword in a function <br>
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+s = &quot;hello world&quot;  #  s is declared as a string
+i = 42             #  i is an int
+
+def func (j):
+   global i        #  reference global scope i
+   i = 1           #  assign to global variable
+   print(j * 2)
+
+func (2)
+print(i)</pre>
+
+<p><font color="#000000"><li> a common error is to forget
+the <tt><small>global</small></tt> keyword in a function
+<br>
 </ul></font></p><hr>
 
 <h2>4. Python dictionaries
@@ -76,6 +101,11 @@ keyword in a function <br>
 <p><font color="#000000"><ul type=disc> <li> recall from
 our first python lecture that python has a dictionary type
 <li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+
+print(d[&quot;eggs&quot;])</pre>
 
 <p><font color="#000000"><li> <tt><br>
 $</tt> <b>python3 py13.py</b></font></p>
@@ -84,8 +114,21 @@ $</tt> <b>python3 py13.py</b></font></p>
 <p><font color="#000000"><li> dictionaries can be altered
 <ul type=square> <li> by adding new entries <li> by changing
 values <li> by removing entries </ul> <li> we can test for
-the presence of an entry within the dictionary <li> <br>
-<li> <tt><br>
+the presence of an entry within the dictionary
+<li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+print(d[&quot;eggs&quot;])
+
+
+d[&quot;eggs&quot;]=12
+d[&quot;bacon&quot;]=1
+print(d[&quot;bacon&quot;])
+print(d)</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
 $</tt> <b>python3 py14.py</b></font></p>
 
 <pre>10
@@ -121,9 +164,24 @@ an entry via: <li></font></p>
 
 <p><font color="#000000"><li> we can test whether an item
 exists in the dictionary <li></font></p>
+<pre>#!/usr/bin/python3
+
+d = {&quot;spam&quot;:2, &quot;ham&quot;:1, &quot;eggs&quot;:10}
+
+if &quot;eggs&quot; in d:
+    print(&quot;we have some eggs&quot;)
+else:
+    print(&quot;we do not have any eggs&quot;)
 
 
-<p style="margin-top: 1em"><font color="#000000"><tt></ul></tt></font></p> <hr>
+if &quot;flour&quot; in d:
+    print(&quot;we have some flour&quot;)
+else:
+    print(&quot;we do not have any flour&quot;)</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
 
 <h2>Index
 <a name="Index"></a>

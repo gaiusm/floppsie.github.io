@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:29:17 2022 -->
+<!-- CreationDate: Wed Oct 26 17:33:12 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -55,8 +55,16 @@ access</p>
 
 
 <p><ul type=disc> <li></p>
+<pre style="margin-top: 1em">#!/usr/bin/python3
 
-<p style="margin-top: 1em"><tt></ul></tt></p><hr>
+from urllib.request import urlretrieve
+
+
+urlretrieve(&quot;http://floppsie.comp.glam.ac.uk/index.html&quot;,
+            &quot;temp.html&quot;)</pre>
+
+
+<p></ul></p><hr>
 
 <h2>4. urllib example
 <a name="4. urllib example"></a>
@@ -64,8 +72,20 @@ access</p>
 
 
 <p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
 
-<p><tt></ul></tt></p><hr>
+import os
+import urllib.request, urllib.parse, urllib.error
+Version = &quot;3.7.4&quot;
+filename = &quot;Python-%s.tgz&quot; % Version
+remoteaddr = &quot;https://www.python.org/ftp/python/%s/&quot; % Version
+
+
+urllib.request.urlretrieve(remoteaddr + filename,
+                           filename)</pre>
+
+
+<p></ul></p><hr>
 
 <h2>5. smtp module
 <a name="5. smtp module"></a>
@@ -75,8 +95,32 @@ access</p>
 <p><ul type=disc> <li> Simple Mail Transport Protocol is
 the most common protocol whereby email is transmitted across
 the Internet <li></p>
+<pre>#!/usr/bin/python3
 
-<p><tt></ul></tt></p><hr>
+import smtplib, string, sys, time
+
+mailserver = &quot;localhost&quot;
+
+From = input(&quot;From: &quot;).strip ()
+To = input(&quot;To: &quot;).strip ()
+Subject = input(&quot;Subject: &quot;). strip ()
+
+Date = time.ctime(time.time())
+Header = (&quot;From: %s\nTo: %s\nDate: %s\nSubject: %s\n\n&quot;
+          % (From, To, Date, Subject))
+
+
+Text = &quot;my message&quot;
+server = smtplib.SMTP(mailserver)
+failed = server.sendmail(From, To, Header + Text)
+server.quit()
+if failed:
+    print(&quot;failed to send mail&quot;)
+else:
+    print(&quot;all done..&quot;)</pre>
+
+
+<p style="margin-top: 1em"></ul></p><hr>
 
 <h2>6. Python Gotya&rsquo;s
 <a name="6. Python Gotya&rsquo;s"></a>
@@ -115,10 +159,35 @@ work fine <ul type=square> <li> if you did call it
 default available <ul type=square> <li> no need to import
 library to, read, write files </ul> <li> creating a simple
 text file <li></p>
+<pre>#!/usr/bin/python3
 
-<p><li> <br>
-<li> <br>
-<li> many ways to read a file <ul type=square> <li>
+
+file = open(&quot;newfile.txt&quot;, &quot;w&quot;)
+file.write(&quot;hello world in the new file\n&quot;)
+file.write(&quot;and another line\n&quot;)
+file.close()</pre>
+
+
+<p><li></p>
+<pre>#!/usr/bin/python3
+
+
+file = open(&quot;newfile.txt&quot;, &quot;w&quot;)
+file.writelines([&quot;hello world in the new file\n&quot;,
+                 &quot;and another line\n&quot;])
+file.close()</pre>
+
+
+<p><li></p>
+<pre>#!/usr/bin/python3
+
+
+file = open(&quot;newfile.txt&quot;, &quot;r&quot;)
+for line in file.readlines():
+    print(line)</pre>
+
+
+<p><li> many ways to read a file <ul type=square> <li>
 <tt><small>file.read()</small></tt> returns a string
 containing all characters in the file <li>
 <tt><small>file.read(N)</small></tt> returns a string
@@ -150,8 +219,33 @@ service)</p>
 
 
 <p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
 
-<p><tt></ul></tt></p><hr>
+from socket import *
+myHost = &quot;&quot;
+myPort = 2000
+
+# create a TCP socket
+s = socket(AF_INET, SOCK_STREAM)
+# bind it to the server port number
+s.bind((myHost, myPort))
+# allow 5 pending connections
+s.listen(5)
+
+
+while True:
+    # wait for next client to connect
+    connection, address = s.accept()
+    while True:
+        data = connection.recv(1024)
+        if data:
+            connection.send(&quot;echo -&gt; &quot; + data)
+        else:
+            break
+    connection.close()</pre>
+
+
+<p></ul></p><hr>
 
 <h2>10. client.py
 <a name="10. client.py"></a>
@@ -159,8 +253,25 @@ service)</p>
 
 
 <p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
 
-<p><tt></ul></tt></p><hr>
+import sys
+from socket import *
+# serverHost = &quot;localhost&quot;
+serverHost = &quot;localhost&quot;
+serverPort = 2000
+
+# create a TCP socket
+s = socket(AF_INET, SOCK_STREAM)
+
+
+s.connect((serverHost, serverPort))
+s.send(&quot;Hello world&quot;)
+data = s.recv(1024)
+print(data)</pre>
+
+
+<p></ul></p><hr>
 
 <h2>11. To run the server client example
 <a name="11. To run the server client example"></a>
@@ -181,8 +292,23 @@ $</tt> <b>python3 client.py</b> <tt><br>
 
 
 <p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
 
-<p><tt></ul></tt></p><hr>
+import getpass, imaplib, string
+
+
+# m = imaplib.IMAP4_SSL(&quot;unimail.isd.glam.ac.uk&quot;)
+m = imaplib.IMAP4_SSL(&quot;outlook.office365.com&quot;)
+m.login(getpass.getuser(), getpass.getpass())
+m.select ()
+typ, data = m.search (None, &quot;ALL&quot;)
+for num in string.split (data[0]):
+    typ, data = m.fetch (num, &quot;(RFC822)&quot;)
+    print(&quot;Message %s\n%s\n&quot; % (num, data[0][1]))
+m.logout()</pre>
+
+
+<p></ul></p><hr>
 
 <h2>13. Arguments in Python
 <a name="13. Arguments in Python"></a>
@@ -202,6 +328,29 @@ getopts <li> C, C++, bash and python</p>
 
 
 <p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
+
+import sys, getopt
+
+def Usage ():
+    print(&quot;autoftp [-v][-p][-h]&quot;)
+    sys.exit(0)
+
+
+optlist, list = getopt.getopt(sys.argv[1:], &quot;:vphf:&quot;)
+print(&quot;optlist =&quot;, optlist)
+print(&quot;list =&quot;, list)
+for opt in optlist:
+    print(opt)
+    if opt[0] == &quot;-h&quot;:
+        Usage()
+    if opt[0] == &quot;-f&quot;:
+        print(&quot;file found&quot;)
+    if opt[0] == &quot;-v&quot;:
+        print(&quot;verbose found&quot;)
+    if opt[0] == &quot;-p&quot;:
+        print(&quot;probeonly found&quot;)</pre>
+
 
 <p><li> notice that the script fails if an unsupported
 option is issued <li></p>
@@ -221,6 +370,34 @@ getopt.GetoptError: option -x not recognised</pre>
 <p><ul type=disc> <li> so we need a way to trap these
 errors <ul type=square> <li> python uses an exception
 handler for this </ul> <li></p>
+<pre>#!/usr/bin/python3
+
+import sys, getopt
+
+def Usage ():
+    print(&quot;autoftp [-v][-p][-h]&quot;)
+    sys.exit(0)
+
+try:
+    optlist, list = getopt.getopt(sys.argv[1:],
+                                  &quot;:vphf:&quot;)
+except getopt.GetoptError:
+    Usage()
+    print(&quot;called exception&quot;)
+    sys.exit(1)
+
+
+for opt in optlist:
+    print(opt)
+    if opt[0] == &quot;-h&quot;:
+        Usage()
+    if opt[0] == &quot;-v&quot;:
+        print(&quot;verbose found&quot;)
+    if opt[0] == &quot;-p&quot;:
+        print(&quot;probeonly found&quot;)
+    if opt[0] == &quot;-f&quot;:
+        print(&quot;file option found&quot;)</pre>
+
 
 <p><li> when run it yields the following <li></p>
 <pre>./autoftp3.py -x

@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:29:06 2022 -->
+<!-- CreationDate: Wed Oct 26 17:33:01 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -147,8 +147,8 @@ enough and the code is smaller than its object orientated
 counterpart (and much simpler) <li> for any reasonable
 number of sprites &gt;= 3 then should use OO as the
 reduction in code probably offsets the OO complication </ul>
-<li> use object orientated sprites when
-implementing</font></p>
+<li> use object orientated sprites when implementing Missile
+Command</font></p>
 
 <p><font color="#000000"></ul></font></p><hr>
 
@@ -194,8 +194,31 @@ easier to do with surfaces than with sprites</font></p>
 
 
 <p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
 
-<p><font color="#000000"><tt></ul></tt></font></p><hr>
+import pygame
+from pygame.locals import KEYDOWN
+
+width  = 320
+height = 240
+size   = [width, height]
+pygame.init()
+screen = pygame.display.set_mode(size)
+background = pygame.Surface(screen.get_size())
+
+b = pygame.sprite.Sprite() # create sprite
+b.image = pygame.image.load(&quot;ball.png&quot;).convert() # load ball image
+b.rect = b.image.get_rect() # use image extent values
+b.rect.topleft = [0, 0] # put the ball in the top left corner
+screen.blit(b.image, b.rect)
+
+
+pygame.display.update()
+while pygame.event.poll().type != KEYDOWN:
+    pygame.time.delay(100)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
 
 <h2>7. The sprite in PyGame
 <a name="7. The sprite in PyGame"></a>
