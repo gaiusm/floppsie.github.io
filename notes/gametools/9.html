@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:00:18 2022 -->
+<!-- CreationDate: Wed Oct 26 17:29:09 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -30,22 +30,20 @@
 
 <p><ul type=disc> <li></p>
 
-
-<p align="left" style="margin-top: 1em"><img src="grohtml-30580052.png" alt="Image grohtml-30580052.png"></p>
-
-<p><li> Mario requires the movement <ul type=square> <li>
-along ramps <li> up ladders <li> up to next ramp and down to
-lower ramp, when he reaches the end </ul> <li> ideally he
-should be able to jump off ladders! <ul type=square> <li>
-left as an exercise for the reader </ul> <li> Mario also
-needs the ability to jump <ul type=square> <li> left as an
-exercise for the reader </ul> <li> one solution is to put
-Mario on rails <ul type=square> <li> he can change direction
-(or path at the end of the current path) <li> he can reverse
-direction at any time <li> he needs the ability to choose a
-ladder </ul> <li> placing Mario on rails is just one
-solution <ul type=square> <li> another might be to use
-sprites for ramps and ladders and detect collisions <br>
+<p style="margin-top: 1em"><li> Mario requires the movement
+<ul type=square> <li> along ramps <li> up ladders <li> up to
+next ramp and down to lower ramp, when he reaches the end
+</ul> <li> ideally he should be able to jump off ladders!
+<ul type=square> <li> left as an exercise for the reader
+</ul> <li> Mario also needs the ability to jump
+<ul type=square> <li> left as an exercise for the reader
+</ul> <li> one solution is to put Mario on rails
+<ul type=square> <li> he can change direction (or path at
+the end of the current path) <li> he can reverse direction
+at any time <li> he needs the ability to choose a ladder
+</ul> <li> placing Mario on rails is just one solution
+<ul type=square> <li> another might be to use sprites for
+ramps and ladders and detect collisions <br>
 </ul> </ul></p><hr>
 
 <h2>2. Mario on rails
@@ -61,14 +59,12 @@ Mario, map is a dictionary of paths <ul type=square> <li> at
 each end point in the Mario diagram we have a path for any
 chosen direction </ul> <li></p>
 
-
-<p align="left" style="margin-top: 1em"><img src="grohtml-30580053.png" alt="Image grohtml-30580053.png"></p>
-
-<p><li> starting at <tt><small>r3l</small></tt> we note:
-<ul type=square> <li> he cannot move up <li> he can move
-right towards <tt><small>r3r</small></tt> he will pass
-ladder <tt><small>l2b</small></tt> <li> he cannot move down
-<li> if he moves left he dies </ul> <li></p>
+<p style="margin-top: 1em"><li> starting at
+<tt><small>r3l</small></tt> we note: <ul type=square> <li>
+he cannot move up <li> he can move right towards
+<tt><small>r3r</small></tt> he will pass ladder
+<tt><small>l2b</small></tt> <li> he cannot move down <li> if
+he moves left he dies </ul> <li></p>
 
 <pre>map = { &quot;r3l-0&quot;: None,             # up
         &quot;r3l-1&quot;: [&quot;r3r&quot;, [&quot;l2b&quot;]], # right

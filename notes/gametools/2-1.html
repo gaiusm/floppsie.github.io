@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:00:25 2022 -->
+<!-- CreationDate: Wed Oct 26 17:29:16 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -88,11 +88,8 @@ C++</p>
 
 
 <p><ul type=disc> <li></p>
-<pre>#!/usr/bin/python3
 
-print(&quot;hello world&quot;)</pre>
-
-<p></ul></p><hr>
+<p><tt></ul></tt></p><hr>
 
 <h2>7. Python Modules allow for problem decomposition
 <a name="7. Python Modules allow for problem decomposition"></a>
@@ -104,20 +101,13 @@ print(&quot;hello world&quot;)</pre>
 
 <p><b><small><small><font color="#196633">myfile.py</font></small></small></b></p>
 
-<pre style="margin-top: 1em">#!/usr/bin/python3
 
-title = &quot;hello world&quot;</pre>
-
-<p><font color="#000000"><li></font>
+<p style="margin-top: 1em"><font color="#000000"><li></font>
 <b><small><small><font color="#196633"><br>
 foo.py</font></small></small></b></p>
-<pre style="margin-top: 1em">#!/usr/bin/python3
 
-import myfile
-print(myfile.title)</pre>
-
-<p><font color="#000000"><li> when run prints hello world
-<br>
+<p style="margin-top: 1em"><font color="#000000"><li> when
+run prints hello world <br>
 </ul></font></p><hr>
 
 <h2>8. Alternative import
@@ -130,16 +120,11 @@ print(myfile.title)</pre>
 
 <p><b><small><small><font color="#196633">bar.py</font></small></small></b></p>
 
-<pre style="margin-top: 1em">#!/usr/bin/python3
-
-from myfile import title
-print(title)</pre>
-
-<p><font color="#000000"><li> note that all python modules
-need to be saved as <i>name.</i><tt>py</tt>
-<ul type=square> <li> so in our example the module
-<tt>myfile</tt> was saved into a file called
-<tt>myfile.py</tt> <br>
+<p style="margin-top: 1em"><font color="#000000"><li> note
+that all python modules need to be saved as
+<i>name.</i><tt>py</tt> <ul type=square> <li> so in our
+example the module <tt>myfile</tt> was saved into a file
+called <tt>myfile.py</tt> <br>
 </ul> </ul></font></p><hr>
 
 <h2>9. Python builtin types
@@ -164,7 +149,7 @@ are more efficient than custom data types</font></p>
 <p><font color="#000000"><ul type=disc> <li></font></p>
 
 
-<p align="left"><font color="#000000"><img src="grohtml-30587432.png" alt="Image grohtml-30587432.png"></font></p>
+<p align="left"><font color="#000000"><img src="grohtml-30647872.png" alt="Image grohtml-30647872.png"></font></p>
 
 <p><font color="#000000"></ul></font></p><hr>
 
@@ -176,7 +161,7 @@ are more efficient than custom data types</font></p>
 <p><font color="#000000"><ul type=disc> <li></font></p>
 
 
-<p align="left"><font color="#000000"><img src="grohtml-30587433.png" alt="Image grohtml-30587433.png"></font></p>
+<p align="left"><font color="#000000"><img src="grohtml-30647873.png" alt="Image grohtml-30647873.png"></font></p>
 
 <p><font color="#000000"></ul></font></p><hr>
 
@@ -188,14 +173,9 @@ are more efficient than custom data types</font></p>
 <p><font color="#000000"><ul type=disc> <li> concatenation
 via + <ul type=square> <li> repeated via * </ul>
 <li></font></p>
-<pre>#!/usr/bin/python3
 
-
-print(&quot;hi &quot; * 4).B-EXAMPLE-END
-<li>
-yields
-<li>hi hi hi hi</pre>
-
+<p><font color="#000000"><li> yields <li></font></p>
+<pre>hi hi hi hi</pre>
 
 <p><font color="#000000"></ul></font></p><hr>
 
@@ -291,15 +271,8 @@ assert <li> exec <li> del <li> global</font></p>
 
 
 <p><font color="#000000"><ul type=disc> <li></font></p>
-<pre>#!/usr/bin/python3
 
-
-for n in range(1, 13):
-    print(n, &quot;x 8 =&quot;, n*8)</pre>
-
-
-<p style="margin-top: 1em"><font color="#000000"><li>
-<tt><br>
+<p><font color="#000000"><li> <tt><br>
 $</tt> <b>python3 eight.py</b></font></p>
 
 <pre>1 x 8 = 8
@@ -324,15 +297,6 @@ $</tt> <b>python3 eight.py</b></font></p>
 
 
 <p><font color="#000000"><ul type=disc> <li></font></p>
-<pre>#!/usr/bin/python3
-
-
-
-for n in range(2, 10):
-    print(&quot;n is&quot;, n)
-else:
-    print(&quot;finished for loop, n is&quot;, n)</pre>
-
 
 <p><font color="#000000"><li></font></p>
 
@@ -356,19 +320,6 @@ finished for loop, n is 9</pre>
 
 
 <p><font color="#000000"><ul type=disc> <li></font></p>
-<pre>#!/usr/bin/python3
-
-
-for n in range(2, 10):
-    print(&quot;n is&quot;, n)
-    for x in range (2, n):
-        print(&quot;x is&quot;, x)
-        if n % x == 0:
-            print(n, &quot;equals&quot;, x, &quot;*&quot;, n/x)
-            break
-    else:
-        print(n, &quot;is a prime number&quot;)</pre>
-
 
 <p><font color="#000000"><li></font></p>
 

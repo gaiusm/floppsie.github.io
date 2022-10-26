@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:00:17 2022 -->
+<!-- CreationDate: Wed Oct 26 17:29:08 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -30,15 +30,12 @@
 
 <p><ul type=disc> <li></p>
 
-
-<p align="left" style="margin-top: 1em"><img src="grohtml-30578343.png" alt="Image grohtml-30578343.png"></p>
-
-<p><li> create waypoints for the barrels
-<ul type=square> <li> place waypoints into a dictionary
-(called <tt><small>points</small></tt> ) <li> these will be
-screen coordinates - which we can extract from the ladder or
-ramp polygons </ul> <li> then the barrels can use
-Bresenham&rsquo;s line algorithm to move between the
+<p style="margin-top: 1em"><li> create waypoints for the
+barrels <ul type=square> <li> place waypoints into a
+dictionary (called <tt><small>points</small></tt> ) <li>
+these will be screen coordinates - which we can extract from
+the ladder or ramp polygons </ul> <li> then the barrels can
+use Bresenham&rsquo;s line algorithm to move between the
 waypoints <li> now we need a function to create a route <li>
 <b><small><small><font color="#196633"><br>
 kongroute.py</font></small></small></b></p>
@@ -185,7 +182,7 @@ every 2 seconds <ul type=square> <li> but the program only
 calls this function if
 <tt><small>random.random()</small></tt> is &gt;= 0.5 <li>
 giving a probability of
-<img src="grohtml-3057834-4.png" alt="Image grohtml-3057834-4.png">
+<img src="grohtml-3063905-3.png" alt="Image grohtml-3063905-3.png">
 </ul> <li> the <tt><small>activity_list</small></tt>
 specifies that <tt><small>display_time</small></tt> is
 called every second <li> <tt><small>finish_game</small></tt>

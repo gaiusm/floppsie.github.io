@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:00:17 2022 -->
+<!-- CreationDate: Wed Oct 26 17:29:08 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -359,7 +359,68 @@ prototypes are: <li></p>
 
 <p><li> extend your game to include cities and their
 destuction! <li> now create a <tt><small>gun</small></tt>
-class (which will be very similar to the city class)</p>
+class (which will be very similar to the city class) <br>
+</ul></p><hr>
+
+<h2>7. Mario movement suggestions
+<a name="7. Mario movement suggestions"></a>
+</h2>
+
+
+<p><ul type=disc> <li> introduce a
+<tt><small>height</small></tt> above the current floor
+(ramp) <ul type=square> <li> introduce xvel, yvel, xpos,
+ypos </ul> <li> if the user presses up then set yvel to some
+value <li> now every time tick <li></p>
+
+<pre>height += yvel
+height = check_for_limits (height)
+yvel -= gravity</pre>
+
+
+<p></ul></p><hr>
+
+<h2>8. Mario jumping example
+<a name="8. Mario jumping example"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import time
+
+height = 0
+gravity = 1
+
+def check_for_limits (h):
+    return max (0, h)
+
+yvel = 4 # just been given a push upwards
+
+
+while True:
+    height += yvel
+    height = check_for_limits (height)
+    yvel -= gravity
+    print &quot;mario is at height&quot;, height, &quot;above the ramp&quot;
+    time.sleep (1) # this is just for the test code, do not use this is the game</pre>
+
+
+<p><li> obviously you might need to adjust the constants to
+suit your game <br>
+</ul></p><hr>
+
+<h2>9. Tutorial and Homework
+<a name="9. Tutorial and Homework"></a>
+</h2>
+
+
+<p><ul type=disc> <li> continue to implement Donkey Kong
+<li> introduce Mario as a sprite and make him walk along
+ramps and climb ladders <li> use sprite collision to detect
+whether a barrel hits Mario <li> use the space invader code
+above as a reference example</p>
 
 <p style="margin-top: 1em"></ul></p><hr>
 
@@ -375,6 +436,9 @@ class (which will be very similar to the city class)</p>
 <a href="#4. Space invaders in Python">4. Space invaders in Python</a><br>
 <a href="#5. Main section of space invaders - initialisation">5. Main section of space invaders - initialisation</a><br>
 <a href="#6. Tutorial">6. Tutorial</a><br>
+<a href="#7. Mario movement suggestions">7. Mario movement suggestions</a><br>
+<a href="#8. Mario jumping example">8. Mario jumping example</a><br>
+<a href="#9. Tutorial and Homework">9. Tutorial and Homework</a><br>
 <a href="#Index">Index</a><br>
 
 <hr>

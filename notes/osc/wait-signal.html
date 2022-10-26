@@ -1,5 +1,5 @@
 <!-- Creator     : groff version 1.22.4 -->
-<!-- CreationDate: Wed Oct 26 17:00:47 2022 -->
+<!-- CreationDate: Wed Oct 26 17:29:36 2022 -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
 "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -155,19 +155,14 @@ void ProcessA ()         void ProcessB ()
 }                        }</pre>
 
 
-<p><li></p>
-
-
-<p align="left"><img src="grohtml-30613912.png" alt="Image grohtml-30613912.png"></p>
-
-<p><ul type=square> <li> <tt><small>Wait</small></tt> gets
-the token <li> <tt><small>Signal</small></tt> returns the
-token </ul> <li> note that <tt><small>Wait</small></tt> and
-<tt><small>Signal</small></tt> are both <i>atomic</i> <li>
-they are implemented in software with processor interrupts
-masked off <li> this allows us to build critical regions
-which can execute with processor interrupts on <li> this is
-overall efficient as we only have to mask processor
+<p><li> <ul type=square> <li> <tt><small>Wait</small></tt>
+gets the token <li> <tt><small>Signal</small></tt> returns
+the token </ul> <li> note that <tt><small>Wait</small></tt>
+and <tt><small>Signal</small></tt> are both <i>atomic</i>
+<li> they are implemented in software with processor
+interrupts masked off <li> this allows us to build critical
+regions which can execute with processor interrupts on <li>
+this is overall efficient as we only have to mask processor
 interrupts off during the execution of
 <tt><small>Wait</small></tt> and
 <tt><small>Signal</small></tt> <ul type=square> <li> this
