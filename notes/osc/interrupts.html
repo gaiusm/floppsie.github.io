@@ -1,0 +1,480 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:30 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Interrupt handling and context switching
+<a name="1. Interrupt handling and context switching"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these two topics are separate and we
+will examine them in turn</p>
+
+<p></ul></p><hr>
+
+<h2>2. Interrupts
+<a name="2. Interrupts"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26752983.png" alt="Image grohtml-26752983.png"></p>
+
+<p style="margin-top: 1em"><li> the user programs and
+hardware communicates with the kernel through interrupts
+<br>
+</ul></p><hr>
+
+<h2>3. Four different kinds of interrupts
+<a name="3. Four different kinds of interrupts"></a>
+</h2>
+
+
+<p><ul type=disc> <li> device interrupt, such as a hardware
+timer, for example the 8253 <tt><small>counter0</small></tt>
+reaching <tt><small>0</small></tt> on an IBM-PC <li> user
+code issuing a software interrupt, often called a <b>system
+call</b> <li> an illegal instruction (divide by zero, or an
+opcode which the processor does not recognise) <li> or a
+memory management fault interrupt (occurs when code attempts
+to read from non existent memory)</p>
+
+<p></ul></p><hr>
+
+<h2>4. First level interrupt handler
+<a name="4. First level interrupt handler"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the kernel must detect which kind of
+interrupt has occurred and call the appropriate routine
+<ul type=square> <li> this code is often termed the <b>first
+level interrupt handler</b> </ul> <li> the pseudo code for
+the <small>FLIH</small> follows: <li></p>
+
+<pre>save program registers and disable interrupts
+k = get_interrupt_kind ();
+if (k == source 1) service_source1 ();
+else if (k == source 2) service_source2 ();
+else if (k == source 3) service_source3 ();
+else if (k == source 4) service_source4 ();
+else if (k == source 5) service_source5 ();
+  etc
+restore program registers and enable interrupts
+return</pre>
+
+
+<p><li> you may find the hardware on the microprocessor
+performs the save and restore program registers and
+disabling/enabling interrupts <ul type=square> <li> possibly
+by one instruction </ul> <li> you might also find the
+hardware enables you to determine the source of the
+interrupt easily <ul type=square> <li> most microprocessors
+have an interrupt vector table <ul type=circle> <li>
+typically one vector per source is implemented </ul> </ul>
+<li> equally, however the code can be ugly as it depends
+upon the hardware specifications <br>
+</ul></p><hr>
+
+<h2>5. Example of FLIH in GNU LuK
+<a name="5. Example of FLIH in GNU LuK"></a>
+</h2>
+
+
+<p><ul type=disc> <li> GNU LuK (Lean uKernel) is a very
+small microkernel which allows premptive processes,
+interrupt driven devices and semaphores <li></p>
+
+<pre>   IsrTemplate[ 0] := 0FCH ;   (* cld (disable interrupts) *)
+   IsrTemplate[ 1] := 050H ;   (* push eax *)
+   IsrTemplate[ 2] := 051H ;   (* push ecx *)
+   IsrTemplate[ 3] := 052H ;   (* push edx *)
+   IsrTemplate[ 4] := 01EH ;   (* push ds *)
+   IsrTemplate[ 5] := 006H ;   (* push es *)
+   IsrTemplate[ 6] := 00FH ;   (* push fs *)
+   IsrTemplate[ 7] := 0A0H ;
+   IsrTemplate[ 8] := 0B8H ;   (* movl 0x00000010, %eax *)
+   IsrTemplate[ 9] := 010H ;
+   IsrTemplate[10] := 000H ;
+   IsrTemplate[11] := 000H ;
+   IsrTemplate[12] := 000H ;
+   IsrTemplate[13] := 08EH ;   (* mov  ax, ds *)
+   IsrTemplate[14] := 0D8H ;
+   IsrTemplate[15] := 08EH ;   (* mov  ax, es *)
+   IsrTemplate[16] := 0C0H ;
+   IsrTemplate[17] := 08EH ;   (* mov  ax, fs *)
+   IsrTemplate[18] := 0E0H ;</pre>
+
+
+<p><li></p>
+
+<pre>   IsrTemplate[19] := 068H ;   (* push  interruptnumber *)
+   IsrTemplate[20] := 000H ;   (* vector number to be overwritten.  *)
+   IsrTemplate[21] := 000H ;   (* this is the single parameter.  *)
+   IsrTemplate[22] := 000H ;   (* to function.  *)
+   IsrTemplate[23] := 000H ;
+   IsrTemplate[24] := 0B8H ;   (* movl function, %eax *)
+   IsrTemplate[25] := 000H ;   (* function address to be overwritten *)
+   IsrTemplate[26] := 000H ;
+   IsrTemplate[27] := 000H ;
+   IsrTemplate[28] := 000H ;</pre>
+
+
+<p><li></p>
+
+<pre>   IsrTemplate[29] := 0FFH ;   (* call  %eax *)
+   IsrTemplate[30] := 0D0H ;
+   IsrTemplate[31] := 058H ;   (* pop  %eax   // remove parameter *)
+   IsrTemplate[32] := 00FH ;   (* pop  %fs *)
+   IsrTemplate[33] := 0A1H ;
+   IsrTemplate[34] := 007H ;   (* pop  %es *)
+   IsrTemplate[35] := 01FH ;   (* pop  %ds *)
+   IsrTemplate[36] := 05AH ;   (* pop  %dx *)
+   IsrTemplate[37] := 059H ;   (* pop  %cx *)
+   IsrTemplate[38] := 058H ;   (* pop  %ax *)
+   IsrTemplate[39] := 0CFH ;   (* iret *)</pre>
+
+
+<p><li> GNU LuK uses a routine
+<tt><small>ClaimIsr</small></tt> which will copy the
+<tt><small>IsrTemplate</small></tt> into the correct
+interrupt vector and then overwrite the vector number and
+function address in the template <br>
+</ul></p><hr>
+
+<h2>6. Context switching
+<a name="6. Context switching"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the scheduler runs inside the kernel
+and it decides which process to run at any time
+<ul type=square> <li> processes might be blocked waiting on
+a semaphore or waiting for a device to respond <li> a
+process might need to be preemptively interrupted by the
+scheduler if it were implementing a round robin algorithm
+</ul> <li> the minimal primitives to manage context
+switching in a microkernel or operating system were devised
+by Wirth 1983 (Programming in Modula-2)
+<ul type=square> <li> <tt><small>NEWPROCESS</small></tt> ,
+<tt><small>TRANSFER</small></tt> and
+<tt><small>IOTRANSFER</small></tt> (covered later on)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>7. A tiny example of two simple processes in an operating system
+<a name="7. A tiny example of two simple processes in an operating system"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>void Process1 (void)
+{
+   while (TRUE) {
+      WaitForACharacter();
+      PutCharacterIntoBuffer();
+   }
+}
+
+
+void Process2 (void)
+{
+   while (TRUE) {
+      WaitForInterrupt();
+      ServiceDevice();
+   }
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>8. Primitives to manage context switching
+<a name="8. Primitives to manage context switching"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly let us look at a
+conventional program running in memory (single program
+running on a computer)</p>
+
+
+<p align="left"><img src="grohtml-26752984.png" alt="Image grohtml-26752984.png"></p>
+
+<p style="margin-top: 1em"><li> four main components
+<ul type=square> <li> code <li> data <li> stack <li>
+processor registers (volatiles) <br>
+</ul> </ul></p><hr>
+
+<h2>9. Concurrency
+<a name="9. Concurrency"></a>
+</h2>
+
+
+<p><ul type=disc> <li> suppose we want to run two programs
+concurrently? <ul type=square> <li> we could have two
+programs in memory. (Two stacks, code, data and two copies
+of a volatile environment) <li> on a single processor
+computer we can achieve apparent concurrency by running a
+fraction of the first program and then run a fraction of the
+second. <li> if we repeat this then apparent concurrency
+will be achieved <li> in operating systems multiple
+concurrent programs are often called <i>processes</i> </ul>
+<li> what technical problems need to be solved so achieve
+apparent concurrency? <ul type=square> <li> require a
+mechanism to switch from one process to another </ul> <li>
+remember our computer has one processor but needs to run
+multiple processes <ul type=square> <li> the information
+about a process is contained within the volatiles (or
+simply: processor registers)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. Implementing concurrency
+<a name="10. Implementing concurrency"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can switch from one process 1 to
+process 2 by: <ul type=square> <li> copying the current
+volatiles from the processor into an area of memory
+dedicated to process 1 <li> now copying some new volatiles
+from memory dedicated to process 2 into the processor
+registers</p>
+
+
+<p align="left"><img src="grohtml-26752985.png" alt="Image grohtml-26752985.png"></p>
+
+<p style="margin-top: 1em"><big></ul> </ul></big></p><hr>
+
+<h2>11. Implementing concurrency
+<a name="11. Implementing concurrency"></a>
+</h2>
+
+
+<p><ul type=disc> <li> this operation is call a context
+switch (as the processors context is switched from process 1
+to process 2) <ul type=square> <li> by context switching we
+have a completely new set of register values inside the
+processor <li> so on the i486 we would change <b>all</b> the
+registers. Some of which include: EAX, EBX, ECX, EDX, ESP
+and flags <li> note that by changing the ESP register (stack
+pointer) we have effectively changed stack</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>12. Context switching primitives in GNU LuK
+<a name="12. Context switching primitives in GNU LuK"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the previous description of context
+switching is very low level <li> in a high level language it
+is desirable to avoid the assembler language details as far
+as possible <ul type=square> <li> NEWPROCESS <li> TRANSFER
+<li> IOTRANSFER </ul> <li> <b>it is possible to build a
+microkernel which implements context switching and interrupt
+driven devices using these primitives without having to
+descend into assembly language</b> <ul type=square> <li>
+these are the primitives as defined by Wirth in 1983 </ul>
+<li> the primitives NEWPROCESS, TRANSFER and IOTRANSFER are
+concerned with copying <b><i>Volatiles between process and
+processor</i></b> <li> the procedure TRANSFER transfers
+control from one process to another process <li> these
+primitives are <i>low level</i> primitives
+<ul type=square> <li> they are normally wrapped up by higher
+level functions: <ul type=circle> <li> for example:
+<tt><small>initProcess</small></tt> uses
+<tt><small>NEWPROCESS</small></tt> which is similar to
+<tt><small>new_thread</small></tt> in Python</p>
+
+<p></ul> </ul> </ul></p><hr>
+
+<h2>13. TRANSFER
+<a name="13. TRANSFER"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the C definition is: <li></p>
+<pre>typedef void *PROCESS;
+
+
+extern void SYSTEM_TRANSFER (PROCESS *p1, PROCESS p2);</pre>
+
+
+<p><li> and it performs the following action:</p>
+
+
+<p align="left"><img src="grohtml-26752986.png" alt="Image grohtml-26752986.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>14. IOTRANSFER
+<a name="14. IOTRANSFER"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>extern void SYSTEM_IOTRANSFER (PROCESS *first,
+                               PROCESS *second,
+                               unsigned int interruptNo);</pre>
+
+
+<p><li> the procedure <tt><small>IOTRANSFER</small></tt>
+allows process contexts to be changed when an interrupt
+occurs <li> its function can be explained in two stages
+<ul type=square> <li> firstly it transfers control from one
+process to another process (in exactly the same way as
+<tt><small>TRANSFER</small></tt> ) <li> secondly when an
+interrupt occurs the processor is context switched back to
+the original process </ul> <li> the implementation of
+<tt><small>IOTRANSFER</small></tt> involves interaction with
+the <tt><small>FLIH</small></tt> <br>
+</ul></p><hr>
+
+<h2>15. NEWPROCESS
+<a name="15. NEWPROCESS"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>extern void SYSTEM_NEWPROCESS (void (*p)(void), void *a,
+                               unsigned long n,
+                               PROCESS *new);</pre>
+
+
+<p><li> <tt><small>p</small></tt> is a pointer to a
+function. <ul type=square> <li> this function will be turned
+into a process <li> <tt><small>a</small></tt> the start
+address of the new processes stack <li>
+<tt><small>n</small></tt> the size in bytes of the stack
+<li> <tt><small>new</small></tt> a variable of type
+<tt><small>PROCESS</small></tt> which will contain the
+volatiles of the new process <br>
+</ul> </ul></p><hr>
+
+<h2>16. How is TRANSFER implemented?
+<a name="16. How is TRANSFER implemented?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> or how do we implement a context
+switch? <ul type=square> <li> first we push all registers
+onto the stack <li> second we need to save the current
+running processes stack pointer into the running process
+control block <li> third we need to restore the next process
+stack pointer into the microprocessors stack pointer <li>
+fourth we pop all registers from the stack </ul> <li></p>
+<pre>void SYSTEM_TRANSFER (PROCESS *p1, PROCESS p2)
+{
+   onOrOff toOldState;
+
+
+   toOldState = turnInterrupts(Off);
+   asm volatile (&quot;pusha ; pushf&quot;);   /* push all registers */
+   /* remember p1 is the address of a PROCESS */
+   asm volatile (&quot;movl %[p1], %%eax ; movl %%esp, (%%eax)&quot;
+      :: [p1] &quot;rm&quot; (p1));            /* p1 := top of stack  */
+   asm volatile (&quot;movl %[p2], %%eax ; movl %%eax, %%esp&quot;
+      :: [p2] &quot;rm&quot; (p2));            /* top of stack := p2 */
+   asm volatile (&quot;popf ; popa&quot;);     /* restore all registers */
+   toOldState := turnInterrupts(toOldState);
+}</pre>
+
+
+<p><li> <tt><small>asm volatile</small></tt>
+<ul type=square> <li> means inline an assembly instruction
+</ul> <li> the parameters <tt><small>(&quot;movl %[p1],
+%%eax ; movl %%esp, (%%eax)&quot; :: [p1] &quot;rm&quot;
+(p1));</small></tt> <li> means <ul type=square> <li> move
+<tt><small>p1</small></tt> into register
+<tt><small>%eax</small></tt> <li> move
+<tt><small>%esp</small></tt> into the address pointed to by
+<tt><small>%eax</small></tt> <li> p1 is a variable which may
+be in a register or in memory <li> p1 is an input to the
+assembly instruction <br>
+</ul> </ul></p><hr>
+
+<h2>17. Conclusion
+<a name="17. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we have seen the structure of a
+<tt><small>FLIH</small></tt> <li> we have seen how three
+primitives can be used to create processes, context switch
+between processes and react to interrupts <li> we have seen
+how a context switch might be implemented</p>
+
+<p></ul></p><hr>
+
+<h2>18. Further reading
+<a name="18. Further reading"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Abraham Silberschatz, Operating
+System Concepts <ul type=square> <li> section 3.2.3 (Context
+Switch) <li> section 19.3.2.5 Exceptions and Interrupts
+</ul> <li> <li>
+<a href="https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/68683/eth-3135-01.pdf?sequence=1&isAllowed=y">newprocess, transfer and iotransfer</a>
+<ul type=square> <li> pages 27, 28, 29</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Interrupt handling and context switching">1. Interrupt handling and context switching</a><br>
+<a href="#2. Interrupts">2. Interrupts</a><br>
+<a href="#3. Four different kinds of interrupts">3. Four different kinds of interrupts</a><br>
+<a href="#4. First level interrupt handler">4. First level interrupt handler</a><br>
+<a href="#5. Example of FLIH in GNU LuK">5. Example of FLIH in GNU LuK</a><br>
+<a href="#6. Context switching">6. Context switching</a><br>
+<a href="#7. A tiny example of two simple processes in an operating system">7. A tiny example of two simple processes in an operating system</a><br>
+<a href="#8. Primitives to manage context switching">8. Primitives to manage context switching</a><br>
+<a href="#9. Concurrency">9. Concurrency</a><br>
+<a href="#10. Implementing concurrency">10. Implementing concurrency</a><br>
+<a href="#11. Implementing concurrency">11. Implementing concurrency</a><br>
+<a href="#12. Context switching primitives in GNU LuK">12. Context switching primitives in GNU LuK</a><br>
+<a href="#13. TRANSFER">13. TRANSFER</a><br>
+<a href="#14. IOTRANSFER">14. IOTRANSFER</a><br>
+<a href="#15. NEWPROCESS">15. NEWPROCESS</a><br>
+<a href="#16. How is TRANSFER implemented?">16. How is TRANSFER implemented?</a><br>
+<a href="#17. Conclusion">17. Conclusion</a><br>
+<a href="#18. Further reading">18. Further reading</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

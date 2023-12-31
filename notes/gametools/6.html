@@ -1,0 +1,444 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:04 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Moving a along a line
+<a name="1. Moving a along a line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consider the problem of making a
+barrels appear to roll across a plank <ul type=square> <li>
+this is complicated by the issue of the ramp gradient</p>
+
+
+<p align="left"><img src="grohtml-26712023.png" alt="Image grohtml-26712023.png"></p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>2. Bresenham&rsquo;s line algorithm
+<a name="2. Bresenham&rsquo;s line algorithm"></a>
+</h2>
+
+
+<p><ul type=disc> <li> fortunately Bresenham discovered an
+algorithm which given two points <ul type=square> <li>
+determines the elements of a 2-dimensional grid that should
+be selected to best approximate the line </ul> <li>
+Bresenham&rsquo;s line algorithm also uses integer
+arithmetic which adds to its complexity</p>
+
+<p></ul></p><hr>
+
+<h2>3. y = mx + c
+<a name="3. y = mx + c"></a>
+</h2>
+
+
+<p><ul type=disc> <li> returning to the problem of making a
+barrel roll down a plank <ul type=square> <li> we know the x
+position, but we need to compute the y value </ul> <li> we
+know the start and end points of the ramp</p>
+
+
+<p align="left"><img src="grohtml-26712024.png" alt="Image grohtml-26712024.png"></p>
+
+<p style="margin-top: 1em"><li> in the previous slide the
+start position is (1, 2) and the end position is (5, 4) <li>
+the dx value is 5-1 = 4 <li> the dy value is 4-2 = 2 <li>
+therefore our gradient
+<img src="grohtml-2671202-5.png" alt="Image grohtml-2671202-5.png">
+is
+<img src="grohtml-2671202-6.png" alt="Image grohtml-2671202-6.png">
+<li> we need to calculate
+<img src="grohtml-2671202-7.png" alt="Image grohtml-2671202-7.png">
+<li> we know the point (1, 2) exists on the line <li> using
+<img src="grohtml-2671202-8.png" alt="Image grohtml-2671202-8.png">
+<li>
+<img src="grohtml-2671202-9.png" alt="Image grohtml-2671202-9.png">
+<li>
+<img src="grohtml-2671202-10.png" alt="Image grohtml-2671202-10.png">
+<li>
+<img src="grohtml-2671202-11.png" alt="Image grohtml-2671202-11.png">
+<li> we could use this formula to calculate the
+<img src="grohtml-2671202-12.png" alt="Image grohtml-2671202-12.png">
+value given an
+<img src="grohtml-2671202-13.png" alt="Image grohtml-2671202-13.png">
+value <li>
+<img src="grohtml-2671202-14.png" alt="Image grohtml-2671202-14.png">
+<li></p>
+
+
+<p align="left"><img src="grohtml-26712025.png" alt="Image grohtml-26712025.png"></p>
+
+<p><li> notice how we need floating point values to compute
+it <ul type=square> <li> also notice how we calculated the
+gradient </ul> <li> Bresenham&rsquo;s algorithm hunts for
+the correct gradient by using integer arithmetic and by
+manipulating the numerator and denominator of the fractional
+value of
+<img src="grohtml-2671202-16.png" alt="Image grohtml-2671202-16.png">
+<br>
+</ul></p><hr>
+
+<h2>4. Bresenham&rsquo;s algorithm in Python (version 1)
+<a name="4. Bresenham&rsquo;s algorithm in Python (version 1)"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">bres0.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python3
+
+def points (p0, p1):
+    x0, y0 = p0
+    x1, y1 = p1
+
+    dx = abs(x1-x0)
+    dy = abs(y1-y0)
+    if x0 &lt; x1:
+        sx = 1
+    else:
+        sx = -1
+
+
+    if y0 &lt; y1:
+        sy = 1
+    else:
+        sy = -1
+    err = dx-dy</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres0.py</font></small></small></b></p>
+<pre style="margin-top: 1em">    while True:
+        print x0, y0
+        if x0 == x1 and y0 == y1:
+            return
+
+
+        e2 = 2*err
+        if e2 &gt; -dy:
+            # overshot in the y direction
+            err = err - dy
+            x0 = x0 + sx
+        if e2 &lt; dx:
+            # overshot in the x direction
+            err = err + dx
+            y0 = y0 + sy</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres0.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  test code
+#
+points ([1, 2], [5, 4])</pre>
+
+
+<p><font color="#000000"><li> when we run this we see: <li>
+<tt><br>
+$</tt> <b>python3 bres0.py</b></font></p>
+<pre>1 2
+2 2
+3 3
+4 3
+5 4</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Using Bresenham&rsquo;s algorithm to give us the next point
+<a name="5. Using Bresenham&rsquo;s algorithm to give us the next point"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we need to
+change the algorithm very slightly so that we can get the
+next point on demand <ul type=square> <li> really a cosmetic
+change </ul> <li> probably best to use a class and a few
+methods</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Python implementation of Bresenham&rsquo;s algorithm (version 2)
+<a name="6. Python implementation of Bresenham&rsquo;s algorithm (version 2)"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">bres1.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python3
+
+
+class bres:
+    def __init__ (self, p0, p1):
+        self.p0 = p0
+        self.p1 = p1
+        self.x0 = p0[0]
+        self.y0 = p0[1]
+        self.x1 = p1[0]
+        self.y1 = p1[1]
+        self.dx = abs(self.x1-self.x0)
+        self.dy = abs(self.y1-self.y0)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres1.py</font></small></small></b></p>
+<pre style="margin-top: 1em">        if self.x0 &lt; self.x1:
+            self.sx = 1
+        else:
+            self.sx = -1
+
+
+        if self.y0 &lt; self.y1:
+            self.sy = 1
+        else:
+            self.sy = -1
+        self.err = self.dx-self.dy</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres1.py</font></small></small></b></p>
+<pre style="margin-top: 1em">    def get_next (self):
+        if self.x0 == self.x1 and self.y0 == self.y1:
+            return [self.x1, self.y1]
+
+
+        self.e2 = 2*self.err
+        if self.e2 &gt; -self.dy:
+            self.err = self.err - self.dy
+            self.x0 = self.x0 + self.sx
+        if self.e2 &lt; self.dx:
+            self.err = self.err + self.dx
+            self.y0 = self.y0 + self.sy
+        return [self.x0, self.y0]</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres1.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  test code
+#
+w = bres ([1, 2], [5, 4])
+p = w.get_next ()
+print p
+while p != [5, 4]:
+    p = w.get_next ()
+    print p
+print p</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>python3 bres1.py</b></font></p>
+<pre>[2, 2]
+[3, 3]
+[4, 3]
+[5, 4]
+[5, 4]</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Tidying up the Python interface
+<a name="7. Tidying up the Python interface"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> as can be seen
+in the test code the use of the Python class is ugly <li> we
+can improve this by introducing a method
+<tt><small>finished()</small></tt> which returns
+<tt><small>True</small></tt> if we have reached the end of
+the line <li> we also note there is a slight bug in version
+2 as it omits the initial point!</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Python implementation of Bresenham&rsquo;s algorithm (version 3)
+<a name="8. Python implementation of Bresenham&rsquo;s algorithm (version 3)"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">bres.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/env python3
+
+
+class bres:
+    def __init__ (self, p0, p1):
+        self.initial = True
+        self.end = False
+        self.p0 = p0
+        self.p1 = p1
+        self.x0 = p0[0]
+        self.y0 = p0[1]
+        self.x1 = p1[0]
+        self.y1 = p1[1]
+        self.dx = abs(self.x1-self.x0)
+        self.dy = abs(self.y1-self.y0)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres.py</font></small></small></b></p>
+<pre style="margin-top: 1em">        if self.x0 &lt; self.x1:
+            self.sx = 1
+        else:
+            self.sx = -1
+
+
+        if self.y0 &lt; self.y1:
+            self.sy = 1
+        else:
+            self.sy = -1
+        self.err = self.dx-self.dy</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres.py</font></small></small></b></p>
+<pre style="margin-top: 1em">    def get_next (self):
+        if self.initial:
+            self.initial = False
+            return [self.x0, self.y0]
+
+
+        if self.x0 == self.x1 and self.y0 == self.y1:
+            self.end = True
+            return [self.x1, self.y1]</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres.py</font></small></small></b></p>
+<pre style="margin-top: 1em">        self.e2 = 2*self.err
+        if self.e2 &gt; -self.dy:
+            self.err = self.err - self.dy
+            self.x0 = self.x0 + self.sx
+        if self.e2 &lt; self.dx:
+            self.err = self.err + self.dx
+            self.y0 = self.y0 + self.sy
+        return [self.x0, self.y0]
+
+    def get_current_pos (self):
+        return [self.x0, self.y0]
+
+    def finished (self):
+        return self.end</pre>
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+bres.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  test code
+#
+w = bres ([1, 2], [5, 4])
+while not w.finished ():
+    p = w.get_next ()
+    print p</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Test run of our new Python module bres.py
+<a name="9. Test run of our new Python module bres.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>python3
+bres.py</b></font></p>
+<pre>[1, 2]
+[2, 2]
+[3, 3]
+[4, 3]
+[5, 4]
+[5, 4]</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Homework and tutorial work
+<a name="10. Homework and tutorial work"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> comment this
+code <li> use this module <tt><small>bres.py</small></tt>
+together with the <tt><small>explosions.py</small></tt> code
+we looked at last week to generate explosions and track the
+mouse <li> declare a <tt><small>missile</small></tt> class
+which can be given two points: <tt><small>start</small></tt>
+, <tt><small>end</small></tt> to traverse along a chosen
+path <li> introduce an <tt><small>update</small></tt> method
+for the missile class which moves the missile onto the next
+coordinate <li> tie these pieces together and allow the
+mouse to fire off a missile from the left, middle, and right
+silos</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Moving a along a line">1. Moving a along a line</a><br>
+<a href="#2. Bresenham&rsquo;s line algorithm">2. Bresenham&rsquo;s line algorithm</a><br>
+<a href="#3. y = mx + c">3. y = mx + c</a><br>
+<a href="#4. Bresenham&rsquo;s algorithm in Python (version 1)">4. Bresenham&rsquo;s algorithm in Python (version 1)</a><br>
+<a href="#5. Using Bresenham&rsquo;s algorithm to give us the next point">5. Using Bresenham&rsquo;s algorithm to give us the next point</a><br>
+<a href="#6. Python implementation of Bresenham&rsquo;s algorithm (version 2)">6. Python implementation of Bresenham&rsquo;s algorithm (version 2)</a><br>
+<a href="#7. Tidying up the Python interface">7. Tidying up the Python interface</a><br>
+<a href="#8. Python implementation of Bresenham&rsquo;s algorithm (version 3)">8. Python implementation of Bresenham&rsquo;s algorithm (version 3)</a><br>
+<a href="#9. Test run of our new Python module bres.py">9. Test run of our new Python module bres.py</a><br>
+<a href="#10. Homework and tutorial work">10. Homework and tutorial work</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

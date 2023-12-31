@@ -1,0 +1,154 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:22 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Adding room numbers
+<a name="1. Adding room numbers"></a>
+</h2>
+
+
+<p><ul type=disc> <li> ideally would like the button to
+remember which room has been allocated <ul type=square> <li>
+touchmap should reuse old deleted room numbers appropriately
+</ul> <li></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/touchmap/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">blank_t, wall_t, door_t, spawn_t, hell_t, tick_t, room_t = range (7)
+...
+rooms_available = []  # any room number which was deleted is placed here
+next_room = 1  # the next available room number to be used.</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>2. Adding a to_room method to the button class
+<a name="2. Adding a to_room method to the button class"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/touchmap/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  def to_room (self, room):
+     self._tile = touchgui.text_tile (black, light_grey, white, mid_grey,
+                                      room, self._size,
+                                      self._x, self._y,
+                                      self._size, self._size, delroom, &quot;room&quot;)</pre>
+
+
+<p><font color="#000000"><li> require a specific
+<tt><small>delroom</small></tt> callback to remember the
+room number for next time a room is created
+<ul type=square> <li> alternatively we could use
+<tt><small>cellback</small></tt> , however
+<tt><small>cellback</small></tt> would become much more
+complex <br>
+</ul> </ul></font></p><hr>
+
+<h2>3. delroom
+<a name="3. delroom"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/touchmap/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def delroom (param, tap):
+    global clicked, cell_array, button_array, double_tapped_cell, rooms_available
+    clicked = True
+    mouse = pygame.mouse.get_pos ()
+    x, y = get_cell (mouse)
+    button = button_array.get (x + xoffset, y + yoffset)
+    button.spawn_to_blank ()
+    rooms_available += [cell_array.get (x + xoffset, y + yoffset)]
+    cell_array.set_contents (x + xoffset, y + yoffset, &quot; &quot;)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. myroom
+<a name="4. myroom"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/touchmap/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def myroom (name, tap):
+    global next_tile
+    pygame.display.update ()
+    if tap == 1:
+        next_tile = room_t</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+Sandpit/touchmap/touchmap.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def glyphs ():
+    return [touchgui.text_tile (black, mid_grey, white, light_grey,
+                                &rsquo;S&rsquo;, touchgui.unitY (0.05),
+                                touchgui.posX (0.5), touchgui.posY (1.0),
+                                100, 100, worldspawn, &quot;worldspawn&quot;),
+            touchgui.text_tile (black, mid_grey, white, light_grey,
+                                &rsquo;room&rsquo;, touchgui.unitY (0.05),
+                                touchgui.posX (0.45), touchgui.posY (1.0),
+                                100, 100, myroom, &quot;room&quot;)]</pre>
+
+
+
+<p style="margin-top: 1em"><small><font color="#000000"></ul></font></small></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><small><font color="#000000"><tt><a name="index"></a></tt></font></small></p>
+<a href="#1. Adding room numbers">1. Adding room numbers</a><br>
+<a href="#2. Adding a to_room method to the button class">2. Adding a to_room method to the button class</a><br>
+<a href="#3. delroom">3. delroom</a><br>
+<a href="#4. myroom">4. myroom</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><small><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></small></p> <hr>
+</body>
+</html>

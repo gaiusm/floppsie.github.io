@@ -1,0 +1,385 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:05 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Sprites and collisions
+<a name="1. Sprites and collisions"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need to save these images
+in the same directory as the code: <ul type=square> <li>
+<a href="ball.png">gun.png</a> <li>
+<a href="ball.png">arrow.png</a> <li>
+<a href="ball.png">ball.png</a> </ul> <li> sprites are
+created and normally placed into a list
+<ul type=square> <li> and referred to as a group </ul> <li>
+you can then test for a collision between another sprite
+via: <li></p>
+<pre>inter = spritecollide(foo, bar, dokill)</pre>
+
+<p><li> <tt><small>inter</small></tt> is a list of all
+sprites from list <tt><small>bar</small></tt> which have
+collided with the single sprite <tt><small>foo</small></tt>
+<li> the <tt><small>dokill</small></tt> parameter is either
+<tt><small>True</small></tt> or
+<tt><small>False</small></tt> and if it was
+<tt><small>True</small></tt> the the
+<tt><small>kill</small></tt> method is called for every
+sprite in the list <tt><small>inter</small></tt> <li></p>
+
+<pre>for bomb in sprite.spritecollide(player, bombs, True):
+    boom_sound.play()</pre>
+
+
+<p><li> notice that this example tests whether a single
+sprite <tt><small>player</small></tt> has collided with any
+sprite in the <tt><small>bombs</small></tt> list <br>
+</ul></p><hr>
+
+<h2>2. Managing collisions between two groups of sprites
+<a name="2. Managing collisions between two groups of sprites"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can detect whether a collision
+occurs between two groups of sprites by using the following
+function: <li></p>
+<pre>groupcollide(list1, list2, dokill1, dokill2)</pre>
+
+<p><li> this function returns a dictionary
+<ul type=square> <li> each key in the dictionary is a sprite
+in <tt><small>list1</small></tt> and its value is a list of
+sprites from <tt><small>list2</small></tt> with which it has
+collided <li> the <tt><small>dokill1</small></tt> ,
+<tt><small>dokill2</small></tt> arguments determine whether
+the <tt><small>kill</small></tt> method should be called in
+<tt><small>list1</small></tt> or
+<tt><small>list2</small></tt> </ul> <li></p>
+
+<pre>for alien in sprite.groupcollide(aliens, bullets, True, True).keys()
+   boom_sound.play()
+   kills += 1</pre>
+
+
+<p><li> the code checks for the collisions between bullets
+and all the aliens <li> in this case we only loop over the
+dictionary keys <ul type=square> <li> but we could loop over
+the <tt><small>values()</small></tt> or
+<tt><small>items()</small></tt> <li> if we wanted to do
+something to the specific shots that collided with aliens
+</ul> <li> if we did loop over the
+<tt><small>values()</small></tt> we would be looping through
+lists that contain sprites <li> note that the same sprite
+may even appear more than once in these different loops,
+since the same <tt><small>bullet</small></tt> could have
+collided against multiple <tt><small>aliens</small></tt>
+<br>
+</ul></p><hr>
+
+<h2>3. Real example
+<a name="3. Real example"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <i>&quot;Talk is cheap. Show me the
+code.&quot;</i></p>
+
+<p>Linux Torvalds, Fri, 25 Aug 2000 11:09:12 -0700 (PDT)
+<br>
+</ul></p><hr>
+
+<h2>4. Space invaders in Python
+<a name="4. Space invaders in Python"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import pygame
+import sys
+from pygame.locals import KEYDOWN, KEYUP, K_SPACE, K_ESCAPE, \
+                          K_RIGHT, K_LEFT
+
+width         = 320
+height        = 240
+imageWidth    = 32
+imageHeight   = 32
+
+
+goingLeft     = True
+invaderHeight = 0
+gunLeft       = False
+gunRight      = False
+gunXpos       = (width/2)-(imageWidth/2)
+delay         = 10</pre>
+
+
+<p><li></p>
+<pre>class BoxSprite(pygame.sprite.Sprite):
+    image = None
+
+    def __init__(self, initial_position):
+        pygame.sprite.Sprite.__init__(self)
+        if BoxSprite.image is None:
+            BoxSprite.image = pygame.image.load(&quot;ball.png&quot;)
+        self.image = BoxSprite.image
+
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = initial_position
+        self.next_update_time = 0  # as soon as possible
+        self.yPos = initial_position[1]</pre>
+
+
+<p><li></p>
+
+<pre>    def update(self, current_time, left, right):
+        global goingLeft, invaderHeight, imageWidth, delay
+        # check update
+        if self.next_update_time &lt; current_time:
+            # If we&rsquo;re at the left or right the screen, switch directions.
+            if self.rect.topleft[0] == left:
+                goingLeft = False
+                invaderHeight += 1
+            elif self.rect.topleft[0] == right-imageWidth:
+                goingLeft = True
+                invaderHeight += 1
+            if goingLeft == True:
+                self.rect.topleft = [self.rect.topleft[0]-1,
+                                     self.rect.topleft[1]]
+            else:
+                self.rect.topleft = [self.rect.topleft[0]+1,
+                                     self.rect.topleft[1]]
+            self.rect.topleft = [self.rect.topleft[0],
+                                 invaderHeight+self.yPos]
+            self.next_update_time = current_time + delay</pre>
+
+
+<p><li></p>
+<pre>class missile(pygame.sprite.Sprite):
+    image = None
+
+    def __init__(self, initial_position):
+        pygame.sprite.Sprite.__init__(self)
+        if missile.image is None:
+            missile.image = pygame.image.load(&quot;arrow.png&quot;)
+        self.image = missile.image
+
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = initial_position
+        self.next_update_time = 0 # update() hasn&rsquo;t been called yet.</pre>
+
+
+<p><li></p>
+
+<pre>    def update(self, current_time):
+        global missile
+        # check update
+        if self.next_update_time &lt; current_time:
+            # If we&rsquo;re reached the top then stop
+            if self.rect.topleft[1] == 0:
+                missiles.remove(self)
+                self.kill()
+                return
+            else:
+                self.rect.topleft = [self.rect.topleft[0],
+                                     self.rect.topleft[1]-1]
+            self.next_update_time = current_time + 4</pre>
+
+
+<p><li></p>
+<pre>class gun(pygame.sprite.Sprite):
+    image   = None
+
+    def __init__(self):
+        global width, imageHeight, gunXpos
+        pygame.sprite.Sprite.__init__(self)
+        if gun.image is None:
+            gun.image = pygame.image.load(&quot;gun.png&quot;)
+        self.image = gun.image
+
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [gunXpos, height-imageHeight]
+        self.next_update_time = 0 # update() hasn&rsquo;t been called yet.</pre>
+
+
+<p><li></p>
+<pre>    def update(self, current_time):
+        global gunXpos, width, imageWidth
+
+
+        # check update
+        if self.next_update_time &lt; current_time:
+            if gunLeft and gunXpos&gt;0:
+                gunXpos -= 1
+            if gunRight and gunXpos&lt;width-imageWidth:
+                gunXpos += 1
+            self.rect.topleft = [gunXpos, self.rect.topleft[1]]
+            self.next_update_time = current_time + 1</pre>
+
+
+<p><li></p>
+
+<pre>def checkInput():
+    global gunLeft, gunRight, missiles, gunXpos, height
+    for event in pygame.event.get():
+       if event.type == KEYDOWN:
+          if event.key == K_ESCAPE:
+              sys.exit(0)
+          elif event.key == K_RIGHT:
+              gunLeft = False
+              gunRight = True
+          elif event.key == K_LEFT:
+              gunLeft = True
+              gunRight = False
+          else:
+              missiles.append(missile([gunXpos, height]))
+       elif event.type == KEYUP and event.key != K_SPACE:
+          gunRight = False
+          gunLeft = False</pre>
+
+
+<p><li></p>
+
+<pre>def checkCollisions():
+    global missiles, invaders
+    if missiles != [] and invaders != []:
+        for m in missiles:
+            found = False
+            for b in pygame.sprite.spritecollide(m, invaders, False):
+                invaders.remove(b)
+                b.kill()
+                found = True
+            if found:
+                missiles.remove(m)
+                m.kill()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. Main section of space invaders - initialisation
+<a name="5. Main section of space invaders - initialisation"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>pygame.init()
+invaders = []
+missiles = []
+
+for x in range(0, width, 32):
+    for y in range(0, 96, 32):
+        invaders.append(BoxSprite([x, y]))
+
+
+screen = pygame.display.set_mode([320, 240])
+gunControl = gun()</pre>
+
+
+<p><li></p>
+<pre>while invaders != []:
+    screen.fill([0, 0, 0]) # blank the screen.
+    time = pygame.time.get_ticks()
+    for b in invaders:
+        b.update(time, 0, width)
+        screen.blit(b.image, b.rect)
+
+    checkInput()
+    checkCollisions()</pre>
+
+<p><li></p>
+<pre>    gunControl.update(time)
+    screen.blit(gunControl.image, gunControl.rect)
+    for m in missiles:
+        m.update(time)
+        screen.blit(m.image, m.rect)
+    pygame.display.update()
+    if pygame.sprite.spritecollide(gunControl, invaders, 0) != []:
+        pygame.time.delay(50)
+        print &quot;loser&quot;
+        sys.exit(0)
+    if len(invaders)&lt;10:
+        delay = len(invaders)
+
+pygame.time.delay(50)
+print &quot;winner&quot;</pre>
+
+<p></ul></p><hr>
+
+<h2>6. Tutorial
+<a name="6. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> extend your missile command program
+to include a <tt><small>city</small></tt> class <li> give
+your city class an <tt><small>__init__</small></tt> ,
+<tt><small>update</small></tt> ,
+<tt><small>ignite</small></tt> ,
+<tt><small>erase</small></tt> and
+<tt><small>check</small></tt> method <li> the method
+prototypes are: <li></p>
+
+<pre>    # create a city at pos
+    # calculcate the epicenter of the city
+    # store it in the class
+    def __init__ (self, pos):
+    # draw the city
+    def draw_city (self):
+    # remove the city
+    def erase (self):
+    # determine whether city should catch fire given exposion at p with a radius
+    def check (self, p, radius):</pre>
+
+
+<p><li> extend your game to include cities and their
+destuction! <li> now create a <tt><small>gun</small></tt>
+class (which will be very similar to the city class)</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Sprites and collisions">1. Sprites and collisions</a><br>
+<a href="#2. Managing collisions between two groups of sprites">2. Managing collisions between two groups of sprites</a><br>
+<a href="#3. Real example">3. Real example</a><br>
+<a href="#4. Space invaders in Python">4. Space invaders in Python</a><br>
+<a href="#5. Main section of space invaders - initialisation">5. Main section of space invaders - initialisation</a><br>
+<a href="#6. Tutorial">6. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

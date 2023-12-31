@@ -1,0 +1,271 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:26 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Overview
+<a name="1. Overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li> during this tutorial we will examine
+how to use git from the command line <li> we will also
+browse some of the files in the <ul type=square> <li> linux
+kernel <li> and gcc </ul> <li> finally we will explore a
+graphical visualisation of git activity <li> firstly you
+will need to use GNU/Linux for this tutorial</p>
+
+<p></ul></p><hr>
+
+<h2>2. Boot your computer into GNU/Linux
+<a name="2. Boot your computer into GNU/Linux"></a>
+</h2>
+
+
+<p><ul type=disc> <li> if you are using Windows, reboot
+your computer <ul type=square> <li> keep watching the screen
+and quickly choose Linux before it boots into the other
+default operating system </ul> <li> log in to debian or mint
+GNU/Linux and open up a command terminal</p>
+
+<p></ul></p><hr>
+
+<h2>3. Introduction to git on the command line
+<a name="3. Introduction to git on the command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> git can be run from a gui, but here
+we are going to use it from the command line to expose what
+a git gui would be performing on our behalf <li> git is a is
+a distributed revision control system <li> useful for
+managing text based changes across multiple files and
+directories <ul type=square> <li> distributed <li> allows
+files to be removed, moved <li> user can commit changes and
+retrieve previous changes </ul> <li> very useful for
+programming or managing documents in
+<tt><small>groff</small></tt> or
+<tt><small>latex</small></tt> format <li> not so useful for
+<tt><small>openoffice</small></tt> documents <li> but it
+could still be used <ul type=square> <li> just not as
+efficient as using text</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Server side: setting up your own git server
+<a name="4. Server side: setting up your own git server"></a>
+</h2>
+
+
+<p><ul type=disc> <li> use
+<tt><small>mcgreg.comp.glam.ac.uk</small></tt> <li> so from
+your terminal type: <li></p>
+
+<p><tt>$</tt> <b>hostname</b> <li> it should mention the
+room you are in <li> now you can log into
+<tt><small>mcgreg</small></tt> by typing <li> <tt><br>
+$</tt> <b>ssh mcgreg.comp.glam.ac.uk</b> <li> you will be
+prompted for a password (you should enter your linux
+password) <li> <tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir myrepo.git</b> <tt><br>
+$</tt> <b>cd myrepo.git</b> <tt><br>
+$</tt> <b>git --bare init</b> <li> the above only needs to
+be done once <li> you can log off
+<tt><small>mcgreg</small></tt> <ul type=square> <li> do this
+by typing <tt><small>exit</small></tt> from the command line
+</ul> <li> now check you are on your local machine by using
+<tt><small>hostname</small></tt> again <br>
+</ul></p><hr>
+
+<h2>5. Client side
+<a name="5. Client side"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly we need to define where the
+git repro lives <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit/first</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/first</b> <tt><br>
+$</tt> <b>git init</b> <tt><br>
+$</tt> <b>git remote add origin
+username@mcgreg.comp.glam.ac.uk:/home/username/myrepo.git</b>
+<li> defines <tt><small>origin</small></tt> to the mcgreg
+url <li> sets the master branch to the origin
+<ul type=square> <li> for personal git repros you will
+rarely need to bother with branches <li> thus the
+<tt><small>master</small></tt> branch can be ignored here
+</ul> <li> <tt><br>
+$</tt> <b>mkdir -p $HOME/Sandpit/firstcopy</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/firstcopy</b> <tt><br>
+$</tt> <b>git init</b> <tt><br>
+$</tt> <b>git add</b> <tt><br>
+$</tt> <b>touch README</b> <tt><br>
+$</tt> <b>git commit -m &quot;My first file
+committed&quot;</b> <tt><br>
+$</tt> <b>git push</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>6. Client side copy
+<a name="6. Client side copy"></a>
+</h2>
+
+
+<p><ul type=disc> <li> to take another copy of the files
+from the repository you can <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit/secondcopy</b>
+<tt><br>
+$</tt> <b>cd $HOME/Sandpit/secondcopy</b> <tt><br>
+$</tt> <b>git init</b> <tt><br>
+$</tt> <b>git clone
+username@mcgreg.comp.glam.ac.uk:/home/username/myrepo.git</b>
+<li> now you could make some modifications and then <li>
+<tt><br>
+$</tt> <b>cd Sandpit/secondcopy</b> <tt><br>
+$</tt> <b>emacs README</b> <tt><br>
+$</tt> <b>git commit -m &quot;My second commit&quot;</b>
+<tt><br>
+$</tt> <b>git push</b> <li> which uploads changes back to
+the master on <tt><small>mcgreg</small></tt> <br>
+</ul></p><hr>
+
+<h2>7. What changes have I made?
+<a name="7. What changes have I made?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> can use <li></p>
+
+<p><tt>$</tt> <b>git diff</b> <li> to see the differences
+between your local copy and the repository <li> can use:
+<li> <tt><br>
+$</tt> <b>git log</b> <li> to see the entire history of all
+changes, or: <li> <tt><br>
+$</tt> <b>git log version.c</b> <li> to see the history of
+all changes to the file <tt><small>version.c</small></tt>
+<br>
+</ul></p><hr>
+
+<h2>8. Tagging in git
+<a name="8. Tagging in git"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you can tag a release or stage of
+development by: <li></p>
+
+<p><tt>$</tt> <b>git tag version1.0 -m &quot;version
+1.0&quot;</b> <li> to see all available tags type: <li>
+<tt><br>
+$</tt> <b>git tag</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>9. To go back in time to a previous version
+<a name="9. To go back in time to a previous version"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>mkdir $HOME/Sandpit/thirdcopy</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/thirdcopy</b> <tt><br>
+$</tt> <b>git init</b> <tt><br>
+$</tt> <b>git clone
+username@mcgreg.comp.glam.ac.uk:/home/username/myrepo.git</b>
+<tt><br>
+$</tt> <b>git checkout version1.0</b> <li> or you could go
+back to another commit time (as seen by the <tt><small>git
+log</small></tt> ) <li> <tt><br>
+$</tt> <b>mkdir $HOME/Sandpit/fourthcopy</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/fourthcopy</b> <tt><br>
+$</tt> <b>git init</b> <tt><br>
+$</tt> <b>git clone
+username@mcgreg.comp.glam.ac.uk:/home/username/myrepo.git</b>
+<tt><br>
+$</tt> <b>cd myrepo.git</b> <tt><br>
+$</tt> <b>git log</b></p>
+<pre>etc etc
+ec1c3b3fa9844e3304fe24eb54e0529e356883f7
+etc etc
+$<b> git checkout ec1c3b3fa9844e3304fe24eb54e0529e356883f7
+</b>Note: checking out &rsquo;ec1c3b3fa9844e3304fe24eb54e0529e356883f7&rsquo;.
+
+
+You are in &rsquo;detached HEAD&rsquo; state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.</pre>
+
+
+<p></ul></p><hr>
+
+<h2>10. gource
+<a name="10. gource"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in
+<tt><small>/usr/local/src/projects</small></tt> there are
+copies of the linux kernel source tree and the gcc source
+tree <li> firstly see if you can find the
+<tt><small>ChangeLog</small></tt> files in these projects
+<li> read the manual page to <tt><small>gource</small></tt>
+<li> try running the program: <li></p>
+
+<p><tt>$</tt> <b>cd /usr/local/src/projects/gcc</b>
+<tt><br>
+$</tt> <b>gource -s 0.25 -highlight-all-users</b> <li> press
+escape to quit <li> now try running it on the kernel source
+<li> <tt><br>
+$</tt> <b>cd /usr/local/src/projects/linux-stable</b>
+<tt><br>
+$</tt> <b>gource -s 0.25 -highlight-all-users</b> <li> press
+escape to quit</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Overview">1. Overview</a><br>
+<a href="#2. Boot your computer into GNU/Linux">2. Boot your computer into GNU/Linux</a><br>
+<a href="#3. Introduction to git on the command line">3. Introduction to git on the command line</a><br>
+<a href="#4. Server side: setting up your own git server">4. Server side: setting up your own git server</a><br>
+<a href="#5. Client side">5. Client side</a><br>
+<a href="#6. Client side copy">6. Client side copy</a><br>
+<a href="#7. What changes have I made?">7. What changes have I made?</a><br>
+<a href="#8. Tagging in git">8. Tagging in git</a><br>
+<a href="#9. To go back in time to a previous version">9. To go back in time to a previous version</a><br>
+<a href="#10. gource">10. gource</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

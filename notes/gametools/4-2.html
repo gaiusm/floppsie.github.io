@@ -1,0 +1,201 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:13 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. PyGame
+<a name="1. PyGame"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is a set of Python modules which
+sits on top of the excellent SDL library <li> allows you to
+create fully featured games and multimedia programs in the
+python language <li> PyGame is highly portable and runs on
+nearly every platform and operating system <li> it has the
+ability to initialise screen resolution or window size <li>
+sprites, sound, collisions, keyboard, mouse, joystick events
+<li> images, text can all be rendered to the 2D screen (or
+surface) <li> fast image copies are achieved using the SDL
+(Simple DirectMedia Layer)</p>
+
+<p></ul></p><hr>
+
+<h2>2. Is Python suitable for gaming?
+<a name="2. Is Python suitable for gaming?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> 30 frames per second is often quoted
+as the minimum necessary for smooth graphics
+<ul type=square> <li> this means you must compute the next
+frame in under 1/30 of a second
+<img src="grohtml-2672606-3.png" alt="Image grohtml-2672606-3.png">
+30 milliseconds </ul> <li> for 2D games PyGame is a very
+good solution <ul type=square> <li> rapid prototyping <li>
+you can convert any slow pieces of Python into C if
+necessary and call these from Python <li> classically 90% of
+the time is spent in 10% of the code </ul> <li>
+<a href="http://www.pygame.org/docs/tut/intro/intro.html">abridged</a>
+<li> games are often split into two components
+<ul type=square> <li> game engine <li> game logic </ul> <li>
+most of the time the game engine must run really fast
+whereas the game logic requires less processing power
+<ul type=square> <li> game engine - written in C exploiting
+the SDL and presented as PyGame modules <li> game logic -
+your python code</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Game tools implemented in Python
+<a name="3. Game tools implemented in Python"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there are many, for example:
+<a href="https://www.blender.org">https://www.blender.org</a></p>
+
+<p></ul></p><hr>
+
+<h2>4. Bouncing ball
+<a name="4. Bouncing ball"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
+
+import sys, pygame
+
+width = 320
+height= 240
+speed = [2, 2]
+black = (0, 0, 0)
+
+
+pygame.init ()
+screen = pygame.display.set_mode([width, height])
+ball = pygame.image.load(&quot;ball.png&quot;).convert()
+ballrect = ball.get_rect()</pre>
+
+
+<p><li></p>
+<pre>while True:
+    for event in pygame.event.get ():
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+
+    ballrect = ballrect.move (speed)
+    if ballrect.left &lt; 0 or ballrect.right &gt; width:
+        speed[0] = -speed[0]
+    if ballrect.top &lt; 0 or ballrect.bottom &gt; height:
+        speed[1] = -speed[1]
+
+
+    screen.fill(black)
+    screen.blit(ball, ballrect)
+    pygame.display.flip()</pre>
+
+
+<p><li> the ball can be taken from here:
+<a href="ball.png">ball.png</a> <br>
+</ul></p><hr>
+
+<h2>5. Commentary
+<a name="5. Commentary"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://www.pygame.org/docs/tut/intro/intro.html">Reference</a>
+<li> <tt><small>import pygame</small></tt> imports the
+package with all the available
+<tt><small>PyGame</small></tt> modules
+<tt><small>pygame.init()</small></tt> initialises each of
+these modules <li>
+<tt><small>pygame.display.set_mode()</small></tt> creates
+the graphic window <li> <tt><small>PyGame</small></tt>
+represents images as Surface objects <ul type=square> <li>
+<tt><small>display.set_mode()</small></tt> creates a new
+Surface object that represents the actual displayed graphics
+<li> any modification to this Surface becomes visible on the
+monitor </ul> <li>
+<tt><small>pygame.image.load().convert()</small></tt> loads
+in the ball image <ul type=square> <li> we convert it to a
+fast internal format </ul> <li> the program is initialised
+and ready to run so we enter an infinite loop in which we
+check for user input, move the ball, and then draw the ball
+<li> <tt><small>ballrect = ballrect.move(speed)</small></tt>
+updates the ball position <li> the two
+<tt><small>if</small></tt> statements check to see whether
+the ball has touched the edge of the window
+<ul type=square> <li> the <tt><small>then</small></tt>
+section bounces the ball back </ul> <li>
+<tt><small>screen.fill(black)</small></tt> erases everything
+on the screen <li>
+<tt><small>screen.blit(ball,ballrect)</small></tt> redraw
+the ball at the new position <li>
+<tt><small>pygame.display.flip()</small></tt> now make the
+screen visible</p>
+
+<p></ul></p><hr>
+
+<h2>6. Detail
+<a name="6. Detail"></a>
+</h2>
+
+
+<p><ul type=disc> <li> notice that
+<tt><small>PyGame</small></tt> uses double buffering
+<ul type=square> <li> we can update the
+<tt><small>screen</small></tt> piece at a time and the user
+sees nothing <li> only when we call
+<tt><small>pygame.display.flip()</small></tt> does the
+screen become visible <li> ensures speed and near instant
+updates </ul> <li> it also allows us to use high level
+techniques such as
+<tt><small>screen.fill(black)</small></tt> without much of a
+performance penalty</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. PyGame">1. PyGame</a><br>
+<a href="#2. Is Python suitable for gaming?">2. Is Python suitable for gaming?</a><br>
+<a href="#3. Game tools implemented in Python">3. Game tools implemented in Python</a><br>
+<a href="#4. Bouncing ball">4. Bouncing ball</a><br>
+<a href="#5. Commentary">5. Commentary</a><br>
+<a href="#6. Detail">6. Detail</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

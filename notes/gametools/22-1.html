@@ -1,0 +1,172 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:24 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 22-1
+<a name="1. Lecture: 22-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+21-1, 21-2 and 21-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Adding more assets into touchmap
+<a name="2. Adding more assets into touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li> more assets are available at:
+<a href="http://floppsie.comp.glam.ac.uk/download/targz/touchmap-extra2.tar.gz">http://floppsie.comp.glam.ac.uk/download/targz/touchmap-extra2.tar.gz</a>
+<li> to add these assets you can: <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/touchmap-0.2</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/touchmap-extra2.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxvf touchmap-extra2.tar.gz</b> <tt><br>
+$</tt> <b>rm touchmap-extra2.tar.gz</b> <li> to convert
+these into <tt><small>png</small></tt> s you can change your
+<tt><small>Makefile.am</small></tt> as follows: <li>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui-0.2/Makefile.am</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">all: doorh.png doorv.png doorh-bw.png doorv-bw.png hingeh.png \
+     wallh.png wallv.png wallh-bw.png wallv-bw.png hellknight.png tick.png \
+     doom3.png rock1sid.png sb_rocket.png sb_nails.png num_colon.png \
+     wizwood1_4.png inv2_sshotgun.png inva1_nailgun.png inva1_rlaunch.png \
+     inva1_srlaunch.png afloor3_1_gloss.png city1_7.png adoor01_2.png \
+     city1_4_gloss.png city2_1.png</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui-0.2/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">&deg;pnmscale -xsize=100 -ysize=100 $&lt; &gt; t.pnm
+&deg;pnmtopng t.pnm &gt; $@
+&deg;$(RM) t.pnm
+
+city1_4_gloss.png: $(srcdir)/touchmap-extra2/city1_4_gloss.jpg
+&deg;convert -resize 100x100 $&lt; $@
+
+city2_1.png: $(srcdir)/touchmap-extra2/city2_1.jpg
+&deg;convert -resize 100x100 $&lt; $@
+
+afloor3_1_gloss.png: $(srcdir)/touchmap-extra2/afloor3_1_gloss.jpg
+&deg;convert -resize 100x100 $&lt; $@
+
+
+adoor01_2.png: $(srcdir)/touchmap-extra2/adoor01_2.jpg
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui-0.2/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">city1_7.png: $(srcdir)/touchmap-extra2/city1_7.jpg
+&deg;convert -resize 100x100 $&lt; $@
+
+inv2_sshotgun.png: $(srcdir)/touchmap-extra2/inv2_sshotgun.png
+&deg;convert -resize 100x100 $&lt; $@
+
+inva1_nailgun.png: $(srcdir)/touchmap-extra2/inva1_nailgun.png
+&deg;convert -resize 100x100 $&lt; $@
+
+inva1_rlaunch.png: $(srcdir)/touchmap-extra2/inva1_rlaunch.png
+&deg;convert -resize 100x100 $&lt; $@
+
+
+inva1_srlaunch.png: $(srcdir)/touchmap-extra2/inva1_srlaunch.png
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui-0.2/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">wizwood1_4.png: $(srcdir)/touchmap-extra2/wizwood1_4.jpg
+&deg;convert -resize 100x100 $&lt; $@
+
+num_colon.png: $(srcdir)/touchmap-extra2/num_colon.png
+&deg;convert -resize 100x100 $&lt; $@
+
+rock1sid.png: $(srcdir)/touchmap-extra2/rock1sid.tga
+&deg;convert -resize 100x100 $&lt; $@
+
+sb_rocket.png: $(srcdir)/touchmap-extra2/sb_rocket.png
+&deg;convert -resize 100x100 $&lt; $@
+
+
+sb_nails.png: $(srcdir)/touchmap-extra2/sb_nails.png
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/touchgui-0.2/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">hellknight.png: $(srcdir)/images/hellknight.png
+&deg;convert -resize 100x100 $&lt; $@
+
+tick.png: $(srcdir)/images/tick.png
+&deg;convert -resize 100x100 $&lt; $@
+
+
+doom3.png: $(srcdir)/images/doom3.png
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li> where &deg; must be the tab
+character (tab key)</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Lecture: 22-1">1. Lecture: 22-1</a><br>
+<a href="#2. Adding more assets into touchmap">2. Adding more assets into touchmap</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

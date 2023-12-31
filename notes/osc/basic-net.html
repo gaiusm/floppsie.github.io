@@ -1,0 +1,502 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:26 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Introduction to the TCP/IP protocol suite
+<a name="1. Introduction to the TCP/IP protocol suite"></a>
+</h2>
+
+
+<p><ul type=disc> <li> TCP/IP has been around for longer
+than the ISO OSI 7 layer model <li> the ISO OSI 7 layer
+model is useful as a reference model for explaining the
+function of data transmission <li> practically TCP/IP has
+won but literature still uses the ISO OSI 7 layer model</p>
+
+<p></ul></p><hr>
+
+<h2>2. ISO OSI 7 Layer model and the TCP/IP protocol stack
+<a name="2. ISO OSI 7 Layer model and the TCP/IP protocol stack"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there is not an exact match between
+the ISO OSI 7 layer reference model and the TCP/IP protocol
+stack <li></p>
+
+
+<p align="left"><img src="grohtml-26747602.png" alt="Image grohtml-26747602.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>3. Networking Glossary
+<a name="3. Networking Glossary"></a>
+</h2>
+
+
+<p><ul type=disc> <li> router <ul type=square> <li> a
+special purpose, dedicated computer that attaches to two or
+more networks and routes IP datagrams from one to another
+<li> each router forwards a datagram to another router until
+the datagram reaches its destination </ul> <li> hub
+<ul type=square> <li> an electronic device that connects to
+several computers and serves as the centre of a LAN, often
+Ethernet using 100Base-T, 1000Base-T or 10000Base-T wiring
+</ul> <li> firewall <ul type=square> <li> a security
+mechanism placed between a company and the Internet to
+protect the company&rsquo;s computers from attack </ul> <li>
+hostname <ul type=square> <li> the name assigned to a
+computer </ul> <li> domain name <ul type=square> <li> the
+name assigned to a computer <li> a name might consist of
+several words separated by periods (sometime abbreviated to
+FQDN, fully qualified domain name) </ul> <li> gateway
+<ul type=square> <li> a device used to connect two different
+networks, especially a connection to the Internet</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>4. TCP/IP
+<a name="4. TCP/IP"></a>
+</h2>
+
+
+<p><ul type=disc> <li> many excellent references on TCP/IP
+<ul type=square> <li> <i>Internetworking with TCP/IP:
+principles, protocols and architecture by Douglas Comer</i>
+&dagger; <li> <i>UNIX Network Programming</i> by Richard
+Stevens, chapter 4</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. History of TCP/IP and Internet
+<a name="5. History of TCP/IP and Internet"></a>
+</h2>
+
+
+<p><ul type=disc> <li> part of the excitement about the
+Internet is its size and growth rate</p>
+
+
+<p align="left"><img src="grohtml-26747603.png" alt="Image grohtml-26747603.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>6. History of TCP/IP and Internet (continued)
+<a name="6. History of TCP/IP and Internet (continued)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> DARPA was the main funding agency
+for packet-switched research in the USA DOD
+<ul type=square> <li> began working on the Internet in the
+mid 1970s <li> design a protocol that would recover if
+various nodes disappeared <li> DOD had in mind a nuclear
+war! <li> wanted a nervous system to carry all military
+information in USA </ul> <li> by 1980 TCP/IP protocol had
+been designed <li> the physical network was called the
+ARPANET which consisted of <ul type=square> <li> point to
+point connections <li> packet switching over radio networks
+<li> satellite communication channels</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>7. History of TCP/IP and Internet
+<a name="7. History of TCP/IP and Internet"></a>
+</h2>
+
+
+<p><ul type=disc> <li> January 1983 DARPA demanded that all
+computer attach to ARPANET via TCP/IP <ul type=square> <li>
+TCP/IP implementations were available at low cost <li> most
+(90%) Computer Science departments were running BSD Unix
+<li> TCP/IP available in source form for BSD systems </ul>
+<li> growth <ul type=square> <li> 1987 Internet growing at
+15% per month (Comer p.6) <li> soon after that it began to
+double each year!</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. Moores Law
+<a name="8. Moores Law"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26747604.png" alt="Image grohtml-26747604.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>9. History of TCP/IP
+<a name="9. History of TCP/IP"></a>
+</h2>
+
+
+<p><ul type=disc> <li> some reasons why
+<ul type=square> <li> reference implementation of TCP/IP in
+BSD Unix (1983) 4.3 BSD and 4.4 BSD <li> inexpensive
+microprocessors (1983) <li> inexpensive wide area fiber
+optic cable - carrying a high throughput of data (1984) <li>
+deployment of DNS (Domain Name System) (dynamic ASCII to
+number lookup system)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. Internet for the masses
+<a name="10. Internet for the masses"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in early 1990&rsquo;s Tim
+Berner&rsquo;s Lee was working at CERN and as a bye product
+of high energy physics was working on document management
+system <li> he created a hypertext markup language which was
+to become HTML <li> HTTP is the protocol which WWW clients
+and servers obey <li> people mistakenly think the HTTP is
+the Internet</p>
+
+<p></ul></p><hr>
+
+<h2>11. Introduction to TCP/IP
+<a name="11. Introduction to TCP/IP"></a>
+</h2>
+
+
+<p><ul type=disc> <li> LANs have developed greatly over the
+last 20 years <ul type=square> <li> there are a large
+variety of LANs <li> different LANs in different departments
+and countries <li> equipment can be bought on an incremental
+basis <li> evolution not revolution - cost savings </ul>
+<li> can be really effective if applications can talk to one
+another across the different LANs <ul type=square> <li>
+companies with different departments can share resources
+</ul> <li> one solution is for an operating system to
+provide this multivendor integration <ul type=square> <li>
+alternatively a standard network protocol could be designed
+</ul> <li> Internet Protocol (IP) - so called because it
+allows communication between LANs</p>
+
+<p></ul></p><hr>
+
+<h2>12. Problems/benefits of TCP/IP
+<a name="12. Problems/benefits of TCP/IP"></a>
+</h2>
+
+
+<p><ul type=disc> <li> what problems exist if we want to
+link up many LANs? <ul type=square> <li> unique addressing
+<li> hardware independent </ul> <li> obvious benefits of the
+Internet</p>
+
+<p></ul></p><hr>
+
+<h2>13. TCP/IP Protocol Overview
+<a name="13. TCP/IP Protocol Overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26747605.png" alt="Image grohtml-26747605.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>14. TCP/IP Protocol Summary
+<a name="14. TCP/IP Protocol Summary"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Internet Prococol
+<ul type=square> <li> provides the packet delivery service
+for TCP, UDP and ICMP <li> user processes do not normally
+explicitly generate IP datagrams </ul> <li> an IP address is
+a virtual address, it was not constructed with a
+preconceived piece of hardware in mind <li> Address
+Resolution Protocol <ul type=square> <li> maps an Internet
+address into a hardware address </ul> <li> Reverse Address
+Resolution Protocol <ul type=square> <li> maps a hardware
+address into an Internet address.</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>15. TCP and UDP
+<a name="15. TCP and UDP"></a>
+</h2>
+
+
+<p><ul type=disc> <li> primarily there are two transport
+protocols used with IP: TCP and UDP <ul type=square> <li>
+remember that IP may provide an unreliable service </ul>
+<li> <b>Transmission Control Protocol (TCP)</b>
+<ul type=square> <li> provides a flexible two-way byte
+stream protocol (byte stream allows addressing <i>within</i>
+a host - to user, process or service) <li> <i>provides a
+bidirectional pipe</i> <li> the source and destination
+address are called a <i>Port</i> <li> TCP is the most
+popular transport protocol on top of IP <li> it uses sliding
+window technique to provide a reliable service <li> it uses
+a three way handshake to establish a connection <li> and a
+two way handshake to disconnect</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>16. User Datagram Protocol (UDP)
+<a name="16. User Datagram Protocol (UDP)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is an unreliable datagram protocol
+and is deliberately simple <ul type=square> <li> it does not
+ensure that packets arrive in order, un duplicated, or even
+at all! </ul> <li> it sends discrete datagrams, and delivers
+messages that arrive to the appropriate <i>Port</i> (same
+addressing schema as TCP) <ul type=square> <li> a
+<i>port</i> may belong to a user, process or service <li>
+the standard Internet name service, DNS, uses UDP <li> it
+can be regarded as multiplexing many users, processes and
+services through one IP address </ul> <li> UDP has no
+standard connection procedure and no disconnect
+procedure</p>
+
+<p></ul></p><hr>
+
+<h2>17. IP technical introduction
+<a name="17. IP technical introduction"></a>
+</h2>
+
+
+<p><ul type=disc> <li> IP centerpiece of the TCP/IP
+protocol stack. It hides the differences between data link
+protocols from the transport protocols that the end user
+applications use <ul type=square> <li> can replace old data
+link technologies with new faster technologies <li>
+application independent </ul> <li> IP defines a virtual
+network address space <ul type=square> <li> if you are
+connected to the Internet then your network has a unique IP
+address <li> within that network address your machine has a
+unique host id. </ul> <li> IP provides a connectionless
+packet delivery service <ul type=square> <li> it routes
+small messages from one machine to another on the addressed
+within that message <li> connectionless service routes each
+packet separately and therefore does not guarantee reliable
+delivery <li> having connectionless packet delivery as the
+basis for all Internet services makes it adaptable to a wide
+range of hardware <li> connectionless packet delivery is
+often termed <i>datagram</i></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>18. IP (continued)
+<a name="18. IP (continued)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the IP protocol works as follows:
+<ul type=square> <li> transport layer split up a message
+into datagrams of &lt;=64k bytes </ul> <li> transport layer
+gives a datagram to the IP layer <ul type=square> <li>
+datagram is transmitted through the Internet <li> a hop at a
+time (gateway to gateway) <li> a datagram maybe divided into
+smaller units at any hop </ul> <li> datagram is reassembled
+at the destination machine <ul type=square> <li> original
+message is constructed <li> delivered to the corresponding
+transport layer</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>19. TCP/IP Support Protocols
+<a name="19. TCP/IP Support Protocols"></a>
+</h2>
+
+
+<p><ul type=disc> <li> are another reason TCP/IPs
+popularity <li></p>
+
+
+<p align="left"><img src="grohtml-26747606.png" alt="Image grohtml-26747606.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>20. TCP/IP Protocol Summary
+<a name="20. TCP/IP Protocol Summary"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Transmission Control Protocol
+<ul type=square> <li> connection-oriented protocol <li>
+reliable, full duplex, byte stream for user processes </ul>
+<li> User Data Protocol <ul type=square> <li> connectionless
+protocol for user processes <li> unreliable </ul> <li>
+Internet Control Message Protocol <ul type=square> <li>
+handles error and control information between gateways and
+hosts <li> <i>normally</i> generated by TCP/IP networking
+software itself, not the user processes</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>21. TCP/IP Protocol Summary
+<a name="21. TCP/IP Protocol Summary"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Internet Protocol
+<ul type=square> <li> provides the packet delivery service
+for TCP, UDP and ICMP <li> user processes do not normally
+explicitly generate IP datagrams </ul> <li> Address
+Resolution Protocol maps an Internet address into a hardware
+address <li> Reverse Address Resolution Protocol
+<ul type=square> <li> maps a hardware address into an
+Internet address.</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>22. IP Classes
+<a name="22. IP Classes"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26747607.png" alt="Image grohtml-26747607.png"></p>
+
+<p style="margin-top: 1em"><li> for example
+<tt><small>193.63.129.1</small></tt> is a class C address as
+we convert the first byte of the address
+<tt><small>193</small></tt> into binary and examine the top
+3 bits of a byte <li> there are 127 class A networks
+<ul type=square> <li> each can have 16,777,216 hosts </ul>
+<li> there are 16,384 class B networks <ul type=square> <li>
+each can have 65,336 hosts </ul> <li> there are 2,097,152
+class C networks <ul type=square> <li> each of which have
+256 hosts </ul> <li> note that in practice the host byte
+values 0 and 255 are reserved for network and broadcast
+respectively <br>
+</ul></p><hr>
+
+<h2>23. Private addresses in class A, B and C
+<a name="23. Private addresses in class A, B and C"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in addition each class A, B and C
+have a private network address <li> class A
+<ul type=square> <li> reserves the range 10.0.0.0 -
+10.255.255.255 (16,777,216 hosts) </ul> <li> class B
+<ul type=square> <li> 172.16.0.0 - 172.31.255.255 (1,048,576
+hosts) </ul> <li> class C <ul type=square> <li> 192.168.0.0
+- 192.168.255.255 (65,536 hosts)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>24. Example IP Static Configuration
+<a name="24. Example IP Static Configuration"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Case study - adding a machine onto
+the Computer Science network <li> the IP network in Computer
+Studies connects: <ul type=square> <li> Apple computers <li>
+Windows computers <li> Raspberry Pi machines <li> Debian and
+Mint GNU/Linux clients and servers <li> routers and various
+print services, etc </ul> <li> each machine may run a
+different protocol above the IP layer if they wish
+<ul type=square> <li> but most machines will run the IP
+protocol </ul> <li> the Computer Studies IP network is
+connected (via a gateway) to the University of Southwales IP
+network <ul type=square> <li> in turn is connected to the
+world IP network via another gateway (through the University
+of Southwales 1M bit line) </ul> <li> <i>every</i> IP
+address actually refers to the interface card and <b>NOT</b>
+the machine! <li> thus a gateway machine will have at least
+two interface cards <li> to add a new machine
+<tt>floppsie</tt> onto the Computer Studies network
+<ul type=square> <li> floppsie&rsquo;s interface card has to
+be assigned a unique IP address <li> first three numbers the
+same as the Computer Science network (193.63.130) <li> class
+C network - means first 3 bytes are always the same <li>
+last number is the interface card number (hostid) 52 <li>
+193.63.130.52 </ul> <li> software on the new machine needs
+to know: <ul type=square> <li> the gateway on the Computer
+Studies network to other networks <li> its own interface
+card IP address <li> the <i>nameserver</i> IP address. The
+<i>nameserver</i> translates all ASCII names to IP numerical
+addresses. <li> hop metric given with each gateway</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>25. IP Configuration
+<a name="25. IP Configuration"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26747608.png" alt="Image grohtml-26747608.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><big><a name="index"></a></big></p>
+<a href="#1. Introduction to the TCP/IP protocol suite">1. Introduction to the TCP/IP protocol suite</a><br>
+<a href="#2. ISO OSI 7 Layer model and the TCP/IP protocol stack">2. ISO OSI 7 Layer model and the TCP/IP protocol stack</a><br>
+<a href="#3. Networking Glossary">3. Networking Glossary</a><br>
+<a href="#4. TCP/IP">4. TCP/IP</a><br>
+<a href="#5. History of TCP/IP and Internet">5. History of TCP/IP and Internet</a><br>
+<a href="#6. History of TCP/IP and Internet (continued)">6. History of TCP/IP and Internet (continued)</a><br>
+<a href="#7. History of TCP/IP and Internet">7. History of TCP/IP and Internet</a><br>
+<a href="#8. Moores Law">8. Moores Law</a><br>
+<a href="#9. History of TCP/IP">9. History of TCP/IP</a><br>
+<a href="#10. Internet for the masses">10. Internet for the masses</a><br>
+<a href="#11. Introduction to TCP/IP">11. Introduction to TCP/IP</a><br>
+<a href="#12. Problems/benefits of TCP/IP">12. Problems/benefits of TCP/IP</a><br>
+<a href="#13. TCP/IP Protocol Overview">13. TCP/IP Protocol Overview</a><br>
+<a href="#14. TCP/IP Protocol Summary">14. TCP/IP Protocol Summary</a><br>
+<a href="#15. TCP and UDP">15. TCP and UDP</a><br>
+<a href="#16. User Datagram Protocol (UDP)">16. User Datagram Protocol (UDP)</a><br>
+<a href="#17. IP technical introduction">17. IP technical introduction</a><br>
+<a href="#18. IP (continued)">18. IP (continued)</a><br>
+<a href="#19. TCP/IP Support Protocols">19. TCP/IP Support Protocols</a><br>
+<a href="#20. TCP/IP Protocol Summary">20. TCP/IP Protocol Summary</a><br>
+<a href="#21. TCP/IP Protocol Summary">21. TCP/IP Protocol Summary</a><br>
+<a href="#22. IP Classes">22. IP Classes</a><br>
+<a href="#23. Private addresses in class A, B and C">23. Private addresses in class A, B and C</a><br>
+<a href="#24. Example IP Static Configuration">24. Example IP Static Configuration</a><br>
+<a href="#25. IP Configuration">25. IP Configuration</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</i></p> <hr>
+</body>
+</html>

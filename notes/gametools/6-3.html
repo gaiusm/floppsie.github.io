@@ -1,0 +1,187 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:15 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. explosions.py
+<a name="1. explosions.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, sys, time, random
+from pygame.locals import *
+
+ramp_one, ramp_two, ramp_three = None, None, None
+
+
+wood_light = (166, 124, 54)
+wood_dark = (76, 47, 0)
+blue = (0, 100, 255)
+dark_red = (166, 25, 50)
+dark_green = (25, 100, 50)
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+white = (255, 255, 255)</pre>
+
+
+<p><li></p>
+<pre>width, height = 1024, 768
+screen = None
+
+maxRadius = 60
+allExplosions = []
+delay = 100   # number of milliseconds delay before generating a USEREVENT
+
+
+class explosion:
+    def __init__ (self, pos):
+        self._radius = 1
+        self._maxRadius = maxRadius
+        self._increasing = True
+        self._pos = pos</pre>
+
+
+<p><li></p>
+
+<pre>    def update (self):
+        if self._increasing:
+            pygame.draw.circle (screen, white, self._pos, self._radius, 0)
+            self._radius += 1
+            if self._radius == self._maxRadius:
+                self._increasing = False
+        else:
+            pygame.draw.circle (screen, black, self._pos, self._radius, 0)
+            self._radius -= 1
+            if self._radius &gt; 0:
+                pygame.draw.circle (screen, white, self._pos, self._radius, 0)
+            else:
+                globalRemove (self)</pre>
+
+
+<p><li></p>
+<pre>def createExplosion (pos):
+    global allExplosions
+    allExplosions += [explosion (pos)]
+    pygame.time.set_timer (USEREVENT+1, delay)
+
+
+def globalRemove (e):
+    global allExplosions
+    allExplosions.remove (e)</pre>
+
+
+<p><li></p>
+
+<pre>def updateAll ():
+    if allExplosions != []:
+        for e in allExplosions:
+            e.update ()
+        pygame.display.flip ()
+        pygame.time.set_timer (USEREVENT+1, delay)</pre>
+
+
+<p><li></p>
+
+<pre>def wait_for_event ():
+    global screen
+    while True:
+        event = pygame.event.wait ()
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN and event.key == K_ESCAPE:
+            sys.exit (0)
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            createExplosion (pygame.mouse.get_pos ())
+        if event.type == USEREVENT+1:
+            updateAll ()</pre>
+
+
+<p><li></p>
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    wait_for_event ()
+
+main ()</pre>
+
+<p></ul></p><hr>
+
+<h2>2. Homework
+<a name="2. Homework"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly get the
+<tt><small>explosions.py</small></tt> to work <li> now
+comment each function <li> comment each class and its use
+<li> familiarise yourself with the game missile command <li>
+see if you can extend this code to place six cities and 3
+missile silos statically at the bottom of the screen</p>
+
+<p></ul></p><hr>
+
+<h2>3. Homework 2
+<a name="3. Homework 2"></a>
+</h2>
+
+
+<p><ul type=disc> <li> write a Python program to print out
+all permutations of a string <li> for example
+<tt><small>ab</small></tt> <li></p>
+<pre>ab
+ba</pre>
+
+<p><li> for example <tt><small>abc</small></tt> <li></p>
+<pre>abc
+acd
+bac
+bca
+cab
+cba</pre>
+
+<p><li> your program should be able to take any size string
+with unique characters and print out all permutations</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. explosions.py">1. explosions.py</a><br>
+<a href="#2. Homework">2. Homework</a><br>
+<a href="#3. Homework 2">3. Homework 2</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

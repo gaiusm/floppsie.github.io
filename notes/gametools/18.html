@@ -1,0 +1,251 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:08 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Implementation of Touchmap 0.2
+<a name="1. Implementation of Touchmap 0.2"></a>
+</h2>
+
+
+<p><ul type=disc> <li> last week we adpated
+<tt><small>touchmap-0.1</small></tt> to use an indirect
+function call to implement a spawn button
+<ul type=square> <li> this worked and could be extended to
+implement many other buttons </ul> <li> however it is an
+ugly implementation <ul type=square> <li> although it was
+very minimal (in terms of code line changes) </ul> <li> it
+would be cleaner to adopt an object oriented approach
+<ul type=square> <li> albeit the number of lines of code
+will increase </ul> <li> one of the major issues of a
+<tt><small>touchmap</small></tt> implementation is the
+ability to change a tile in the grid <ul type=square> <li>
+currently it changes: <ul type=circle> <li> a blank to a
+wall <li> a wall to a door <li> a door to a blank </ul>
+</ul> <li> we need a spawn, hellknight, ammo, ticks etc
+<ul type=square> <li> the indirect function call can do this
+but it will result in messy code</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Touchmap 0.2
+<a name="2. Touchmap 0.2"></a>
+</h2>
+
+
+<p><ul type=disc> <li> removes the indirect function call
+<ul type=square> <li> but introduces a new class
+<tt><small>button</small></tt> <li> and about 20 lines of
+extra code </ul> <li> <tt><small>touchmap-0.2</small></tt>
+can be downloaded using: <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/touchmap-0.2.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf touchmap-0.2.tar.gz</b> <tt><br>
+$</tt> <b>ls touchmap-0.2</b> <li> and can be built using:
+<li> <tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>rm -rf build-touchmap</b> <tt><br>
+$</tt> <b>mkdir build-touchmap</b> <tt><br>
+$</tt> <b>cd build-touchmap</b> <tt><br>
+$</tt> <b>../touchmap-0.2/configure</b> <tt><br>
+$</tt> <b>make</b> <li> and you can run it via: <li>
+<tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/build-touchmap</b> <tt><br>
+$</tt> <b>./localrun.sh touchmap.py</b> <li>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/touchmap-0.2/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">class button:
+    def __init__ (self, x, y, size):
+        self._x = x
+        self._y = y
+        self._size = size
+        self._tile = touchgui.image_tile (blank_list (&quot;wallv&quot;, size),
+                                          x, y,
+                                          size, size, cellback)
+    def to_blank (self):
+        self._tile.set_images (blank_list (&quot;wallv&quot;, cell_size))
+    def to_wall (self):
+        self._tile.set_images (wall_list (&quot;v&quot;, cell_size))
+    def to_spawn (self):
+        self._tile = touchgui.text_tile (dark_grey, light_grey, white, mid_grey,
+                                         &rsquo;s&rsquo;, self._size,
+                                         self._x, self._y,
+                                         self._size, self._size,
+                                         worldspawn, &quot;worldspawn&quot;)
+    def get_tile (self):
+        return self._tile</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/touchmap-0.2/touchmap.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">blank_t, wall_t, door_t, spawn_t = range (4)  # enumerated types
+next_tile = wall_t
+
+
+function_create = {blank_t:create_blank,
+                   wall_t:create_wall,
+                   door_t:create_door,
+                   spawn_t:create_spawn}</pre>
+
+
+<p><font color="#000000"><li> note the
+<tt><small>next_tile</small></tt> is now a variable which
+contains an enumerated value <ul type=square> <li> denoting
+the cell type to be created on the grid </ul> <li> notice
+the dictionary of enumerated values associated with
+functions <li></font>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/touchmap-0.2/touchmap.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def cellback (param, tap):
+    global clicked, cell_array, button_array, double_tapped_cell
+    clicked = True
+    mouse = pygame.mouse.get_pos ()
+    x, y = get_cell (mouse)
+    old = cell_array.get (x + xoffset, y + yoffset)
+    button = button_array.get (x + xoffset, y + yoffset)
+    if old == &quot; &quot;:
+        # blank -&gt; next_tile
+        function_create[next_tile] (button)
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot;v&quot;)
+    elif old == &quot;v&quot;:
+        # wall -&gt; door
+        button.to_door ()
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot;|&quot;)
+    elif old == &quot;|&quot;:
+        # door -&gt; blank
+        button.to_blank ()
+        cell_array.set_contents (x + xoffset, y + yoffset, &quot; &quot;)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/touchmap-0.2/touchmap.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def create_blank (button):
+    button.to_blank ()
+
+def create_wall (button):
+    button.to_wall ()
+
+def create_door (button):
+    button.to_door ()
+
+
+def create_spawn (button):
+    global next_tile
+    button.to_spawn ()
+    next_tile = wall_t</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Hints on how to implement the header for the output map
+<a name="3. Hints on how to implement the header for the output map"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we need a
+mechanism to allow the program to remember which assets have
+been used <li> then just prior to writing the file the
+program needs to iterate over the list and emit the
+appropriate header info</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Tutorial
+<a name="4. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> download the
+<tt><small>touchmap-0.2</small></tt> code <li> comment each
+function/method in
+<tt><small>touchmap-0.2/touchmap.py</small></tt> <li> run
+the code <ul type=square> <li> notice the colour scheme of
+the spawn button <li> change the colour of the spawn button
+so the default screen background blends in with the
+background of the button </ul> <li> change the
+<tt><small>return</small></tt> button to an
+<tt><small>export</small></tt> button <li> see if you can
+add a hellknight button <li> fix the spawn button to that it
+adds an <tt><small>s</small></tt> when the
+<tt><small>export</small></tt> button is pressed <li> see if
+you can find a way to add the correct header to the exported
+text <li> ie, check the example <li></font></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/chisel/maps/simple.txt</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define 3 room 3
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+define a ammo ammo_shells_large 16</pre>
+
+
+<p><font color="#000000"><li> add a light button <li> add a
+room button</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Implementation of Touchmap 0.2">1. Implementation of Touchmap 0.2</a><br>
+<a href="#2. Touchmap 0.2">2. Touchmap 0.2</a><br>
+<a href="#3. Hints on how to implement the header for the output map">3. Hints on how to implement the header for the output map</a><br>
+<a href="#4. Tutorial">4. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

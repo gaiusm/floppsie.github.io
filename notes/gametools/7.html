@@ -1,0 +1,678 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:05 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Moving barrel down ramps
+<a name="1. Moving barrel down ramps"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-26713323.png" alt="Image grohtml-26713323.png"></p>
+
+<p style="margin-top: 1em"><li> create waypoints for the
+barrels <ul type=square> <li> place waypoints into a
+dictionary (called <tt><small>points</small></tt> ) <li>
+these will be screen coordinates - which we can extract from
+the ladder or ramp polygons </ul> <li> then the barrels can
+use Bresenham&rsquo;s line algorithm to move between the
+waypoints <li> now we need a function to create a route <li>
+<b><small><small><font color="#196633"><br>
+kongroute.py</font></small></small></b></p>
+<pre style="margin-top: 1em">#!/usr/bin/env python3
+
+import random
+
+#
+#  the points are:  l1t, l1b, l2t, l2b   (ladder no. top and bottom)
+#                   r1l, r1r             (ramp 1 left and right)
+#                   r2l, r2r             (ramp 2 left and right)
+#                   r3l, r3r             (ramp 3 left and right)
+#
+
+
+#
+#  a barrel might go to the end of a ramp or occasionally to
+#  a ladder returns a list of way points
+#</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def gen_route ():
+    # moving along top ramp 1
+    route = [&quot;r1r&quot;]
+    if random.random () &lt; 0.2:
+        route += [&quot;l1t&quot;, &quot;l1b&quot;]  # choose ladder
+    else:
+        route += [&quot;r1l&quot;, &quot;r2l&quot;]  # fall off end
+    # moving along top ramp 2
+    if random.random () &lt; 0.2:
+        route += [&quot;l2t&quot;, &quot;l2b&quot;]
+    else:
+        route += [&quot;r2r&quot;, &quot;r3r&quot;]
+    # and move along ramp 3
+    route += [&quot;r3l&quot;]
+    return route
+
+for b in range (7):
+    print gen_route ()</pre>
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>python3 kongroute.py</b></font></p>
+
+<pre>[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;l2t&rsquo;, &rsquo;l2b&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;r2r&rsquo;, &rsquo;r3r&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;r2r&rsquo;, &rsquo;r3r&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;l2t&rsquo;, &rsquo;l2b&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;r2r&rsquo;, &rsquo;r3r&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;l1t&rsquo;, &rsquo;l1b&rsquo;, &rsquo;r2r&rsquo;, &rsquo;r3r&rsquo;, &rsquo;r3l&rsquo;]
+[&rsquo;r1r&rsquo;, &rsquo;r1l&rsquo;, &rsquo;r2l&rsquo;, &rsquo;r2r&rsquo;, &rsquo;r3r&rsquo;, &rsquo;r3l&rsquo;]</pre>
+
+
+<p><font color="#000000"><li> we can see random routes are
+chosen <li> both ladder 1 and ladder 2 are rejected and
+chosen <li> the function/method
+<tt><small>random.random()</small></tt> returns a floating
+point number in the range <tt><small>0.0</small></tt> to
+<tt><small>1.0</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>2. Main function
+<a name="2. Main function"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    draw_scene (gradient)
+    play_game (screen)
+    wait_for_event ()
+
+main ()</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. play_game
+<a name="3. play_game"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>def play_game (screen):
+    o = -1
+    while True:
+        t = pygame.time.get_ticks()
+        if o != t:
+            activity_scheduler (t)
+            o = t
+        checkInput()
+        screen.fill([0, 0, 0]) # blank the screen.
+        draw_polygons ()
+        for b in barrels:
+            b.update (t, 0, width)
+            screen.blit (b.image, b.rect)
+        pygame.display.flip ()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Points of interest
+<a name="4. Points of interest"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<tt><small>pygame.time.get_ticks()</small></tt> returns the
+time in the number of milliseconds <li>
+<tt><small>screen.fill([0, 0, 0])</small></tt> blank out
+compete screen <ul type=square> <li> then redraw everything
+</ul> <li> <tt><small>barrels</small></tt> is a list of
+barrels <ul type=square> <li> when a barrel is deleted it is
+removed from this list</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>5. activity_scheduler
+<a name="5. activity_scheduler"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre># there are 1000 ticks per second in pygame
+activity_list = [[2000, 0.5, create_new_barrel],
+                 [1000, 1.0, display_time],
+                 [120000, 1.0, finish_game]]
+
+
+def activity_scheduler (ticks):
+    global activity_list
+    for e in activity_list:
+        if (ticks % e[0] == 0) and (random.random () &lt;= e[1]):
+            e[2] (ticks)</pre>
+
+
+<p><font color="#000000"><li> describes a way of encoding
+when a function should be executed <li> in the example above
+we attempt to call <tt><small>create_new_barrel</small></tt>
+every 2 seconds <ul type=square> <li> but the program only
+calls this function if
+<tt><small>random.random()</small></tt> is &gt;= 0.5 <li>
+giving a probability of
+<img src="grohtml-2671332-4.png" alt="Image grohtml-2671332-4.png">
+</ul> <li> the <tt><small>activity_list</small></tt>
+specifies that <tt><small>display_time</small></tt> is
+called every second <li> <tt><small>finish_game</small></tt>
+is called in 2 minutes <li> notice that it is possible that
+<tt><small>finish_game</small></tt> might not be called!
+<ul type=square> <li> the call to
+<tt><small>pygame.time.get_ticks()</small></tt> might miss
+this tick (due to the operating system running something
+else) </ul> <li> this approach is very useful as it allows
+for easy experimentation <li> it also allows the program to
+change the rate or probability depending upon circumstance
+<br>
+</ul></font></p><hr>
+
+<h2>6. check_input
+<a name="6. check_input"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>def checkInput():
+    for event in pygame.event.get():
+       if event.type == KEYDOWN:
+          if event.key == K_ESCAPE:
+              sys.exit(0)
+          elif event.key == K_RIGHT:
+              print &quot;right cursor pressed&quot;
+              # do_right
+          elif event.key == K_LEFT:
+              print &quot;left cursor pressed&quot;
+              # do left
+          elif event.key == K_UP:
+              print &quot;up cursor pressed&quot;
+              # do_jump</pre>
+
+
+<p><font color="#000000"><li> the above are placeholders to
+make Mario jump or move <br>
+</ul></font></p><hr>
+
+<h2>7. Barrel sprites
+<a name="7. Barrel sprites"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>class barrel_sprite (pygame.sprite.Sprite):
+    image = None
+
+
+    def __init__ (self):
+        pygame.sprite.Sprite.__init__(self)
+        if barrel_sprite.image is None:
+            barrel_sprite.image = pygame.image.load (&quot;barrel.png&quot;).convert ()
+        self.image = barrel_sprite.image
+        self.radius = barrel_sprite.image.get_height()
+        self.rect = self.image.get_rect()
+        self.route = gen_route ()
+        self.rect.topleft = points[self.route[0]]
+        self.next_update_time = 0 # update() hasn&rsquo;t been called yet.
+        self.nav = None
+        self.hop_goal = 0</pre>
+
+
+<p><font color="#000000"><li>
+<tt><small>points</small></tt> is a dictionary of our way
+points <ul type=square> <li>
+<tt><small>points[&quot;l1t&quot;]</small></tt> gives a
+coordinate (list) of an x and y value for the top of ladder
+1 </ul> <li> <tt><small>gen_route()</small></tt> returns the
+random route list which we covered in the earlier slides
+<li> <tt><small>self.nav</small></tt> will contain the
+Bresenham&rsquo;s object which is instantiated when we call
+<tt><small>p2pnav.walk_along</small></tt> (seen in the next
+side) <li> <tt><small>self.goal</small></tt> determines
+which waypoint this barrel is moving towards <li>
+<tt><small>self.rect.topleft =
+points[self.route[0]]</small></tt> assigns the initial
+position to this sprite <li></font></p>
+
+<pre>    def update (self, current_time, left, right):
+        global barrels
+        # Update every 10 milliseconds = 1/100th of a second.
+        if self.next_update_time &lt; current_time:
+            if self.nav == None or self.nav.finished ():
+                if self.hop_goal == len (self.route)-1:
+                    # finished all routes, delete ourself
+                    self.kill ()
+                    barrels.remove (self)
+                else:
+                    # move onto next route
+                    self.nav = p2pnav.walk_along (self.get_point (self.hop_goal),
+                                                  self.get_point (self.hop_goal+1))
+                    self.hop_goal += 1
+            self.rect.topleft = self.nav.get_next ()
+            self.next_update_time = current_time + 10</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. get_point
+<a name="8. get_point"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the method
+<tt><small>get_point</small></tt> is needed to adjust the
+waypoints slightly to take into account the barrel image
+size <li> left points need to be adjusted leftwards so that
+the barrels fall off the edge rather than drop though the
+floor <li> the ladder bottom point needs adjusting updates
+so that the barrel rests on the floor <li> the ramp height
+is adjusted so that the barrel appears to roll along the
+ramp <li> it is better to adjust the values in this method
+as it takes into consideration the sprite image size
+<li></font></p>
+
+<pre>    def get_point (self, goal):
+        if self.route[goal][-1] == &rsquo;b&rsquo;:
+            # bottom of the ladder is adjusted upwards
+            return [points[self.route[goal]][0],
+                    points[self.route[goal]][1]-self.radius]
+        elif self.route[goal][-1] == &rsquo;l&rsquo;:
+            # left ramp way point is adjusted, so it falls off edge
+            x = points[self.route[goal]][0]-self.radius/2
+        elif self.route[goal][-1] == &rsquo;r&rsquo;:
+            # right ramp way point is adjusted, so it falls off edge
+            x = points[self.route[goal]][0]-self.radius/2
+        else:
+            x = points[self.route[goal]][0]
+        # we do adjust the ramp height, to offset the circle height
+        return x, points[self.route[goal]][1]-self.radius/2</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Homework/tutorial work
+<a name="9. Homework/tutorial work"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> download this
+code and study it <li> comment each function/method/class
+<li> change the code so that you have <ul type=square> <li>
+smaller barrels <li> more ramps and more ladders </ul> <li>
+consider how you might introduce Mario as a sprite
+<li></font></p>
+<pre>#!/usr/bin/env python3
+
+import pygame, sys, time, random, bres
+from pygame.locals import *
+
+ramp_one, ramp_two, ramp_three = None, None, None
+
+
+wood_light = (166, 124, 54)
+wood_dark = (76, 47, 0)
+blue = (0, 100, 255)
+dark_red = (166, 25, 50)
+dark_green = (25, 100, 50)
+dark_blue = (25, 50, 150)
+black = (0, 0, 0)
+white = (255, 255, 255)
+ladder_colour = (58, 112, 106)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>width, height = 1024, 768
+screen = None
+ramp_height = 0.03
+ramp_length = 0.85
+ladder_height = 0.3
+ladder_length = 0.07
+gradient = 32
+points = {}
+debugging = False
+barrels = []</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  the points are:  l1t, l1b, l2t, l2b   (ladder no. top and bottom)
+#                   r1l, r1r             (ramp 1 left and right)
+#                   r2l, r2r             (ramp 2 left and right)
+#                   r3l, r3r             (ramp 3 left and right)
+#
+
+
+#
+#  a barrel might go to the end of a ramp or occasionally to a ladder
+#  returns a list of way points
+#</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def gen_route ():
+    # moving along top ramp 1
+    route = [&quot;r1r&quot;]
+    if random.random () &lt; 0.2:
+        route += [&quot;l1t&quot;, &quot;l1b&quot;]  # choose ladder
+    else:
+        route += [&quot;r1l&quot;, &quot;r2l&quot;]  # fall off end
+    # moving along top ramp 2
+    if random.random () &lt; 0.2:
+        route += [&quot;l2t&quot;, &quot;l2b&quot;]
+    else:
+        route += [&quot;r2r&quot;, &quot;r3r&quot;]
+    # and move along ramp 3
+    route += [&quot;r3l&quot;]
+    return route</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>class barrel_sprite (pygame.sprite.Sprite):
+    image = None
+
+
+    def __init__ (self):
+        pygame.sprite.Sprite.__init__(self)
+        if barrel_sprite.image is None:
+            barrel_sprite.image = pygame.image.load (&quot;barrel.png&quot;).convert ()
+        self.image = barrel_sprite.image
+        self.radius = barrel_sprite.image.get_height()
+        self.rect = self.image.get_rect()
+        self.route = gen_route ()
+        self.rect.topleft = points[self.route[0]]
+        self.next_update_time = 0 # update() hasnt been called yet.
+        self.nav = None
+        self.hop_goal = 0</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>    def update (self, current_time, left, right):
+        global barrels
+        # Update every 10 milliseconds = 1/100th of a second.
+        if self.next_update_time &lt; current_time:
+            if self.nav == None or self.nav.finished ():
+                if self.hop_goal == len (self.route)-1:
+                    # finished all routes, delete ourself
+                    self.kill ()
+                    barrels.remove (self)
+                else:
+                    # move onto next route
+                    self.nav = bres.walk_along (self.get_point (self.hop_goal),
+                                                  self.get_point (self.hop_goal+1))
+                    self.hop_goal += 1
+            self.rect.topleft = self.nav.get_next ()
+            self.next_update_time = current_time + 10</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>    def get_point (self, goal):
+        if self.route[goal][-1] == &quot;b&quot;:
+            # bottom of the ladder is adjusted upwards
+            return [points[self.route[goal]][0],
+                    points[self.route[goal]][1]-self.radius]
+        elif self.route[goal][-1] == &quot;l&quot;:
+            # left ramp way point is adjusted, so it falls off edge
+            x = points[self.route[goal]][0]-self.radius/2
+        elif self.route[goal][-1] == &quot;r&quot;:
+            # right ramp way point is adjusted, so it falls off edge
+            x = points[self.route[goal]][0]-self.radius/2
+        else:
+            x = points[self.route[goal]][0]
+        # we do adjust the ramp height, to offset the circle height
+        return x, points[self.route[goal]][1]-self.radius/2</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def xpos (v):
+    global height
+    return (int) (width*v)
+
+def ypos (v):
+    global width
+    return (int) (height*v)
+
+
+def draw_ramp (xoffset, yoffset, left_drop, right_drop):
+    global ramp_length, ramp_height
+    top_left = [xpos (xoffset), ypos (yoffset)+left_drop]
+    top_right = [xpos (xoffset+ramp_length), ypos (yoffset)+right_drop]
+    bot_right = [xpos (xoffset+ramp_length), ypos (yoffset+ramp_height)+right_drop]
+    bot_left = [xpos (xoffset), ypos (yoffset+ramp_height)+left_drop]
+    return pygame.draw.polygon (screen, wood_dark, [top_left, top_right, bot_right, bot_left], 0)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def draw_ramps (drop):
+    return [draw_ramp (0.1, 0.16, drop, 0),
+            draw_ramp (0.03, 0.48, 0, drop),
+            draw_ramp (0.1, 0.80, drop, 0)]
+
+
+def wait_for_event ():
+    while True:
+        event = pygame.event.wait()
+        if event.type == pygame.QUIT:
+            sys.exit(0)
+        if event.type == KEYDOWN:
+            if event.key == K_ESCAPE:
+                sys.exit (0)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def add_points (ladders, ramps, gradient):
+    global points
+    for i, l in enumerate (ladders):
+        top = &quot;l%dt&quot; % (i+1)
+        bot = &quot;l%db&quot; % (i+1)
+        print top, bot
+        points[top] = [l.left, l.top-ypos (.045)]
+        points[bot] = [l.left, l.bottom-ypos (.019)]
+    for i, l in enumerate (ramps):
+        left = &quot;r%dl&quot; % (i+1)
+        right = &quot;r%dr&quot; % (i+1)
+        print left, right
+        if i % 2 == 0:
+            points[left] = [l.left, l.top]
+            points[right] = [l.right, l.top-gradient]
+        else:
+            points[left] = [l.left, l.top-gradient]
+            points[right] = [l.right, l.top]</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def draw_scene (gradient):
+    global list_of_polygons
+    for i in range (gradient):
+        draw_ramps (i)
+        pygame.display.flip ()
+        screen.fill (black)
+        if not debugging:
+            time.sleep (.2)
+    l = draw_ladders (gradient)
+    r = draw_ramps (gradient)
+    list_of_polygons = l + r
+    pygame.display.flip ()
+    add_points (l, r, gradient)
+    print points</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def draw_ladder (x, y, drop):
+    global ladder_length, ladder_height
+    top_left = [xpos (x), ypos (y)+drop]
+    top_right = [xpos (x+ladder_length), ypos (y)+drop]
+    bot_right = [xpos (x+ladder_length), ypos (y+ladder_height)+drop]
+    bot_left = [xpos (x), ypos (y+ladder_height)+drop]
+    return pygame.draw.polygon (screen, ladder_colour, [top_left, top_right, bot_right, bot_left], 0)
+
+
+def draw_ladders (drop):
+    return [draw_ladder (0.2, 0.16, drop),
+            draw_ladder (0.7, 0.48, drop)]</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def activity_scheduler (ticks):
+    global activity_list
+    for e in activity_list:
+        if (ticks % e[0] == 0) and (random.random () &lt;= e[1]):
+            e[2] (ticks)
+
+def create_new_barrel (ticks):
+    global barrels
+    barrels += [barrel_sprite ()]
+
+
+def display_time (ticks):
+    print &quot;time is&quot;, ticks/100
+    pass</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def finish_game (ticks):
+    print &quot;game over&quot;
+    sys.exit (0)
+
+
+# there are 1000 ticks per second in pygame
+activity_list = [[2000, 0.5, create_new_barrel],
+                 [1000, 1.0, display_time],
+                 [120000, 1.0, finish_game]]</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>def checkInput():
+    for event in pygame.event.get():
+       if event.type == KEYDOWN:
+          if event.key == K_ESCAPE:
+              sys.exit(0)
+          elif event.key == K_RIGHT:
+              print &quot;right cursor pressed&quot;
+              # do_right
+          elif event.key == K_LEFT:
+              print &quot;left cursor pressed&quot;
+              # do left
+          elif event.key == K_UP:
+              print &quot;up cursor pressed&quot;
+              # do_jump</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def draw_polygons ():
+    draw_ladders (gradient)
+    draw_ramps (gradient)
+
+
+def play_game (screen):
+    o = -1
+    while True:
+        t = pygame.time.get_ticks()
+        if o != t:
+            activity_scheduler (t)
+            o = t
+        checkInput()
+        screen.fill([0, 0, 0]) # blank the screen.
+        draw_polygons ()
+        for b in barrels:
+            b.update (t, 0, width)
+            screen.blit (b.image, b.rect)
+        # pygame.display.update()
+        pygame.display.flip ()</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>def main ():
+    global screen
+    pygame.init ()
+    screen = pygame.display.set_mode ([width, height])
+    draw_scene (gradient)
+    play_game (screen)
+    wait_for_event ()
+
+main ()</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. barrel image
+<a name="10. barrel image"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> here is the
+very simple image used to test the above code
+<a href="barrel.png">barrel.png</a> <li> the module
+<tt><small>bres.py</small></tt> can be found at the end of
+the previous weeks notes <ul type=square> <li> it needs to
+present in the same directory as the file above <li>
+together with the <a href="barrel.png">barrel.png</a>
+file</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Moving barrel down ramps">1. Moving barrel down ramps</a><br>
+<a href="#2. Main function">2. Main function</a><br>
+<a href="#3. play_game">3. play_game</a><br>
+<a href="#4. Points of interest">4. Points of interest</a><br>
+<a href="#5. activity_scheduler">5. activity_scheduler</a><br>
+<a href="#6. check_input">6. check_input</a><br>
+<a href="#7. Barrel sprites">7. Barrel sprites</a><br>
+<a href="#8. get_point">8. get_point</a><br>
+<a href="#9. Homework/tutorial work">9. Homework/tutorial work</a><br>
+<a href="#10. barrel image">10. barrel image</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

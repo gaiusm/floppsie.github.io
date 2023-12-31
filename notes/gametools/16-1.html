@@ -1,0 +1,184 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:19 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 16-1
+<a name="1. Lecture: 16-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+15-1, 15-2 and 15-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Implementation of Touchmap
+<a name="2. Implementation of Touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these notes will show the structure
+of <tt><small>touchmap.py</small></tt> <li> they also will
+describe <tt><small>touchgui.select</small></tt> <li> they
+will show you how extend touchmap <ul type=square> <li>
+creating an <tt><small>export</small></tt> function <li>
+create a <tt><small>worldspawn</small></tt> entity </ul>
+<li> also show you how to add your own graphics into the
+library <li> touchmap is implemented in a single file <li>
+uses a similar structure to the demo programs in
+<tt><small>touchgui</small></tt> <li></p>
+
+
+<p><b><small><small><font color="#196633">touchmap-0.1/touchmap.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def main ():
+    global players, grid, cell_size
+
+    pygame.init ()
+    if full_screen:
+        gameDisplay = pygame.display.set_mode ((display_width, \
+                                             display_height), FULLSCREEN)
+    else:
+        gameDisplay = pygame.display.set_mode ((display_width, display_height))
+
+    touchgui.set_display (gameDisplay, display_width, display_height)
+    controls = buttons ()
+
+    gameDisplay.fill (touchguipalate.black)
+    while True:
+        grid = button_grid (cell_size)
+        forms = controls + grid
+        touchgui.select (forms, event_test, finished)
+
+main ()</pre>
+
+<p><small><font color="#000000"></ul></font></small></p><hr>
+
+<h2>3. touchgui.select
+<a name="3. touchgui.select"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">touchgui/touchgui.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def select (forms, event_test, finished = None, timeout = -1):
+    if timeout == -1:
+        _blocking_select (forms, event_test, finished)
+    else:
+        _nonblocking_select (forms, event_test, finished, timeout)</pre>
+
+
+<p><font color="#000000"><li> two optional parameters:
+<tt><small>finished</small></tt> and
+<tt><small>timeout</small></tt> <li> if
+<tt><small>timeout</small></tt> is absent then it calls a
+blocking version of select <ul type=square> <li> in which
+the process will block until an event occurs <li> this is
+efficient, but forces the main program to be entirely event
+based <ul type=circle> <li> furthermore all events must go
+through the <tt><small>touchgui/pygame</small></tt> event
+queue </ul> </ul> <li> sometimes you might want to write
+programs which use a mixture of event based and some polling
+<li> for example the cluedo server program
+<ul type=square> <li> tests the gui briefly and then checks
+the network stack for input and rotates icons
+<ul type=circle> <li> ideally it would be good to join the
+network stack to the pygame input event queue and timers
+<li> in practice this is hard to configure, and
+<tt><small>touchgui.select</small></tt> allows a pragmatic
+(less efficient) solution <li> can <i>poll</i> both <br>
+</ul> </ul> </ul></font></p><hr>
+
+<h2>4. Cluedo server example code
+<a name="4. Cluedo server example code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>    offset = 0
+    while not selection_complete:
+        s, rpc = getRPC (s)
+        processRPC (s, rpc)
+        playerIcons = positionIcons (players, [.5, .5], .2, offset)
+        forms = playerIcons + playerIconsStatic
+        gameDisplay.fill (palate.black)
+        touchgui.select (forms, event_test, selected, 10)
+        offset = (offset + 1) % 360
+    return players</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. touchgui.select
+<a name="5. touchgui.select"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> redraws all
+tiles in forms. <li> <tt><small>finished</small></tt> is
+polled to see if the function should return
+<ul type=square> <li> <tt><small>finished</small></tt> is a
+parameterless function which returns
+<tt><small>True</small></tt> or
+<tt><small>False</small></tt> </ul> <li>
+<tt><small>timeout</small></tt> is the maximum no. of
+milliseconds the function can poll. <ul type=square> <li>
+<tt><small>timeout</small></tt> is optional and defaults to
+-1 if absent </ul> <li> <tt><small>finished</small></tt> is
+also optional <li> Pre-condition <ul type=square> <li> forms
+is a list of tiles. <li> <tt><small>event_test</small></tt>
+is which has a single parameter
+<tt><small>(event)</small></tt> <li>
+<tt><small>event_test</small></tt> does not return a value
+</ul> <li> Post-condition: None.</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Lecture: 16-1">1. Lecture: 16-1</a><br>
+<a href="#2. Implementation of Touchmap">2. Implementation of Touchmap</a><br>
+<a href="#3. touchgui.select">3. touchgui.select</a><br>
+<a href="#4. Cluedo server example code">4. Cluedo server example code</a><br>
+<a href="#5. touchgui.select">5. touchgui.select</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

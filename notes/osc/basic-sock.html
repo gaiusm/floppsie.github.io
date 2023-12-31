@@ -1,0 +1,372 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:27 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Interprocess communcation
+<a name="1. Interprocess communcation"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in Operating systems we find there
+are a number of mechanisms used for interprocess
+communication (IPC) <li> the IPC mechanisms can be divided
+into two groups, those which work well using shared memory
+and those which work with non shared memory <li> some common
+methods of IPC are: sockets, semaphores and mailboxes <li>
+sockets and mailboxes are normally used by non shared memory
+programs <ul type=square> <li> ie client and server on
+different machines</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Interprocess communication in shared memory systems
+<a name="2. Interprocess communication in shared memory systems"></a>
+</h2>
+
+
+<p><ul type=disc> <li> semaphores are more appropriate for
+multiple processes sharing some common memory <li> we will
+be covering a semaphores and message passing after
+networking with sockets <li> message passing
+<ul type=square> <li> can be used in shared memory
+systems</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Interprocess communication in non shared memory systems
+<a name="3. Interprocess communication in non shared memory systems"></a>
+</h2>
+
+
+<p><ul type=disc> <li> network sockets (Berkeley and System
+V Transport Layer Interface) <ul type=square> <li> work well
+with programs (clients and servers) which do not share the
+same memory </ul> <li> message passing <ul type=square> <li>
+can be used in non shared memory systems</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Berkeley Sockets
+<a name="4. Berkeley Sockets"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the Berkeley interface to sockets
+ultimately gives the programmer a file descriptor on both
+client and server which can be both read from and written to
+<li> this is elegant as the user application can map its
+functionality onto basic file primatives: read, write <li>
+Berkeley sockets are available in many languages and
+available on most operating systems <li></p>
+
+
+<p align="left"><img src="grohtml-26749412.png" alt="Image grohtml-26749412.png"></p>
+
+<p style="margin-top: 1em"><li></p>
+
+
+<p align="left"><img src="grohtml-26749413.png" alt="Image grohtml-26749413.png"></p>
+
+<p></ul></p><hr>
+
+<h2>5. Connection oriented sockets (TCP sockets)
+<a name="5. Connection oriented sockets (TCP sockets)"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26749414.png" alt="Image grohtml-26749414.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>6. Consider Python Code for a TCP Server
+<a name="6. Consider Python Code for a TCP Server"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">tcpserver.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+from socket import *
+myHost = &quot;&quot;
+myPort = 2000
+
+# create a socket
+s = socket(AF_INET, SOCK_STREAM)
+# bind it to the server port number
+s.bind((myHost, myPort))
+# allow 5 pending connections
+s.listen(5)
+
+
+while True:
+    # wait for next client to connect
+    connection, address = s.accept()
+    data = connection.recv(1024)
+    while data:
+        connection.send(&quot;echo -&gt; &quot; + data)
+        data = connection.recv(1024)
+    connection.close()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Consider Python Code for a TCP client
+<a name="7. Consider Python Code for a TCP client"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">tcpclient.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+import sys
+from socket import *
+serverHost = &quot;localhost&quot;
+serverPort = 2000
+
+# create a TCP socket
+s = socket(AF_INET, SOCK_STREAM)
+
+
+s.connect((serverHost, serverPort))
+s.send(&quot;Hello world&quot;)
+data = s.recv(1024)
+print data</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Testing the code
+<a name="8. Testing the code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> open up an
+editor and type in the server Python code <li> save it as
+<tt><small>tcpserver.py</small></tt> <li> now open up a
+terminal and type <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>python
+tcpserver.py</b> <li> make a note of the FQDN of the server
+<li> open up another editor and type in the client Python
+code <li> save it as <tt><small>tcpclient.py</small></tt>
+<li> open up a terminal <li> <tt><br>
+$</tt> <b>python tcpclient.py</b> <li> notice that both
+client and server are working on the same machine <li>
+change the variable <tt><small>serverHost</small></tt> in
+<tt><small>tcpclient.py</small></tt> to the FDQN of your
+neighbours machine <ul type=square> <li> and run your client
+again! <br>
+</ul> </ul></font></p><hr>
+
+<h2>9. Application protocol using TCP
+<a name="9. Application protocol using TCP"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> TCP is used by
+many application level protocols <ul type=square> <li> a
+very common one is http </ul> <li> let us build a tiny web
+server in Python!</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Tiny web server in Python
+<a name="10. Tiny web server in Python"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">mywebserver.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+from socket import *
+myHost = &quot;&quot;
+myPort = 2000
+
+
+# create a socket
+s = socket(AF_INET, SOCK_STREAM)
+# bind it to the server port number
+s.bind((myHost, myPort))
+# allow 5 pending connections
+s.listen(5)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+mywebserver.py</font></small></small></b></p>
+<pre style="margin-top: 1em">while True:
+    # wait for next client to connect
+    connection, address = s.accept()
+    data = connection.recv(1024)
+    while data:
+        reply = &quot;&quot;&quot;HTTP-Version: HTTP/1.0 200 OK
+Content-Length: 3012
+Content-Type: text/html
+
+
+&lt;p&gt;Hello world!&lt;/p&gt;
+&lt;body&gt;
+&quot;&quot;&quot;
+        connection.send(reply)
+        data = connection.recv(1024)
+    connection.close()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Testing your web server
+<a name="11. Testing your web server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> open up a
+terminal and run <li></font></p>
+<pre>pythonmywebserver.py</pre>
+
+<p><font color="#000000"><li> now open up a browser and
+enter the url
+<a href="http://localhost:2000">http://localhost:2000</a>
+<li> you should now have a start of a tiny web server <li>
+we can see that a socket is created to give us access to
+mangage the TCP port 2000 <li> in turn the program will read
+from the socket and form a http response
+<ul type=square> <li> which is sent back to the client which
+renders the html after stripping it from the http packet
+<br>
+</ul> </ul></font></p><hr>
+
+<h2>12. UDP sockets
+<a name="12. UDP sockets"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we can also
+produce a UDP client and server <ul type=square> <li> these
+are functionally different to TCP servers, despite the
+similarity between the Python code implementation</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>13. UDP server
+<a name="13. UDP server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python
+
+from socket import *
+myHost = &quot;&quot;
+myPort = 2000
+
+# create a UDP socket
+s = socket(AF_INET, SOCK_DGRAM)
+# bind it to the server port number
+s.bind((myHost, myPort))
+
+
+data, address = s.recvfrom(1024)
+while data:
+    print &quot;UDP server:&quot;, data, &quot;from&quot;, address
+    s.sendto(&quot;echo -&gt; &quot; + data, address)
+    data, address = s.recvfrom(1024)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>14. UDP client
+<a name="14. UDP client"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">udpclient.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+import sys
+from socket import *
+serverHost = &quot;localhost&quot;
+serverPort = 2000
+
+# create a UDP socket
+s = socket(AF_INET, SOCK_DGRAM)
+
+
+s.connect((serverHost, serverPort))
+s.send(&quot;Hello world&quot;)
+data = s.recv(1024)
+print data</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Interprocess communcation">1. Interprocess communcation</a><br>
+<a href="#2. Interprocess communication in shared memory systems">2. Interprocess communication in shared memory systems</a><br>
+<a href="#3. Interprocess communication in non shared memory systems">3. Interprocess communication in non shared memory systems</a><br>
+<a href="#4. Berkeley Sockets">4. Berkeley Sockets</a><br>
+<a href="#5. Connection oriented sockets (TCP sockets)">5. Connection oriented sockets (TCP sockets)</a><br>
+<a href="#6. Consider Python Code for a TCP Server">6. Consider Python Code for a TCP Server</a><br>
+<a href="#7. Consider Python Code for a TCP client">7. Consider Python Code for a TCP client</a><br>
+<a href="#8. Testing the code">8. Testing the code</a><br>
+<a href="#9. Application protocol using TCP">9. Application protocol using TCP</a><br>
+<a href="#10. Tiny web server in Python">10. Tiny web server in Python</a><br>
+<a href="#11. Testing your web server">11. Testing your web server</a><br>
+<a href="#12. UDP sockets">12. UDP sockets</a><br>
+<a href="#13. UDP server">13. UDP server</a><br>
+<a href="#14. UDP client">14. UDP client</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:15 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 7-1
+<a name="1. Lecture: 7-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+6-1, 6-2 and 6-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Moving along a line
+<a name="2. Moving along a line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consider the problem of making a
+barrels appear to roll across a plank <ul type=square> <li>
+this is complicated by the issue of the ramp gradient</p>
+
+
+<p align="left"><img src="grohtml-26729273.png" alt="Image grohtml-26729273.png"></p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>3. Bresenham&rsquo;s line algorithm
+<a name="3. Bresenham&rsquo;s line algorithm"></a>
+</h2>
+
+
+<p><ul type=disc> <li> fortunately Bresenham discovered an
+algorithm which given two points <ul type=square> <li>
+determines the elements of a 2-dimensional grid that should
+be selected to best approximate the line </ul> <li>
+Bresenham&rsquo;s line algorithm also uses integer
+arithmetic which adds to its complexity</p>
+
+<p></ul></p><hr>
+
+<h2>4. y = mx + c
+<a name="4. y = mx + c"></a>
+</h2>
+
+
+<p><ul type=disc> <li> returning to the problem of making a
+barrel roll down a plank <ul type=square> <li> we know the x
+position, but we need to compute the y value </ul> <li> we
+know the start and end points of the ramp</p>
+
+
+<p align="left"><img src="grohtml-26729274.png" alt="Image grohtml-26729274.png"></p>
+
+<p style="margin-top: 1em"><li> in the previous slide the
+start position is (1, 2) and the end position is (5, 4) <li>
+the dx value is 5-1 = 4 <li> the dy value is 4-2 = 2 <li>
+therefore our gradient
+<img src="grohtml-2672927-5.png" alt="Image grohtml-2672927-5.png">
+is
+<img src="grohtml-2672927-6.png" alt="Image grohtml-2672927-6.png">
+<li> we need to calculate
+<img src="grohtml-2672927-7.png" alt="Image grohtml-2672927-7.png">
+<li> we know the point (1, 2) exists on the line <li> using
+<img src="grohtml-2672927-8.png" alt="Image grohtml-2672927-8.png">
+<li>
+<img src="grohtml-2672927-9.png" alt="Image grohtml-2672927-9.png">
+<li>
+<img src="grohtml-2672927-10.png" alt="Image grohtml-2672927-10.png">
+<li>
+<img src="grohtml-2672927-11.png" alt="Image grohtml-2672927-11.png">
+<li> we could use this formula to calculate the
+<img src="grohtml-2672927-12.png" alt="Image grohtml-2672927-12.png">
+value given an
+<img src="grohtml-2672927-13.png" alt="Image grohtml-2672927-13.png">
+value <li>
+<img src="grohtml-2672927-14.png" alt="Image grohtml-2672927-14.png">
+<li></p>
+
+
+<p align="left"><img src="grohtml-26729275.png" alt="Image grohtml-26729275.png"></p>
+
+<p><li> notice how we need floating point values to compute
+it <ul type=square> <li> also notice how we calculated the
+gradient </ul> <li> Bresenham&rsquo;s algorithm hunts for
+the correct gradient by using integer arithmetic and by
+manipulating the numerator and denominator of the fractional
+value of
+<img src="grohtml-2672927-16.png" alt="Image grohtml-2672927-16.png"></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Lecture: 7-1">1. Lecture: 7-1</a><br>
+<a href="#2. Moving along a line">2. Moving along a line</a><br>
+<a href="#3. Bresenham&rsquo;s line algorithm">3. Bresenham&rsquo;s line algorithm</a><br>
+<a href="#4. y = mx + c">4. y = mx + c</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

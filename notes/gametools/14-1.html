@@ -1,0 +1,125 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:18 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 14-1
+<a name="1. Lecture: 14-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+13-1, 13-2 and 13-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Overview of TouchGUI
+<a name="2. Overview of TouchGUI"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://floppsie.comp.glam.ac.uk/touchgui/homepage.html">documentation</a>
+<li> you can obtain a copy of the source code for
+<tt><small>touchgui</small></tt> by: <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir -p Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>git clone https://github.com/gaiusm/touchgui</b>
+<li> <tt><small>touchgui</small></tt> is a simple tablet
+based gui for Python/Pygame <ul type=square> <li> it allows
+tiles to be created from images, colours or glyphs <li> each
+tile has a number of callbacks which are called whenever a
+tap or double tap occurs </ul> <li> a tile maybe in one of
+the following four states: images for the tile when in the
+frozen, active, activated or pressed state
+<ul type=square> <li> the frozen state is when the tile
+cannot be pressed <ul type=circle> <li> (the application
+might choose to disable the tile) </ul> </ul> <li> the
+active state is when the tile can be pressed by the user
+<ul type=square> <li> the activated state is when the mouse
+pointer is hovering over the tile (but not pressed) <li>
+finally the pressed state is when the button is tapped. <br>
+</ul> </ul></p><hr>
+
+<h2>3. Touchgui on the vmware or R-pi image
+<a name="3. Touchgui on the vmware or R-pi image"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>touchgui</small></tt> is
+installed in the images <li> when running
+<tt><small>touchmap</small></tt> you need to explicitly
+alter the <tt><small>PYTHONPATH</small></tt>
+<ul type=square> <li> so that the build directory can access
+the source directory for python libraries </ul> <li> you can
+do this on the command line and run your
+<tt><small>touchmap</small></tt> by: <ul type=square> <li>
+(this assumes you have already downloaded and configured
+touchmap from previous weeks) </ul> <li></p>
+
+<p><tt><small>$</small></tt> <small><b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/build-touchmap</b> <tt><br>
+$</tt> <b>PYTHONPATH=.:../touchmap-0.1:../touchgui python3
+../touchmap-0.1/touchmap.py</b></small> <li> the
+<tt><small>PYTHONPATH</small></tt> environment variable is
+set to search the current directory (the first
+<tt><small>.</small></tt> ) <ul type=square> <li> then
+search <tt><small>../touchmap-0.1</small></tt> and lastly
+search <tt><small>../touchgui</small></tt> for any python
+modules (before searching the system installed libraries)
+<li> note the path separator <tt><small>:</small></tt> </ul>
+<li> after setting the <tt><small>PYTHONPATH</small></tt>
+the <tt><small>python</small></tt> interpreter is executed
+which inherits this <tt><small>PYTHONPATH</small></tt> and
+starts interpreting
+<tt><small>../touchmap-0.1/touchmap.py</small></tt> <li> you
+can use <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/build-touchmap</b> <tt><br>
+$</tt> <b>./localrun.sh touchmap.py</b> <li> instead <li>
+using a suitable file manager examine the contents of
+<tt><small>touchgui</small></tt> <li> in particular examine
+the library of creative common images <li> maybe make a note
+of icons you might find useful for your touchmap
+implementation</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Lecture: 14-1">1. Lecture: 14-1</a><br>
+<a href="#2. Overview of TouchGUI">2. Overview of TouchGUI</a><br>
+<a href="#3. Touchgui on the vmware or R-pi image">3. Touchgui on the vmware or R-pi image</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

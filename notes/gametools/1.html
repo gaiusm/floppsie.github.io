@@ -1,0 +1,481 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. The first lecture
+<a name="1. The first lecture"></a>
+</h2>
+
+
+<p><ul type=disc> <li> this module consists of two pieces
+of coursework <ul type=square> <li> in the first term,
+<a href="CS2S566_CW1P1M_Cover_PRCW_PRACTCW1.pdf">Missile Commmand</a>
+implemented in Python3 and Pygame <li> in the second term, a
+map editing tool for a tablet implemented in Python3 </ul>
+<li> both pieces of coursework are worth 50%</p>
+
+<p></ul></p><hr>
+
+<h2>2. Access to the software in this module
+<a name="2. Access to the software in this module"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in this module Python3 will be
+taught on the GNU/Linux operating system <li> there are two
+supported approaches to run Python3 <ul type=square> <li>
+firstly using vmware <li> secondly using the Rasbperry Pi-4
+</ul> <li> both give the same user level experience <li>
+please see the other two components of the lecture this week
+for more details on either approach</p>
+
+<p></ul></p><hr>
+
+<h2>3. Python
+<a name="3. Python"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Python is a scripting language</p>
+
+<p></ul></p><hr>
+
+<h2>4. Python Gotha&rsquo;s
+<a name="4. Python Gotha&rsquo;s"></a>
+</h2>
+
+
+<p><ul type=disc> <li> blocks are defined by indentation!
+<li> turn off tabs in your favourite editor <li> in your own
+programs examples never create a name clash with a Python
+library module <li> Python2 vs Python3 <ul type=square> <li>
+we will be using Python3</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Python verses similar tools
+<a name="5. Python verses similar tools"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Python is a scripting language
+<ul type=square> <li> it can be compiled if necessary to
+increase speed </ul> <li> is more powerful than many other
+scripting languages, Tcl <ul type=square> <li> applicable to
+larger systems development (games, net admin) </ul> <li> has
+a much cleaner syntax than Perl <ul type=square> <li> easier
+to maintain </ul> <li> does not compete head on with Java
+<ul type=square> <li> Java is a systems language like
+C++</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Python and games
+<a name="6. Python and games"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://wiki.python.org/moin/PythonGames">examples of games which use Python</a></p>
+
+<p></ul></p><hr>
+
+<h2>7. Python can be simple
+<a name="7. Python can be simple"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#!/usr/bin/python3
+
+print(&quot;hello world&quot;)</pre>
+
+<p></ul></p><hr>
+
+<h2>8. Python Modules allow for problem decomposition
+<a name="8. Python Modules allow for problem decomposition"></a>
+</h2>
+
+
+<p><ul type=disc> <li> similar to Modula-2 <li></p>
+
+
+<p><b><small><small><font color="#196633">myfile.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+title = &quot;hello world&quot;</pre>
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+foo.py</font></small></small></b></p>
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+import myfile
+print(myfile.title)</pre>
+
+<p><font color="#000000"><li> when run prints hello world
+<br>
+</ul></font></p><hr>
+
+<h2>9. Alternative import
+<a name="9. Alternative import"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">bar.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#!/usr/bin/python3
+
+from myfile import title
+print(title)</pre>
+
+<p><font color="#000000"><li> note that all python modules
+need to be saved as <i>name.</i><tt>py</tt>
+<ul type=square> <li> so in our example the module
+<tt>myfile</tt> was saved into a file called
+<tt>myfile.py</tt> <br>
+</ul> </ul></font></p><hr>
+
+<h2>10. Python builtin types
+<a name="10. Python builtin types"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> python
+contains many builtin types <ul type=square> <li> use them..
+</ul> <li> builtin objects make simple programs easy to
+understand <ul type=square> <li> lists, dictionaries, exist,
+don&rsquo;t reinvent the wheel </ul> <li> built in objects
+are more efficient than custom data types</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Builtin objects
+<a name="11. Builtin objects"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26710272.png" alt="Image grohtml-26710272.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>12. Expression operators
+<a name="12. Expression operators"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26710273.png" alt="Image grohtml-26710273.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>13. Strings
+<a name="13. Strings"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> concatenation
+via + <ul type=square> <li> repeated via * </ul>
+<li></font></p>
+<pre>#!/usr/bin/python3
+
+print(&quot;hi &quot; * 4)</pre>
+
+<p><font color="#000000"><li> yields <li></font></p>
+<pre>hi hi hi hi</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>14. Slicing
+<a name="14. Slicing"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> given a
+string, <tt>s= &quot;hello world&quot;</tt>
+<ul type=square> <li> can obtain portion of string via:
+<tt>s[2:5]</tt> <li> yields: <tt>llo</tt> </ul> <li> first
+character has index 0 <ul type=square> <li> and also -11
+<li> last character index is 10 in this example <li> last
+character index is also -1 </ul> <li> negative values start
+at right and move to the left <li> strings can be sliced
+using positive and negative values</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>15. Using dir
+<a name="15. Using dir"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> often you may
+wish to see what methods a module provides
+<ul type=square> <li> run python interactively </ul>
+<li></font></p>
+
+<pre>python
+Python 1.5.2
+&gt;&gt;&gt; import string
+&gt;&gt;&gt; dir(string)
+[&rsquo;capitalize&rsquo;, &rsquo;capwords&rsquo;, &rsquo;center&rsquo;, &rsquo;count&rsquo;, \
+ &rsquo;digits&rsquo;, &rsquo;expandtabs&rsquo;, &rsquo;find&rsquo;, &rsquo;hexdigits&rsquo;, \
+ &rsquo;index&rsquo;, &rsquo;index_error&rsquo;, &rsquo;join&rsquo;, &rsquo;joinfields&rsquo;, \
+ &rsquo;letters&rsquo;, &rsquo;ljust&rsquo;, &rsquo;lower&rsquo;, &rsquo;lowercase&rsquo;, \
+ &rsquo;lstrip&rsquo;, &rsquo;maketrans&rsquo;, &rsquo;octdigits&rsquo;, &rsquo;replace&rsquo;, \
+ &rsquo;rfind&rsquo;, &rsquo;rindex&rsquo;, &rsquo;rjust&rsquo;, &rsquo;rstrip&rsquo;, &rsquo;split&rsquo;, \
+ &rsquo;splitfields&rsquo;, &rsquo;strip&rsquo;, &rsquo;swapcase&rsquo;, \
+ &rsquo;upper&rsquo;, &rsquo;uppercase&rsquo;, &rsquo;whitespace&rsquo;, &rsquo;zfill&rsquo;]</pre>
+
+
+<p><font color="#000000"><li> displays methods available
+<br>
+</ul></font></p><hr>
+
+<h2>16. Methods and documentation
+<a name="16. Methods and documentation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<a href="http://floppsie.comp.glam.ac.uk/python/html/index.html">python online docs</a>
+<ul type=square> <li> under GNU/Linux </ul> <li>
+tutorial/laboratory <ul type=square> <li> read through the
+online tutorial under the web address above <li> read about
+functions and scope rules <ul type=circle> <li> name
+resolution, LGB rule <li> local, global, builtin
+scope</font></p>
+
+<p><font color="#000000"></ul> </ul> </ul></font></p><hr>
+
+<h2>17. Statements
+<a name="17. Statements"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> assignment,
+calls, if/else/elif, for, while, break/continue
+<ul type=square> <li> <tt><small>print</small></tt> used to
+be a statement in Python 2, it is a function in Python 3
+</ul> <li> try, except, raise, <li> def, return
+<ul type=square> <li> function definitions and returning
+values</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>18. Statements
+<a name="18. Statements"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> class <li>
+assert <li> exec <li> del <li> global</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>19. Example 8 times table
+<a name="19. Example 8 times table"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
+
+
+for n in range(1, 13):
+    print(n, &quot;x 8 =&quot;, n*8)</pre>
+
+
+<p style="margin-top: 1em"><font color="#000000"><li>
+<tt><br>
+$</tt> <b>python3 eight.py</b></font></p>
+
+<pre>1 x 8 = 8
+2 x 8 = 16
+3 x 8 = 24
+4 x 8 = 32
+5 x 8 = 40
+6 x 8 = 48
+7 x 8 = 56
+8 x 8 = 64
+9 x 8 = 72
+10 x 8 = 80
+11 x 8 = 88
+12 x 8 = 96</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>20. Example of for loop
+<a name="20. Example of for loop"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
+
+
+
+for n in range(2, 10):
+    print(&quot;n is&quot;, n)
+else:
+    print(&quot;finished for loop, n is&quot;, n)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>./py7.py
+n is 2
+n is 3
+n is 4
+n is 5
+n is 6
+n is 7
+n is 8
+n is 9
+finished for loop, n is 9</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>21. Tricky example code
+<a name="21. Tricky example code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
+
+
+for n in range(2, 10):
+    print(&quot;n is&quot;, n)
+    for x in range (2, n):
+        print(&quot;x is&quot;, x)
+        if n % x == 0:
+            print(n, &quot;equals&quot;, x, &quot;*&quot;, n/x)
+            break
+    else:
+        print(n, &quot;is a prime number&quot;)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>./py6.py
+2 is a prime number
+3 is a prime number
+4 equals 2 * 2
+5 is a prime number
+6 equals 2 * 3
+7 is a prime number
+8 equals 2 * 4
+9 equals 3 * 3</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>22. Graphical hello world as an example of Python simplicity
+<a name="22. Graphical hello world as an example of Python simplicity"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#!/usr/bin/python3
+
+import Tkinter
+
+def makebutton(message):
+        w = Tkinter.Button(text=message, command=&rsquo;exit&rsquo;)
+        w.pack()
+        w.mainloop()
+
+makebutton(&quot;Hello world&quot;)</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>23. Tutorial
+<a name="23. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> to undertake
+these tutorials you will need to refer to the
+<a href="https://docs.python.org/3">python online docs</a>
+<li> write a program using a while loop
+<ul type=square> <li> to write out the nine times table
+</ul> <li> write a program using a for loop
+<ul type=square> <li> to write out the seven times table
+</ul> <li> write a program using a function and if else
+statement <ul type=square> <li> to write out the 3 times
+table</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. The first lecture">1. The first lecture</a><br>
+<a href="#2. Access to the software in this module">2. Access to the software in this module</a><br>
+<a href="#3. Python">3. Python</a><br>
+<a href="#4. Python Gotha&rsquo;s">4. Python Gotha&rsquo;s</a><br>
+<a href="#5. Python verses similar tools">5. Python verses similar tools</a><br>
+<a href="#6. Python and games">6. Python and games</a><br>
+<a href="#7. Python can be simple">7. Python can be simple</a><br>
+<a href="#8. Python Modules allow for problem decomposition">8. Python Modules allow for problem decomposition</a><br>
+<a href="#9. Alternative import">9. Alternative import</a><br>
+<a href="#10. Python builtin types">10. Python builtin types</a><br>
+<a href="#11. Builtin objects">11. Builtin objects</a><br>
+<a href="#12. Expression operators">12. Expression operators</a><br>
+<a href="#13. Strings">13. Strings</a><br>
+<a href="#14. Slicing">14. Slicing</a><br>
+<a href="#15. Using dir">15. Using dir</a><br>
+<a href="#16. Methods and documentation">16. Methods and documentation</a><br>
+<a href="#17. Statements">17. Statements</a><br>
+<a href="#18. Statements">18. Statements</a><br>
+<a href="#19. Example 8 times table">19. Example 8 times table</a><br>
+<a href="#20. Example of for loop">20. Example of for loop</a><br>
+<a href="#21. Tricky example code">21. Tricky example code</a><br>
+<a href="#22. Graphical hello world as an example of Python simplicity">22. Graphical hello world as an example of Python simplicity</a><br>
+<a href="#23. Tutorial">23. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

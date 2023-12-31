@@ -1,0 +1,243 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:29 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Semaphores and a shared buffer
+<a name="1. Semaphores and a shared buffer"></a>
+</h2>
+
+
+<p><ul type=disc> <li> recall our previous example from
+last week which had two processes <ul type=square> <li> one
+process calls <tt><small>put</small></tt> and another
+process calls <tt><small>get</small></tt> </ul> <li> both
+operate on a shared buffer <ul type=square> <li> we use a
+semaphore called <tt><small>Mutex</small></tt> to protect
+the buffer </ul> <li></p>
+<pre>void put (char ch)      char get (void)
+{                       {
+
+   Wait(Mutex)             Wait(Mutex)
+   (* safe to alter *)     (* safe to alter *)
+   (* buffer        *)     (* buffer        *)
+   place ch into buf       remove ch from buf
+
+   Signal(Mutex)           Signal(Mutex)
+
+                           return ch;
+}                       }
+
+
+     char buffer[Max];  (* global data *)
+     SEMAPHORE Mutex;   (* global data *)</pre>
+
+
+<p><li> what happens if a process calls
+<tt><small>get</small></tt> before a process calls
+<tt><small>put</small></tt> ? <li> there is no character to
+take from the buffer <ul type=square> <li> there is no data
+to return </ul> <li> what happens if a process keeps calling
+<tt><small>put</small></tt> and no process calls
+<tt><small>get</small></tt> <ul type=square> <li>
+potentially the buffer will be overrun </ul> <li> both cases
+can be fixed by using two additional semaphores <li> if
+there is no character in the buffer and we call
+<tt><small>get</small></tt> then we should <i>wait</i> until
+data arrives <li> if there is no space in the buffer and we
+attempt to <tt><small>put</small></tt> a character into the
+buffer then we should <i>wait</i> until space becomes
+available <li> we can implement this with two semaphores,
+which we will declare as <ul type=square> <li> itemAvailable
+<li> spaceAvailable </ul> <li> before we place a character
+into a buffer we must
+<tt><small>wait(spaceAvailable)</small></tt> <li> before we
+extract a character from a buffer we must
+<tt><small>wait(itemAvailable)</small></tt> <li> after we
+place an item into the buffer we must
+<tt><small>signal(itemAvailable)</small></tt> <li> after we
+extract an item from the buffer we must
+<tt><small>signal(spaceAvailable)</small></tt> <li> what are
+their initial values for an empty buffer?
+<ul type=square> <li> for simplicity let us assume the
+buffer can hold four characters <li> itemAvailable 0 <li>
+spaceAvailable 3 </ul> <li> this buffer mechanism is known
+as Dijkstra&rsquo;s bounded buffer after its author E.W.
+Dijkstra who discovered the algorithm in 1960s <br>
+</ul></p><hr>
+
+<h2>2. Completed implementation of a shared buffer using semaphores
+<a name="2. Completed implementation of a shared buffer using semaphores"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>void put (char ch)      char get (void)
+{                       {
+   wait(spaceAvailable)    wait(itemAvailable)
+   wait(mutex)             wait(mutex)
+   (* safe to alter *)     (* safe to alter *)
+   (* buffer        *)     (* buffer        *)
+   place ch into buf       remove ch from buf
+
+   signal(mutex)           signal(mutex)
+   signal(itemAvailable)   signal(spaceAvailable)
+                           return ch;
+}                       }
+
+
+     char buffer[Max];  (* global data *)
+     SEMAPHORE mutex;   (* global data *)</pre>
+
+
+<p><li> if one process keeps calling
+<tt><small>put</small></tt> and another process calls
+<tt><small>get</small></tt> we see that both processes are
+synchronising against taking data from an empty buffer and
+also from putting data into a full buffer <br>
+</ul></p><hr>
+
+<h2>3. Readers and writers problem and semaphores
+<a name="3. Readers and writers problem and semaphores"></a>
+</h2>
+
+
+<p><ul type=disc> <li> another common classic problem in
+operating systems is solving the readers/writers problem
+<li> here the problem is defined as some common resource
+needs to be protected such that <ul type=square> <li>
+multiple readers can read from the resource simultaneously
+<li> only one writer can write to the resource at a time
+<li> a writer must wait for all readers to finish reading
+before it can alter the resource </ul> <li> how to solve
+this with the minimal amount of semaphores? <li> this
+problem is common amoung databases or game servers <li> we
+use a <tt><small>mutex</small></tt> semaphore to protect the
+other data structures used in our lock <li> we use another
+semaphore <tt><small>writers</small></tt> to queue multiple
+writers trying to access the shared resource <li> we use an
+integer count to count the number of readers reading from
+the resource <tt><small>readcount</small></tt> <li> the
+writer processes can be implemented by: <li></p>
+<pre>writers = semaphore (value = 1)
+
+
+while True:
+   ...
+   wait(writers)
+   # the process can now write to the shared resource
+   signal(writers)
+   ...</pre>
+
+
+<p><li> the reader process can be implemented by: <li></p>
+<pre>mutex = semaphore (value = 1)
+readcount = 0
+
+
+while True:
+   ...
+   wait(mutex)
+   readcount = readcount+1
+   if readcount == 1:   # first reader waits as a writer
+      wait(writers)
+   signal(mutex)
+   # reader can read the shared resource
+   wait(mutex)
+   readcount = readcount-1
+   if readcount == 0:   # last reader signals as a writer
+      signal(writers)
+   signal(mutex)
+   ...</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. Interprocess communication: Message passing
+<a name="4. Interprocess communication: Message passing"></a>
+</h2>
+
+
+<p><ul type=disc> <li> message passing is another form of
+Interprocess Communication <li> it allows processes to
+communicate and to synchronise their actions without sharing
+the same address space <li> a message passing facility
+provides at least two operations <ul type=square> <li>
+<tt><small>send(message)</small></tt> and
+<tt><small>receive(message)</small></tt> </ul> <li> some
+message passing libraries allow for variable sized data to
+be sent/received and other allow a fixed amount of data to
+be send/received <ul type=square> <li> tradoffs between
+complexity of implementation of the library and complexity
+of the user program </ul> <li> the message passing libraries
+also may be further complicated by how a process addresses
+another process <li> consider <li></p>
+
+<pre>send(P, message)   # send a message to process P
+received(Q, message) # receive a message from process Q</pre>
+
+
+<p><li> we describe these primitives as having symmetry in
+addressing <ul type=square> <li> that is both processes need
+to know the name of the other to receive and send a message
+</ul> <li> other library implementations might use
+asymmetric naming for process addressing, consider: <li></p>
+
+<pre>send(P, message)     # sends a message to process P
+receive(id, message) # receive a message from any process,
+                     # id will contain the processes, name</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. Conclusion
+<a name="5. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we have seen how semaphores can be
+used to solve some classic computer science problems
+<ul type=square> <li> readers/writers and shared buffer
+</ul> <li> we have explored the message passing paradigm</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Semaphores and a shared buffer">1. Semaphores and a shared buffer</a><br>
+<a href="#2. Completed implementation of a shared buffer using semaphores">2. Completed implementation of a shared buffer using semaphores</a><br>
+<a href="#3. Readers and writers problem and semaphores">3. Readers and writers problem and semaphores</a><br>
+<a href="#4. Interprocess communication: Message passing">4. Interprocess communication: Message passing</a><br>
+<a href="#5. Conclusion">5. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:27 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Network configuration
+<a name="1. Network configuration"></a>
+</h2>
+
+
+<p><ul type=disc> <li> login into GNU/Linux and open up a
+terminal <li> the network configuration diagram given in at
+the end of the lecture is out of date <ul type=square> <li>
+[deliberately done for pedagogical reasons] </ul> <li> the
+task today is to create an up to date version of the diagram
+using command line tools <li> read the manual page for
+<tt><small>ping</small></tt> <li> use it to see if the IP
+address <tt><small>193.63.129.1</small></tt> is receiving
+packets <li> read the manual page for
+<tt><small>nslookup</small></tt> <ul type=square> <li> use
+<tt><small>nslookup</small></tt> to determine the FQDN for
+<tt><small>193.63.129.1</small></tt> </ul> <li> now ssh to
+mcgreg <li> read the manual for
+<tt><small>traceroute</small></tt> <li> write down the route
+packets take from your local machine to
+<tt><small>193.63.129.1</small></tt> <li> find out the IP
+address of your current machine <ul type=square> <li> hint:
+use the command line program
+<tt><small>hostname</small></tt> and
+<tt><small>nslookup</small></tt> </ul> <li> to which IP
+network class is your lab machine connected? <li> using a
+landscape A4 page draw a network map showing your local
+machine and the network class <li> using
+<tt><small>traceroute</small></tt> find out your local
+network gateway as it travels to
+<tt><small>193.63.129.1</small></tt> <ul type=square> <li>
+your map should include all machines which packets traverse
+through on route to <tt><small>193.63.129.1</small></tt>
+</ul> <li> find out the IP address of
+<tt><small>floppsie.comp.glam.ac.uk</small></tt> and add it
+to your diagram <li> find out the machine name of
+<tt><small>193.63.148.84</small></tt> and add it to your
+diagram <ul type=square> <li> add all the router IP
+addresses which packets traverse through between your
+machine and <tt><small>193.63.148.84</small></tt> </ul> <li>
+read the manual for <tt><small>nmap</small></tt> <li> what
+<tt><small>nmap</small></tt> command would you use to find
+out all client names of machines running the
+<tt><small>ssh</small></tt> server on your local subnet?
+<li> what is the IP address of the dns server used by your
+client machine? <li> can you find the IP address of the ntp
+server used on campus in the university? <li> can you find
+the dhcp server IP address your client uses?
+<ul type=square> <li> hint see if this information is
+visable when running <tt><small>dmesg</small></tt></p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Network configuration">1. Network configuration</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

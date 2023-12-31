@@ -1,0 +1,141 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:23 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 21-1
+<a name="1. Lecture: 21-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+20-1, 20-2 and 20-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Script to automatically build and run touchmap
+<a name="2. Script to automatically build and run touchmap"></a>
+</h2>
+
+
+<p><ul type=disc> <li> here is a script you can run from
+the command line to automatically rebuild and run your
+touchmap
+<a href="http://floppsie.comp.glam.ac.uk/download/targz/run">http://floppsie.comp.glam.ac.uk/download/targz/run</a>
+<li> you can install it via: <li></p>
+
+<p><tt>$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/run</b>
+<tt><br>
+$</tt> <b>chmod 755 run</b> <li> you can run it via: <li>
+<tt><br>
+$</tt> <b>./run</b> <li> the contents of
+<tt><small>run</small></tt> is shown on the next slide <li>
+it removes the <tt><small>touchgui</small></tt> cache
+rebuilds <tt><small>touchmap</small></tt> <li> it also
+reconfigures touchmap <ul type=square> <li> necessary if you
+make significant changes to
+<tt><small>Makefile.am</small></tt> </ul> <li>
+<tt><small>run</small></tt> hides all these and will lastly
+run your version of <tt><small>touchmap</small></tt> <li>
+<b><small><small><font color="#196633"><br>
+run</font></small></small></b></p>
+<pre style="margin-top: 1em">#!/bin/bash
+
+VERSION=0.2
+
+
+cd $HOME
+if [ -d .cache ] ; then
+    cd .cache
+    rm -rf touchgui
+    mkdir touchgui
+fi</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+run</font></small></small></b></p>
+<pre style="margin-top: 1em">cd $HOME/Sandpit/touchmap-${VERSION}
+autoreconf
+
+cd $HOME/Sandpit
+rm -rf build-touchmap
+mkdir build-touchmap
+cd build-touchmap
+
+
+../touchmap-${VERSION}/configure
+make
+./localrun.sh touchmap.py</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Adding image assets to touchmap
+<a name="3. Adding image assets to touchmap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">touchmap-0.2/Makefile.am</font></small></small></b></p>
+
+<pre style="margin-top: 1em">all: doorh.png doorv.png doorh-bw.png doorv-bw.png hingeh.png \
+  wallh.png wallv.png wallh-bw.png wallv-bw.png \
+  newname.png
+
+
+newname.png: $(srcdir)/images/newname.png
+&deg;convert -resize 100x100 $&lt; $@</pre>
+
+
+<p><font color="#000000"><li> notice that
+<tt><small>&deg;</small></tt> needs to be replaced by a
+single tab character <ul type=square> <li> you might need to
+alter preferences in gedit to allow you to add a tab
+character</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Lecture: 21-1">1. Lecture: 21-1</a><br>
+<a href="#2. Script to automatically build and run touchmap">2. Script to automatically build and run touchmap</a><br>
+<a href="#3. Adding image assets to touchmap">3. Adding image assets to touchmap</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

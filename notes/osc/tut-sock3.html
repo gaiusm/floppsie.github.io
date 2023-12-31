@@ -1,0 +1,153 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:28 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial creating a concurrent datagram server
+<a name="1. Tutorial creating a concurrent datagram server"></a>
+</h2>
+
+
+<p><ul type=disc> <li> boot into GNU/Linux and using an
+editor create this UDP server <li></p>
+
+
+<p><b><small><small><font color="#196633">udpserver.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">from socket import *
+from os import fork
+import sys
+import time
+myHost = &quot;&quot;
+myPort = 2000
+
+
+# create a UDP socket
+s = socket(AF_INET, SOCK_DGRAM)
+# bind it to the server port number
+s.bind((myHost, myPort))</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+udpserver.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">while True:
+    data, address = s.recvfrom(1024)
+    print &quot;UDP server:&quot;, data, &quot;from&quot;, address
+    if data:
+        start_time = time.time()
+        print &quot;processing request received&quot;
+        time.sleep (5)
+        end_time = time.time()
+        print &quot;processing took: &quot;, end_time-start_time, &quot;seconds&quot;
+        s.sendto(&quot;echo -&gt; &quot; + data, address)
+    else:
+        break</pre>
+
+
+<p><font color="#000000"><li> notice that we are simulating
+some large amount of server processing with the call to
+<tt><small>time.sleep(5)</small></tt> <li> now open up the
+editor again and write the following into the file
+<tt><small>udpclient.py</small></tt> <li></font>
+<b><small><small><font color="#196633"><br>
+udpclient.py</font></small></small></b></p>
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+import sys, time
+from socket import *
+
+serverHost = &quot;localhost&quot;
+serverPort = 2000</pre>
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+udpclient.py</font></small></small></b></p>
+<pre style="margin-top: 1em"># create a UDP socket
+s = socket(AF_INET, SOCK_DGRAM)
+
+s.connect((serverHost, serverPort))
+start_time = time.time()
+s.send(&quot;Hello world&quot;)
+data = s.recv(1024)
+end_time = time.time()
+print data
+
+
+print &quot;time to send to server and get reply was&quot;, end_time - start_time, &quot;seconds&quot;</pre>
+
+
+<p><font color="#000000"><li> now open up four command line
+terminal windows <ul type=square> <li> order then neatly on
+the screen so that all four are visible and not overlapping
+</ul> <li> start the server in one window <li> <tt><br>
+$</tt> <b>python udpserver.py</b> <li> in the other three
+terminals type the following but do not press &lt;enter&gt;
+<li> <tt><br>
+$</tt> <b>python udpclient.py</b> <li> now quickly press the
+enter key in all three client windows and observe what
+happens <ul type=square> <li> write down what you are
+seeing? </ul> <li> why are you seeing this? <br>
+</ul></font></p><hr>
+
+<h2>2. Implementing a concurrent datagram server
+<a name="2. Implementing a concurrent datagram server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> using the
+<tt><small>udpserver.py</small></tt> code from the above
+slides, see if you can convert it into a concurrent server
+<li> a successful implementation will allow both clients to
+connect simultaneously but will only incur a 5 second delay
+for a transaction <li> hint you should read the lecture
+notes for the pseudo code for the udp concurrent server <li>
+hint in Python the <tt><small>exit(0)</small></tt> system
+call is <tt><small>sys.exit(0)</small></tt> <li> hint in
+Python the <tt><small>fork()</small></tt> system call is
+also <tt><small>fork()</small></tt> <li> both can be used in
+your <tt><small>udpserver.py</small></tt> example
+code</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Tutorial creating a concurrent datagram server">1. Tutorial creating a concurrent datagram server</a><br>
+<a href="#2. Implementing a concurrent datagram server">2. Implementing a concurrent datagram server</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

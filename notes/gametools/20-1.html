@@ -1,0 +1,154 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:35:22 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Lecture: 20-1
+<a name="1. Lecture: 20-1"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Prerequisites for this lecture are:
+19-1, 19-2 and 19-3.</p>
+
+<p></ul></p><hr>
+
+<h2>2. File export/File import/Next/Back
+<a name="2. File export/File import/Next/Back"></a>
+</h2>
+
+
+<p><ul type=disc> <li> improving the export function and
+coordinating the result of an unsuccessful export with the
+doom button <ul type=square> <li> if the export should fail,
+then the doom3 button should be frozen </ul> <li></p>
+<pre>def save_map (name):
+    f = open (name, &quot;w&quot;)
+    f = write_assets (f)
+    f.write (&quot;\n&quot;)  # add blank line for eye candy
+    f = write_map (f)
+    f.close ()
+
+
+def myexport (name, tap):
+    pygame.display.update ()
+    save_map (current_map_name)
+    check_export ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. check_export
+<a name="3. check_export"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def check_export ():
+  etc</pre>
+
+<p></ul></p><hr>
+
+<h2>4. write_map
+<a name="4. write_map"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there is currently a problem with
+<tt><small>write_map</small></tt> and
+<tt><small>chisel</small></tt> <ul type=square> <li> if the
+map has leading spaces <tt><small>chisel</small></tt> will
+fail <li> if the map has trailing spaces then
+<tt><small>chisel</small></tt> will also fail </ul> <li>
+while this is a bug in chisel <ul type=square> <li> we can
+avoid it by trimming spaces from our file in
+<tt><small>write_map</small></tt> <li> this is common
+practice - in software engineering </ul> <li></p>
+
+<pre>def write_map (f):
+    left, right = determine_range ()
+    m = &quot;&quot;
+    mdict = {&quot;v&quot;:&quot;#&quot;, &quot;h&quot;:&quot;#&quot;, &quot;-&quot;:&quot;.&quot;, &quot;|&quot;:&quot;.&quot;, &quot; &quot;:&quot; &quot;,
+             &quot;H&quot;:&quot;H&quot;, &quot;S&quot;:&quot;S&quot;, &quot;T&quot;:&quot;T&quot;}
+    x, y = cell_array.high ()
+    for j in range (y):
+        for i in range (left, right+1):
+            if mdict.has_key (cell_array.get (i, j)):
+                m += mdict[cell_array.get (i, j)]
+            else:
+                m += cell_array.get (i, j)
+        # skip blank lines
+        m = m.rstrip ()
+        if len (m) &gt; 0:
+            m += &quot;\n&quot;
+    f.write (m)
+    return f</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. determine_range
+<a name="5. determine_range"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>def determine_range ():
+    left = -1
+    x, y = cell_array.high ()
+    right = x
+    for j in range (y):
+        for i in range (x):
+            if cell_array.get (i, j) != &quot; &quot;:
+                if (left == -1) or (i &lt; left):
+                    left = i
+                if i &gt; right:
+                    right = i
+    return left, right</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Lecture: 20-1">1. Lecture: 20-1</a><br>
+<a href="#2. File export/File import/Next/Back">2. File export/File import/Next/Back</a><br>
+<a href="#3. check_export">3. check_export</a><br>
+<a href="#4. write_map">4. write_map</a><br>
+<a href="#5. determine_range">5. determine_range</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>
