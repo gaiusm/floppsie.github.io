@@ -1,0 +1,345 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:07 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Visportals and BSP trees
+<a name="1. Visportals and BSP trees"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consider this map
+<ul type=square> <li> the walls are in red </ul> <li></p>
+
+
+<p><b><small><small><font color="#196633">chisel/maps/spiral.txt</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define 3 room 3
+define 4 room 4
+define O monster monster_demon_imp
+define H monster monster_demon_hellknight
+define S worldspawn</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+chisel/maps/spiral.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">##########################
+#1       #2              #
+#        .               #
+#        .               #
+#        .               #
+#        #               #
+#....##############...####
+#3             #4        #
+#              #  O O O  #
+#      S       #         #
+#              #  O O O  #
+#              #         #
+##########################</pre>
+
+
+<p><font color="#000000"><li> we can see that we are
+spawned in room 3 <ul type=square> <li> the imps are in room
+4 </ul> <li> let us build this map with chisel <li> <tt><br>
+$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map
+../maps/spiral.txt</b></font></p>
+
+<pre>txt2pen: pass
+Total rooms = 4
+Total cuboids = 769
+Total cuboids expanded (optimised) = 0
+Total entities used = 89 entities unused = 4007
+Total brushes used  = 769
+pen2map: pass</pre>
+
+
+<p><font color="#000000"><li> now compile the map within
+dhewm3 <ul type=square> <li> and play it! </ul> <li> notice
+when you are spawned at the beginning of the game
+<ul type=square> <li> turn and if you face room 4 <li> watch
+the fps drop ! <li> why is this the case? </ul> <li> now we
+can implement visportals for open doors
+<ul type=square> <li> compile the map and play the game
+</ul> <li> notice after the player is spawned you can face
+room 4 <ul type=square> <li> and what happens? <li> why?
+<br>
+</ul> </ul></font></p><hr>
+
+<h2>2. Algorithm for splitting an area into a BSP tree
+<a name="2. Algorithm for splitting an area into a BSP tree"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>PROCEDURE makeTree (polyList: polygon) : tree;
+VAR
+   root: polygon ;
+   backList, frontList: polygonP ;
+   p, backPart, frontPart: polygon ;
+BEGIN
+   IF polyList = NIL
+   THEN
+      RETURN NIL
+   ELSE</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>      root := selectAndRemovePolygon (polyList) ;
+      backList := NIL ;
+      frontList := NIL ;
+      FOR p in polyList DO
+         IF p is in front of root
+         THEN
+            frontList := addToList (frontList, p)
+         ELSIF p is behind root
+         THEN
+            backList := addToList (backList, p)
+         ELSE
+            (* polygon, p, must be split as it spans across, root.  *)
+            splitPolygon (p, root, frontPart, backPart) ;
+            frontList := addToList (frontList, frontPart) ;
+            backList := addToList (backList, backPart) ;
+         END
+      END ;
+      RETURN combineTree (makeTree (frontList),
+                          root,
+                          makeTree (backList))
+   END
+END makeTree;</pre>
+
+
+<p><font color="#000000"><small></ul></small></font></p><hr>
+
+<h2>3. BSP trees
+<a name="3. BSP trees"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> consider the
+following walls in a map</font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-26898722.png" alt="Image grohtml-26898722.png"></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"><li> we
+will label each line</font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-26898723.png" alt="Image grohtml-26898723.png"></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"><li> we
+initialise our <tt><small>polyList</small></tt> to the
+labeled lines <li> and the tree to empty
+<ul type=square> <li> the tree will be a binary tree, built
+by a number of 3 item lists <ul type=circle> <li> in the
+list, element 0, is the left, which represents behind, <li>
+middle, element 1, is the node label <li> right, element 2,
+means forward <li> forward means right for a vertical line
+<li> forward means above a horizontal line </ul> <li> the
+algorithm will create a binary tree of ordered lines <li>
+the algorithm keeps recursing until each node is a label
+(rather than a list) <li> and each leaf contains a label
+(rather than a list) </ul> <li></font></p>
+<pre>polyList = [a, b, c, d, e, f]
+tree     = []</pre>
+
+<p style="margin-top: 1em"><font color="#000000"><li> we
+will choose an existing line to perform the split (marked in
+black)</font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26898724.png" alt="Image grohtml-26898724.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><li></font></p>
+
+
+<pre>polyList = [a, b1, b2, c, d, e, f]
+tree = [makeTree ([b1, a, f]),  # left node, below
+        e,                      # pivot node
+        makeTree ([b2, c, d])]  # right node, above</pre>
+
+
+<p style="margin-top: 1em"><font color="#000000"><li> we
+will call <tt><small>makeTree ([b1, a, f])</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>4. makeTree ([b1, a, f])
+<a name="4. makeTree ([b1, a, f])"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26898725.png" alt="Image grohtml-26898725.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><li></font></p>
+
+<pre>polyList = [b1, a, f]
+
+
+tree = [combineTree ([],   # left, below
+                     a,
+                     makeTree ([b1, f])]  # right, above</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. makeTree ([b1, f])
+<a name="5. makeTree ([b1, f])"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-26898726.png" alt="Image grohtml-26898726.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><li></font></p>
+
+<pre>tree = [b1, f, []]</pre>
+
+<p style="margin-top: 1em"><font color="#000000"><li>
+therefore the caller to <tt><small>makeTree</small></tt> now
+creates the tree as: <li></font></p>
+
+<pre>tree = [combineTree ([],  # left, below
+                     a,   # pivot node
+                     makeTree ([b1, f])]  # right, above
+tree = [a, b1, f]</pre>
+
+
+<p><font color="#000000"><li> and the caller to this
+<tt><small>makeTree</small></tt> <li></font></p>
+
+<pre>tree = [makeTree ([a, b1, f]),  # left, below
+        e,
+        makeTree ([b2, c, d])]  # right, above</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>tree = [[a, b1, f],     # left, below
+        e,
+        makeTree ([b2, c, d])] # right, above</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. BSP tree
+<a name="6. BSP tree"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26898727.png" alt="Image grohtml-26898727.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>7. Display BSP Tree algorithm
+<a name="7. Display BSP Tree algorithm"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>PROCEDURE displayTree (tree)
+BEGIN
+   IF tree # NIL
+   THEN
+      IF Viewer is in front of tree-&gt;line
+      THEN
+         (* display back child, root, front child.  *)
+         displayTree (tree-&gt;left) ;  (* back.  *)
+         displayLine (tree-&gt;line) ;
+         displayTree (tree-&gt;right)   (* front.  *)
+      ELSE
+         (* display front child, root and back child.  *)
+         displayTree (tree-&gt;right) ;  (* front.  *)
+         displayLine (tree-&gt;line) ;
+         displayTree (tree-&gt;left)    (* back.  *)
+      END
+   END
+END displayTree ;</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-26898728.png" alt="Image grohtml-26898728.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>8. Line (polygon) display order using the bsp tree and display algorithm
+<a name="8. Line (polygon) display order using the bsp tree and display algorithm"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> given position
+1 (facing upwards) <ul type=square> <li> c, b2, d, e, b1, a,
+f </ul> <li> given position 2 (facing downwards)
+<ul type=square> <li> b1, a, f, e, b2, d, c</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Visportals and BSP trees">1. Visportals and BSP trees</a><br>
+<a href="#2. Algorithm for splitting an area into a BSP tree">2. Algorithm for splitting an area into a BSP tree</a><br>
+<a href="#3. BSP trees">3. BSP trees</a><br>
+<a href="#4. makeTree ([b1, a, f])">4. makeTree ([b1, a, f])</a><br>
+<a href="#5. makeTree ([b1, f])">5. makeTree ([b1, f])</a><br>
+<a href="#6. BSP tree">6. BSP tree</a><br>
+<a href="#7. Display BSP Tree algorithm">7. Display BSP Tree algorithm</a><br>
+<a href="#8. Line (polygon) display order using the bsp tree and display algorithm">8. Line (polygon) display order using the bsp tree and display algorithm</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

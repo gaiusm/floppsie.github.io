@@ -1,0 +1,458 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:08 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Introduction to the Pybot API
+<a name="1. Introduction to the Pybot API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly examine the AI in ioquake
+<ul type=square> <li> these notes deliberately contain last
+weeks and this weeks lectures/tutorial together as they form
+a contineous story </ul> <li> Quake 3 arena box AI is
+layered <li> much like a network protocol stack <li>
+decisions made at higher layers are executed through lower
+layers <li></p>
+
+
+<p align="left"><img src="grohtml-26900052.png" alt="Image grohtml-26900052.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>2. Layer one
+<a name="2. Layer one"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the input and output layer for the
+bot <ul type=square> <li> area awareness system is the
+system which provides the bot with all information about the
+world <li> much of the information has already been
+preprocessed when building the maps <li> some of it will be
+dynamic <li> access to it is fast <li> everything the bot
+senses goes through the Area Awareness System
+<small>AAS</small> </ul> <li> basic actions are the output
+of the bot <ul type=square> <li> outputs are presented in a
+way which is very similar to keyboard/mouse input of a human
+player</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Layer two
+<a name="3. Layer two"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides the intelligence that is
+often subconscious to a skilled human player
+<ul type=square> <li> includes AI to select goals using
+fuzzy logic <li> AI to navigate towards a goal <li> AI to
+interpret chats <li> AI to construct chats </ul> <li>
+functionality to store and retrieve characteristics of bots,
+for example <ul type=square> <li> aim skill <li> aim
+accuracy <li> aggression <li> weapon jumping</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Layer three
+<a name="4. Layer three"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a mixture of production rules
+<ul type=square> <li> and an AI network with special nodes
+for different situations and states of mind <li> very
+similar to a state machine <li> many <tt><small>if then
+else</small></tt> rules </ul> <li> all higher level thinking
+and reasoning takes place in this layer <li> it also
+contains the command module <ul type=square> <li> which
+allows the bot to understand orders and commands <li> from
+other players or a team leader </ul> <li> misc AI module
+supports AI for fighting, navigating around obstacles and
+solving puzzles</p>
+
+<p></ul></p><hr>
+
+<h2>5. Layer four
+<a name="5. Layer four"></a>
+</h2>
+
+
+<p><ul type=disc> <li> one of the bots is designated as
+team leader which enables this layer <ul type=square> <li>
+all other bots disable this layer </ul> <li> typically the
+leader might request other bot to follow me
+<ul type=square> <li> track enemy, attack enemy etc</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Introduction to the Pybot API
+<a name="6. Introduction to the Pybot API"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26900053.png" alt="Image grohtml-26900053.png"></p>
+
+<p style="margin-top: 1em"><li> layered approach <li> top
+layer, <tt><small>botlib</small></tt> will ultimately be the
+interface to user level bots (
+<tt><small>python_doommarine.py</small></tt> ) <li> will
+contain both access to basic movement and access to
+navigation mechanisms <li> maintains the transform between
+the doom3 map and penguin tower map <br>
+</ul></p><hr>
+
+<h2>7. botaa
+<a name="7. botaa"></a>
+</h2>
+
+
+<p><ul type=disc> <li> contains area awareness code for the
+python bot <li> parses the equivalent pen map and creates
+internal simple 2D map of the world in Python <li>
+implements Dijkstra&rsquo;s algorithm for routing to pickups
+and player/monsters</p>
+
+<p></ul></p><hr>
+
+<h2>8. botcache
+<a name="8. botcache"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides the same interface as
+<ul type=square> <li> <tt><small>botbasic</small></tt> but
+it caches all results <li> which allows the higher layers (
+<tt><small>botaa</small></tt> ) the ability to query the bot
+without having to worry about the overhead of the remote
+procedure call </ul> <li> it also contains a method
+<ul type=square> <li> <tt><small>reset</small></tt> which
+deletes the cache, forcing all future requests to be sent
+over to the dhewm3 engine to retrieve up to date values</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>9. botbasic
+<a name="9. botbasic"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides socket connection to the
+dhewm3 engine <li> it also implements the underlying remote
+procedure call mechanism <li> generally maps onto basic
+commands <ul type=square> <li> such as: move, fire, reload,
+turn, aim, etc</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. Example python_doommarine.py code
+<a name="10. Example python_doommarine.py code"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/git-doom/pybot-dhewm3/python/python_doommarine.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">doommarine = -2  # default unset value - which will yield an
+                 # error if sent up to the server
+
+if len (sys.argv) &gt; 1:
+    doommarine = int (sys.argv[1])
+
+
+#
+#  much safer when developing to keep bot global to
+#  ensure a single global bot is created.
+#
+bot = botlib.bot (&quot;localhost&quot;, &quot;python_doommarine %d&quot; % (doommarine))
+execBot (False)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/git-doom/pybot-dhewm3/python/python_doommarine.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def botMain ():
+    global me
+    print (&quot;success!  python doom marine is alive&quot;)
+
+
+    printf (&quot;trying to get my id...&quot;)
+    me = bot.me ()
+    printf (&quot;yes\n&quot;)
+    printf (&quot;the python marine id is: %d\n&quot;, me)
+    circle ()</pre>
+
+
+<p><font color="#000000"><li> notice this code is currently
+accessing the <tt><small>botbasic.py</small></tt> layer
+directly - as we are testing this layer in isolation
+<li></font> <b><small><small><font color="#196633"><br>
+
+Sandpit/git-doom/pybot-dhewm3/python/python_doommarine.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def circle ():
+    while True:
+        for a in range (0, 360, 45):
+            runArc (a+180)
+        time.sleep (5)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+Sandpit/git-doom/pybot-dhewm3/python/python_doommarine.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def walkSquare ():
+    b.forward (100, 100)
+    b.select ([&quot;move&quot;])
+    b.left (100, 100)
+    b.select ([&quot;move&quot;])
+    b.back (100, 100)
+    b.select ([&quot;move&quot;])
+    b.right (100, 100)
+    b.select ([&quot;move&quot;])
+
+
+def runArc (a):
+    b.forward (100, 100)
+    b.turn (a, 1)
+    b.select ([&quot;move&quot;])
+    b.select ([&quot;turn&quot;])</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Pybot API
+<a name="11. Pybot API"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> please read
+through the file
+<tt><small>Sandpit/git-doom/python/botbasic.py</small></tt>
+<ul type=square> <li> and write down a list of all methods
+<li> and alongside each method write a functional synopsis
+</ul> <li> <tt><small>forward</small></tt>
+<ul type=square> <li> takes two arguments
+<tt><small>vel</small></tt> and <tt><small>dist</small></tt>
+<li> <tt><small>vel</small></tt> is the velocity to move
+forward <li> <tt><small>dist</small></tt> are the number of
+doom3 units to move forward (inches) </ul> <li>
+<tt><small>left</small></tt> <ul type=square> <li> takes two
+arguments <tt><small>vel</small></tt> and
+<tt><small>dist</small></tt> <li>
+<tt><small>vel</small></tt> is the velocity to move left
+<li> <tt><small>dist</small></tt> are the number of doom3
+units to move left (inches) </ul> <li>
+<tt><small>right</small></tt> <ul type=square> <li> same
+parameters as left but moving right </ul> <li>
+<tt><small>back</small></tt> <ul type=square> <li> same
+parameters as forward but moving backwards </ul> <li>
+<tt><small>stepvec</small></tt> <ul type=square> <li> three
+parameters: <tt><small>velforward</small></tt> ,
+<tt><small>velright</small></tt> , and
+<tt><small>dist</small></tt> <li>
+<tt><small>velforward</small></tt> velocity forward,
+<tt><small>velright</small></tt> velocity right, and
+<tt><small>dist</small></tt> , distance travelled in
+inches</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>12. select
+<a name="12. select"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> notice that
+the pybot takes time to complete a movement or action <li>
+how do we know if a movement has completed? <li> we can use
+the method <tt><small>select</small></tt> which like its
+Unix counterpart allows us to block for an event to occur
+<li> <tt><small>select</small></tt> <ul type=square> <li>
+takes a single argument, a list, containing any of: <li>
+<tt><small>[&rsquo;move&rsquo;, &rsquo;fire&rsquo;,
+&rsquo;turn&rsquo;, &rsquo;reload&rsquo;]</small></tt> <li>
+indicates which activity it should wait to complete <li> it
+returns when any specified activity has finished </ul> <li>
+examine the <tt><small>select</small></tt> in
+<tt><small>testturn</small></tt> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">Sandpit/git-doom/pybot-dhewm3/python/python_doommarine.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def testturn (a):
+    b.turn (a, 1)
+    b.select ([&quot;turn&quot;])</pre>
+
+
+<p><font color="#000000"><li> without
+<tt><small>select</small></tt> we would have to carefully
+calibrate calls to <tt><small>sleep</small></tt>
+<ul type=square> <li> and hope that the pybot has completed
+the activity <br>
+</ul> </ul></font></p><hr>
+
+<h2>13. Conclusion
+<a name="13. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we have
+examined the bot API in detail <li> we will continue to see
+how this connects with the dhewm engine next week <li> in
+particular we will examine the network stack</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>14. Tutorial
+<a name="14. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> use emacs to
+load the file
+<tt><small>$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/python_doommarine.py</small></tt>
+<ul type=square> <li> remember <tt><small>$HOME</small></tt>
+is shorthand for <tt><small>/home/yourusername</small></tt>
+<li> recall that you can use the &lt;tab&gt; key to complete
+filename and directory names in emacs </ul> <li> now press
+F12 and when this has completed F5 <ul type=square> <li>
+this will compile dhewm3 (F12) and then debug dhewm3 (F5)
+<li> press F10 for help </ul> <li> make sure that dhewm3 has
+been configured to run in a window (not full screen)
+<ul type=square> <li> if not reconfigure it and quit dhewm3
+and then press F5 in emacs </ul> <li> open up another
+terminal <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+$HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/onebot.txt</b> <li>
+open up another terminal <li> <tt><br>
+$</tt> <b>cd
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot</b> <tt><br>
+$</tt> <b>python python_doommarine.py 0</b> <li> this will
+run the python bot from the command line and allows you to
+see any debugging output <li> return to the dhewm program
+and pull down the in game console (using ~) <li> now type:
+<ul type=square> <li> <tt><small>dmap tiny.map</small></tt>
+<li> <tt><small>map tiny.map</small></tt> </ul> <li> you
+should see Python bot appear and run in a circle
+<ul type=square> <li> the game engine is being run under the
+debugger <li> python bot is being run from the command line
+</ul> <li> see if you can change
+<tt><small>python_doommarine.py</small></tt> to make Python
+bot walk around in a circle rather than run <li> create two
+functions <tt><small>walkCircle</small></tt> and
+<tt><small>runCircle</small></tt> <li> finally change the
+program to make Python bot turn without walking
+<ul type=square> <li> see if you can change botlib.py so
+that an turn angle of 0 degrees is straight up in the
+penguin map </ul> <li> you will need to read and study the
+file
+<tt><small>$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botlib.py</small></tt>
+<li> homework, write out a list of functions implemented in
+<tt><small>botlib.py</small></tt> together with their
+functionality <ul type=square> <li> complete the
+walkCircle/runCircle and turn exercises from above </ul>
+<li> consider what extra basic movements are desirable in
+<tt><small>botlib.py</small></tt> <li> open the file
+<tt><small>Sandpit/git-doom/python/botbasic.py</small></tt>
+in emacs <li> find the method <tt><small>left</small></tt>
+<ul type=square> <li> understand what this is doing </ul>
+<li> now we will trace its functionality to the game engine
+<li> find the method <tt><small>right</small></tt>
+<ul type=square> <li> write a line by line commentary for
+this method </ul> <li> at the top of the file change the
+line of code <li></font></p>
+<pre>debug_protocol = False</pre>
+
+<p><font color="#000000"><li> to <li></font></p>
+<pre>debug_protocol = True</pre>
+
+<p><font color="#000000"><li> now rerun dhewm3 and rerun
+the pybot (consult the earlier slides if necessary) <li> can
+you see the call to <tt><small>left</small></tt> ?
+<ul type=square> <li> hint look for the word
+<tt><small>right</small></tt> in the debugging output on the
+gnome terminal </ul> <li> see if you can extend Pybot so
+that you can obtain his health, or change weapon, jump,
+crouch, etc <br>
+</ul></font></p><hr>
+
+<h2>15. Screencast of eightbots coming to life
+<a name="15. Screencast of eightbots coming to life"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the video
+(<a href="http://floppsie.comp.glam.ac.uk/download/avi/eight-python-bots-dijkstra-routing-algorithm.mp4">eight-bot-screencast</a>)
+here does much of the above, but it uses an eight bot map
+and also uses <tt><small>mrun</small></tt> to start up the
+eight python bots</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Introduction to the Pybot API">1. Introduction to the Pybot API</a><br>
+<a href="#2. Layer one">2. Layer one</a><br>
+<a href="#3. Layer two">3. Layer two</a><br>
+<a href="#4. Layer three">4. Layer three</a><br>
+<a href="#5. Layer four">5. Layer four</a><br>
+<a href="#6. Introduction to the Pybot API">6. Introduction to the Pybot API</a><br>
+<a href="#7. botaa">7. botaa</a><br>
+<a href="#8. botcache">8. botcache</a><br>
+<a href="#9. botbasic">9. botbasic</a><br>
+<a href="#10. Example python_doommarine.py code">10. Example python_doommarine.py code</a><br>
+<a href="#11. Pybot API">11. Pybot API</a><br>
+<a href="#12. select">12. select</a><br>
+<a href="#13. Conclusion">13. Conclusion</a><br>
+<a href="#14. Tutorial">14. Tutorial</a><br>
+<a href="#15. Screencast of eightbots coming to life">15. Screencast of eightbots coming to life</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

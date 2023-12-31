@@ -1,0 +1,161 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:57 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Finishing implementation of health (server side)
+<a name="1. Finishing implementation of health (server side)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> so far the Python bot can call the
+server and we always get the value 42! <li> need to find the
+real value of the server side bot health <li> the health is
+contained inside the structure
+<tt><small>gentity_t</small></tt> and can be accessed via
+the <tt><small>g_entities</small></tt> array <li></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/ioquake-latest/ioquake3/code/game/ai_main.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">void
+call_trap_rpc (int client, int character)
+{
+  g_entities[client].info.health = g_entities[client].health;
+  trap_CheckRPC(client, character, &amp;g_entities[client].info);
+}</pre>
+
+
+<p><font color="#000000"><li> notice that
+<tt><small>call_trap_rpc</small></tt> copies the health
+value into an parameter area before calling
+<tt><small>trap_CheckRPC</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>2. New file
+<a name="2. New file"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/ioquake-latest/ioquake3/code/botlib/pybotinfo.h</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#if !defined (PYBOTINFO_H)
+#  define PYBOTINFO_H
+
+typedef struct pybotinfo_s {
+  int health;
+  // you can obviously extend this struct to contain more useful data
+} pybotinfo;
+
+#endif</pre>
+
+<p><font color="#000000"><li> this is included from within
+<tt><small>g_local.h</small></tt> <li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/ioquake-latest/ioquake3/code/game/g_local.h</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#if !defined(G_LOCAL_H)
+# define G_LOCAL_H
+#include &quot;../qcommon/q_shared.h&quot;
+#include &quot;bg_public.h&quot;
+#include &quot;g_public.h&quot;
+#include &quot;../botlib/pybotinfo.h&quot;
+
+...</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. be_ai_char.c
+<a name="3. be_ai_char.c"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/ioquake-latest/ioquake3/code/botlib/be_ai_char.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">int dohealth (void *p)
+{
+  py_bot_t *py = (py_bot_t *)p;
+
+
+  returnInt (p, py-&gt;info-&gt;health);
+  return qtrue;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Obtaining a copy with health implemented server side
+<a name="4. Obtaining a copy with health implemented server side"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you dont need
+to get this copy, but if you want the all health changes
+then this version has the complete changes applied
+<li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>ssh
+mcgreg.comp.glam.ac.uk</b></font></p>
+
+<pre>&lt;enter your linux password&gt;
+$<b> cd $HOME/Sandpit
+</b>$<b> wget http://floppsie.comp.glam.ac.uk/download/c/ioquake-20161114.tar.gz
+</b>$<b> rm -rf ioquake-latest
+</b>$<b> tar zxf ioquake-20161114.tar.gz
+</b>$<b> exit
+</b># your command line is back on the client
+$<b> cd $HOME/Sandpit/ioquake-latest3/ioquake
+</b>$<b> ./compilequake</b></pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt></ul></tt></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Finishing implementation of health (server side)">1. Finishing implementation of health (server side)</a><br>
+<a href="#2. New file">2. New file</a><br>
+<a href="#3. be_ai_char.c">3. be_ai_char.c</a><br>
+<a href="#4. Obtaining a copy with health implemented server side">4. Obtaining a copy with health implemented server side</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:55 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Programming Proverbs
+<a name="1. Programming Proverbs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> 13 Do not recompute constants within
+a loop <li> 14 Avoid implementation-dependent features <li>
+Henry F. Ledgard, &lsquo;&lsquo;Programming Proverbs:
+Principles of Good Programming with Numerous Examples to
+Improve Programming Style and Proficiency&rsquo;&rsquo;,
+(Hayden Computer Programming Series), Hayden Book Company,
+1st edition, ISBN-13: 978-0810455221, December 1975.</p>
+
+<p></ul></p><hr>
+
+<h2>2. Know your tools
+<a name="2. Know your tools"></a>
+</h2>
+
+
+<p><ul type=disc> <li> &lsquo;&lsquo;a bad workman blames
+his tools&rsquo;&rsquo;,</p>
+
+<p>Cambridge Idioms Dictionary <li> we will examine:
+<ul type=square> <li> <tt><small>emacs</small></tt> ,
+<tt><small>etags</small></tt> , <tt><small>grep</small></tt>
+, <tt><small>diff</small></tt> ,
+<tt><small>patch</small></tt> , <tt><small>gcc</small></tt>
+, <tt><small>gm2</small></tt> , <tt><small>cvs</small></tt>
+, <tt><small>gdb</small></tt> , <tt><small>git</small></tt>
+<br>
+</ul> </ul></p><hr>
+
+<h2>3. emacs customisation ($HOME/.emacs) for ioquake
+<a name="3. emacs customisation ($HOME/.emacs) for ioquake"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>;; F5 loads in the .gdbinit file ready for debugging ioquake
+(defun my-find-file-debug ()
+  &quot;load a file&quot;
+  (interactive)
+  (find-file (concat (getenv &quot;HOME&quot;) &quot;/Sandpit/ioquake-latest/ioquake3/.gdbinit&quot;)))
+(global-set-key [f5] &rsquo;my-find-file-debug)
+
+;; F12 compiles ioquake
+(setq compile-command &quot;make&quot;)
+(defun my-compile ()
+  &quot;run the compile command after moving to the correct directory&quot;
+  (interactive)
+  (find-file (concat (getenv &quot;HOME&quot;) &quot;/Sandpit/ioquake-latest/ioquake3/.gdbinit&quot;))
+  (compile compile-command))
+
+;; compile ioquake by pressing
+(global-set-key [f12] &rsquo;my-compile)
+
+
+;; F8 moves to the next error in the source file.
+(global-set-key [f8] &rsquo;next-error)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. emacs
+<a name="4. emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in conclusion you <i>need</i> to use
+an editor which is capable of running
+<tt><small>gdb</small></tt> , <tt><small>etags</small></tt>
+and <tt><small>grep</small></tt> . <li> there are other
+candidates <tt><small>codeblocks</small></tt> ,
+<tt><small>kdevelop</small></tt> and
+<tt><small>elipse</small></tt> . <li> however
+<tt><small>emacs</small></tt> is the most mature and also it
+can be used for many other activities (other than
+programming).</p>
+
+<p></ul></p><hr>
+
+<h2>5. etags
+<a name="5. etags"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the etags program is used to create
+a tag table file, in a format understood by emacs <li> it
+understands the syntax for the following languages:
+<ul type=square> <li> C, Objective C, C++, Java, Fortran,
+Ada, Cobol, Erlang, LaTeX, Emacs Lisp/Common Lisp,
+makefiles, Pascal, Perl, Postscript, Python, Prolog, Scheme
+and most assembler</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Obtaining the modified ioquake tarball
+<a name="6. Obtaining the modified ioquake tarball"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need this to undertake the
+following tutorial and also the coursework <li> open up a
+terminal and type: <li></p>
+
+<p><tt>$</tt> <b>cd $HOME</b> <tt><br>
+$</tt> <b>mkdir -p Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/c/ioquake-latest.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf ioquake-latest.tar.gz</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>7. Running etags
+<a name="7. Running etags"></a>
+</h2>
+
+
+<p><ul type=disc> <li> open up a terminal and change
+directory to the ioquake-latest directory <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/ioquake-latest</b>
+<tt><br>
+$</tt> <b>cd ioquake3</b> <tt><br>
+$</tt> <b>etags */*.[ch] */*/*.[ch]</b> <li> the last
+command requests etag scan each C <tt><small>.c</small></tt>
+and <tt><small>.h</small></tt> file in all directories one
+level below the current <li> <tt><small>etags</small></tt>
+builds an index for every type, function, variable
+declaration <ul type=square> <li> it also builds indices for
+<tt><small>#define</small></tt> &rsquo;s <br>
+</ul> </ul></p><hr>
+
+<h2>8. Using etags
+<a name="8. Using etags"></a>
+</h2>
+
+
+<p><ul type=disc> <li> now start
+<tt><small>emacs</small></tt> and press
+<tt><small>&lt;F5&gt;</small></tt> <li> now load in a new
+file: <tt><small>^x^f code/server/sv_game.c</small></tt>
+<li> cursor down to the declaration of the function
+<tt><small>SV_GameSystemCalls</small></tt> <li> now continue
+further and find the call to function
+<tt><small>SV_CheckRPC</small></tt> <ul type=square> <li>
+place the cursor on top of this function <li> now press
+<tt><small>&lt;Esc&gt; . &lt;enter&gt;</small></tt> <li>
+<tt><small>emacs</small></tt> will request you enter the
+<tt><small>TAGS</small></tt> file, you can delete the last
+path entry. So the path will match the location where you
+invoked the <tt><small>etags</small></tt> program <li> ie
+the path must match
+<tt><small>~/Sandpit/ioquake-latest/ioquake3</small></tt>
+<li> now <tt><small>emacs</small></tt> will now take you to
+the declaration of <tt><small>SV_CheckRPC</small></tt> </ul>
+<li> now split the screen into two and continue to follow
+the function calls <li> <tt><small>updatePy</small></tt>
+-&gt; <tt><small>testFor</small></tt> -&gt;
+<tt><small>execFunction</small></tt> <li> now use etags to
+find the function <tt><small>putPacket</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>9. grep
+<a name="9. grep"></a>
+</h2>
+
+
+<p><ul type=disc> <li> or how to find where functions are
+called <li> read the manual page for
+<tt><small>grep</small></tt> <ul type=square> <li> this can
+be done from within <tt><small>emacs</small></tt> via
+<tt><small>M-x man &lt;enter&gt; grep
+&lt;enter&gt;</small></tt> </ul> <li> return back to the
+buffer <tt><small>sv_game.c</small></tt> <li> now type:
+<tt><small>M-x grep &lt;enter&gt; putPacket ../*/*.[ch]
+&lt;enter&gt;</small></tt> <li> now you can use the
+<tt><small>&lt;F8&gt;</small></tt> key to move to the next
+occurrence of <tt><small>putBuffer</small></tt> <li> the
+previous grep command was instructed to find all occurrences
+of <tt><small>putPacket</small></tt> in all C
+<tt><small>.c</small></tt> and <tt><small>.h</small></tt>
+files and output these findings in an
+<tt><small>emacs</small></tt> compatible format</p>
+
+<p></ul></p><hr>
+
+<h2>10. diff and patch
+<a name="10. diff and patch"></a>
+</h2>
+
+
+<p><ul type=disc> <li> read the manual pages for
+<tt><small>diff</small></tt> and
+<tt><small>patch</small></tt> <li> see if you can do this
+from within <tt><small>emacs</small></tt> <li> now switch to
+the <tt><small>sv_game.c</small></tt> buffer and split the
+screen into two <li> move to the top of the
+<tt><small>sv_game.c</small></tt> and mark this position
+<tt><small>&lt;ctrl&gt;&lt;space&gt;</small></tt> <li> now
+move to the end of the buffer and copy the whole file into
+the yank buffer <tt><small>&lt;esc&gt;w</small></tt> <li>
+move to the other window <tt><small>^xo</small></tt> and
+open up a new file <tt><small>^x^f
+sv_game.c-test</small></tt> <li> now yank the internal
+buffer into this file <tt><small>^y</small></tt> <li> now
+make a single line change (maybe just add your name in a
+comment) <ul type=square> <li> anywhere in the file </ul>
+<li> save the file <tt><small>^xs</small></tt> <li> now make
+<tt><small>emacs</small></tt> run the bash shell via
+<tt><small>M-x shell &lt;enter&gt;</small></tt> <li> and
+type: <li></p>
+
+<p><tt>$</tt> <b>diff sv_game.c sv_game.c-test</b> <li>
+note the output <li> <tt><small>diff</small></tt> &rsquo;s
+are a useful method of transferring textual changes and
+posting changes to co-developers <li> nearly all free
+software/open source projects operate on this principle
+<ul type=square> <li> this has had a major impact on keeping
+these free software/open source projects highly portable
+</ul> <li> give the flexibility of
+<tt><small>diff</small></tt> and
+<tt><small>patch</small></tt> it is often possible to apply
+textual <tt><small>patch</small></tt> es to later releases
+of the same project <ul type=square> <li> not always, and
+sometimes a few <i>hunks</i> require fixing </ul> <li> in
+the early days of free software projects were maintained by
+creating patches and diffs by hand <li> fortunately now
+there are tools which perform most of this automatically
+<ul type=square> <li> and coordinate all the source files in
+a project </ul> <li> these are content management systems
+such as: <ul type=square> <li> <tt><small>cvs</small></tt> ,
+<tt><small>git</small></tt> , <tt><small>svn</small></tt>
+</ul> <li>
+<a href="http://subversion.tigris.org/">svn or subversion</a>
+<li> <a href="http://git-scm.com/">git</a> <li>
+<a href="http://www.nongnu.org/cvs/">cvs</a> <li> we will be
+concentrating on <tt><small>git</small></tt> as it is used
+by the <tt><small>ioquake3</small></tt> project <br>
+</ul></p><hr>
+
+<h2>11. git
+<a name="11. git"></a>
+</h2>
+
+
+<p><ul type=disc> <li> open up a terminal and type in the
+following: <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit/ioquake3-git</b>
+<tt><br>
+$</tt> <b>cd $HOME/Sandpit/ioquake3-git</b> <tt><br>
+$</tt> <b>git clone git://github.com/ioquake/ioq3.git</b>
+<li> these commands create a new directory
+<tt><small>$HOME/Sandpit/ioquake3-git</small></tt> and
+change your current working directory to this location <li>
+finally it checks out the latest copy of the development
+version of <tt><small>ioquake3</small></tt> <li> now type:
+<li> <tt><br>
+$</tt> <b>cd ioquake3</b> <tt><br>
+$</tt> <b>make</b> <li> this builds the latest
+<tt><small>ioquake3</small></tt> <li> you should be able to
+run this by typing: <li> <tt><br>
+$</tt> <b>./build/debug-linux-x86_64/ioquake3.x86_64</b>
+<li> run it, load up the level
+<tt><small>pom_bots</small></tt> and play against alien or
+legoman <li> take note at the smoke and blood when using the
+grenade launcher and the rocket launcher <li> now open up
+another terminal and type: <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/ioquake-latest/ioquake3</b>
+<tt><br>
+$</tt> <b>./compilequake</b> <tt><br>
+$</tt> <b>./build/debug-linux-x86_64/ioquake3.x86_64</b>
+<li> run it, load up the level
+<tt><small>pom_bots</small></tt> and play against alien or
+legoman <li> take note at the smoke and blood when using the
+grenade launcher and the rocket launcher <li> open up
+another terminal and type: <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/ioquake-latest/ioquake3</b>
+<tt><br>
+$</tt> <b>svn diff</b> <li> this will yield the code changes
+which were made in order that the blood, smoke, gibs and
+Python bot work <br>
+</ul></p><hr>
+
+<h2>12. Tutorial work
+<a name="12. Tutorial work"></a>
+</h2>
+
+
+<p><ul type=disc> <li> see if you can create a patch set
+from the modified ioquake3 which can be applied to the
+ioquake3-svn tree <li> hint you need to capture the
+<tt><small>diff</small></tt> &rsquo;s and use patch to apply
+them <ul type=square> <li> however you also need to make
+copies of some new files which are not in the svn tree </ul>
+<li> the new files can be found by typing: <li></p>
+
+<p><tt>$</tt> <b>cd
+$HOME/Sandpit/ioquake-latest/ioquake3</b> <tt><br>
+$</tt> <b>svn status</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>13. Tutorial
+<a name="13. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> read through the code:
+<tt><small>$HOME/Sandpit/ioquake-latest/python-bot/bot-legoman/botfiles/bots/legoman.py</small></tt></p>
+
+
+<p><tt><small>$HOME/Sandpit/ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py
+<br>
+
+$HOME/Sandpit/ioquake-latest/ioquake3/code/botlib/be_ai_py.[ch]
+<br>
+
+$HOME/Sandpit/ioquake-latest/ioquake3/code/botlib/be_ai_char.c</small></tt>
+<br>
+also read the directed reading at the end of lecture 0 <br>
+</ul></p><hr>
+
+<h2>14. gdb
+<a name="14. gdb"></a>
+</h2>
+
+
+<p><ul type=disc> <li> GNU debugger <ul type=square> <li>
+online documentation is avilable
+<a href="http://sourceware.org/gdb/current/onlinedocs/gdb">here</a>.
+</ul> <li> read the <ul type=square> <li> summary <li>
+sample session <li> GDB commands and <li> stopping and
+continuing</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>15. Debugging ioquake3
+<a name="15. Debugging ioquake3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need two computers, side by
+side <li> on the left computer log in, open a terminal and
+change directory to ioquake-latest <li></p>
+
+<p><tt>$</tt> <b>cd
+$HOME/Sandpit/ioquake-latest/ioquake3</b> <li> and start the
+debugging version of ioquake3 under the debugger <li>
+<tt><br>
+$</tt> <b>./debugquake</b> <li> at this point the debugger
+(GDB) is split into two <ul type=square> <li> the server is
+manipulating ioquake3 </ul> <li> the GDB client will being
+controlled by you <li> on the right computer login and start
+emacs <ul type=square> <li> maximise it to its rightful
+size, full screen <li> press <tt><small>F5</small></tt>
+</ul> <li> the first line requires modifying, change
+<tt><small>localhost</small></tt> for the FQDN of the
+computer running ioquake3 under the debugger <li> you should
+be given a GDB prompt <ul type=square> <li> now type </ul>
+<li> <tt><br>
+(gdb)</tt> <b>cont</b> <li> and debug the ioquake3 as you
+would debug an ordinary binary <ul type=square> <li> there
+are a few differences <li> never type
+<tt><small>run</small></tt> <li> and always finish the
+debugging session by typing <tt><small>quit</small></tt></p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Programming Proverbs">1. Programming Proverbs</a><br>
+<a href="#2. Know your tools">2. Know your tools</a><br>
+<a href="#3. emacs customisation ($HOME/.emacs) for ioquake">3. emacs customisation ($HOME/.emacs) for ioquake</a><br>
+<a href="#4. emacs">4. emacs</a><br>
+<a href="#5. etags">5. etags</a><br>
+<a href="#6. Obtaining the modified ioquake tarball">6. Obtaining the modified ioquake tarball</a><br>
+<a href="#7. Running etags">7. Running etags</a><br>
+<a href="#8. Using etags">8. Using etags</a><br>
+<a href="#9. grep">9. grep</a><br>
+<a href="#10. diff and patch">10. diff and patch</a><br>
+<a href="#11. git">11. git</a><br>
+<a href="#12. Tutorial work">12. Tutorial work</a><br>
+<a href="#13. Tutorial">13. Tutorial</a><br>
+<a href="#14. gdb">14. gdb</a><br>
+<a href="#15. Debugging ioquake3">15. Debugging ioquake3</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

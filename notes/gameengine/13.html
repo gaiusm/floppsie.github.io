@@ -1,0 +1,290 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:56 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Extending the Remote procedure call API
+<a name="1. Extending the Remote procedure call API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>disableAI () :
+boolean</small></tt> <ul type=square> <li> disable the in
+game C AI <li> return True/False if successful <li>
+(completed) </ul> <li> <tt><small>enableAI () :
+boolean</small></tt> <ul type=square> <li> enable the in
+game C AI <li> return True/False if successful <li>
+(completed)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Implementing these two function calls
+<a name="2. Implementing these two function calls"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we need to modify the Python remote
+procedure call interface <li> then we need to modify the
+ioquake source code <ul type=square> <li> (completed)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Disable/Enable ioquake AI
+<a name="3. Disable/Enable ioquake AI"></a>
+</h2>
+
+
+<p><ul type=disc> <li> this has been completed in your
+source file <ul type=square> <li> these notes show how the
+changes were made and <li> importantly also show you which
+files were altered</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Python
+<a name="4. Python"></a>
+</h2>
+
+
+<p><ul type=disc> <li> open up
+<tt><small>ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</small></tt>
+<li> alter <li></p>
+<pre># AI codes
+SKILL, CONT = range(1, 3)</pre>
+
+<p><li> to <li></p>
+<pre># AI codes
+SKILL, CONT, CAI = range(1, 4)</pre>
+
+<p><li> we now are going to define this new function
+<tt><small>CAI</small></tt> <li> now move to the definition
+of <tt><small>class bot:</small></tt> and continue down to
+find <tt><small>def cont (self):</small></tt> <li> we now
+add <li></p>
+
+<pre>def cai (self, boolean):
+    &quot;&quot;&quot; enables/disables the C AI engine inside ioquake &quot;&quot;&quot;
+    &quot;&quot;&quot; It returns the previous value of the C AI engine state &quot;&quot;&quot;
+    &quot;&quot;&quot; True means it was on, False means it was off &quot;&quot;&quot;
+    return calliB(AI, CAI, boolean)</pre>
+
+
+<p><li> <tt><small>calliB</small></tt> passes the three
+parameters as integers and returns a boolean result <li> we
+now implement two more Python functions: <li></p>
+<pre>def disableAI ():
+   &quot;&quot;&quot; disable the C AI and return True if successful &quot;&quot;&quot;
+   return cai(False)=True
+
+
+def enableAI ():
+   &quot;&quot;&quot; enable the C AI and return True if successful &quot;&quot;&quot;
+   return cai(True)=False</pre>
+
+
+<p><li> the Python code is complete! <br>
+</ul></p><hr>
+
+<h2>5. C
+<a name="5. C"></a>
+</h2>
+
+
+<p><ul type=disc> <li> open up the file:
+<tt><small>ioquake-latest/ioquake3/code/botlib/be_ai_char.c</small></tt>
+<li></p>
+
+<pre>//a bot character
+typedef struct bot_character_s
+{
+  char filename[MAX_QPATH];
+  float skill;
+  int isPythonBot;
+  py_bot_t py;
+  bot_characteristic_t c[1];
+} bot_character_t;</pre>
+
+
+<p><li> and change it to: <li></p>
+
+<pre>//a bot character
+typedef struct bot_character_s
+{
+  char filename[MAX_QPATH];
+  float skill;
+  int isPythonBot;
+  int c_ai;
+  py_bot_t py;
+  bot_characteristic_t c[1];
+} bot_character_t;</pre>
+
+
+<p><li> change: <li></p>
+
+<pre>#if 1
+ if ((strlen(charfile)&gt;3) &amp;&amp; (strcmp(&amp;charfile[strlen(charfile)-3], &quot;.py&quot;) == 0)) {
+   ch-&gt;isPythonBot = qtrue;
+   if (initPy(&amp;ch-&gt;py, ch)) {
+     ch-&gt;skill = skill;</pre>
+
+
+<p><li> to <li></p>
+
+<pre>#if 1
+ ch-&gt;c_ai = qtrue;
+ if ((strlen(charfile)&gt;3) &amp;&amp; (strcmp(&amp;charfile[strlen(charfile)-3], &quot;.py&quot;) == 0)) {
+   ch-&gt;isPythonBot = qtrue;
+   if (initPy(&amp;ch-&gt;py, ch)) {
+     ch-&gt;skill = skill;</pre>
+
+
+<p><li> add the new function underneath
+<tt><small>contrpc</small></tt> <li></p>
+<pre>/*
+ *  cairpc - called by the rpc.
+ *           Bytes:  &lt;length&gt;&lt;CODE&gt;&lt;FUNCTION&gt;
+ *           Integer:  &lt;True/False&gt;
+ *
+ *           The Integer value turns the C AI on/off.
+ */
+
+int cairpc (void *p)
+{
+  py_bot_t *py = (py_bot_t *)p;
+  int *onoff = (int *)&amp;py-&gt;inBuf[3];
+  bot_character_t *ch = py-&gt;ch;
+  int oldValue = ch-&gt;c_ai;
+
+
+  ch-&gt;c_ai = *onoff;
+  returnBoolean(p, (unsigned char)oldValue);
+  return qtrue;
+}</pre>
+
+
+<p><li> open up
+<tt><small>ioquake-latest/ioquake3/code/botlib/be_ai_char.h</small></tt>
+and add this prototype to the end of the file: <li></p>
+<pre>/*
+ *  use_c_ai - returns true if, client, should use the C AI engine.
+ */
+
+int use_c_ai (int character);</pre>
+
+<p><li> now open up
+<tt><small>ioquake-latest/ioquake3/code/botlib/be_ai_char.c</small></tt>
+and add this function after
+<tt><small>isPythonBot</small></tt> <li></p>
+<pre>/*
+ *  use_c_ai - returns true if, client, should use the C AI engine.
+ */
+
+
+int use_c_ai (int character)
+{
+  return (botcharacters[character] != NULL) &amp;&amp; (botcharacters[character]-&gt;c_ai);
+}</pre>
+
+
+<p><li> now we need to add the C AI rpc call, so open up
+<tt><small>ioquake-latest/ioquake3/code/botlib/be_ai_py.h</small></tt>
+and alter <li></p>
+<pre>/*
+ *  AI codes
+ */
+
+
+typedef enum AIcode_t {
+  pyAIDummy, pySKILL, pyCONT, pyAImax,
+} AIcode;</pre>
+
+
+<p><li> to <li></p>
+<pre>/*
+ *  AI codes
+ */
+
+
+typedef enum AIcode_t {
+  pyAIDummy, pySKILL, pyCONT, pyCAI, pyAImax,
+} AIcode;</pre>
+
+
+<p><li> alter the prototype for function
+<tt><small>initAImethods</small></tt> to <li></p>
+<pre>/*
+ *  initAImethods - initialise the AI methods called by the rpc.
+ */
+
+
+EXTERN void initAImethods (py_bot_t *py,
+                  int (*skill)(void *),
+                  int (*cont)(void *),
+                  int (*cai)(void *));</pre>
+
+
+<p><li> now we need to modify the call to
+<tt><small>initAImethods</small></tt> (found in file
+<tt><small>be_ai_char.c</small></tt> ) <li></p>
+
+<pre>  if (initPy(&amp;ch-&gt;py, ch)) {
+    ch-&gt;skill = skill;
+    initAImethods(&amp;ch-&gt;py, skillrpc, contrpc, cairpc);</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. Exercise for the reader
+<a name="6. Exercise for the reader"></a>
+</h2>
+
+
+<p><ul type=disc> <li> at this point the Python rpc
+mechanism can turn off/on the c_ai value <li> the C ioquake
+code can use the function <tt><small>use_c_ai</small></tt>
+to test this bit <li> we still need to modify ioquake so
+that it does not call the C AI if this function returns
+TRUE</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Extending the Remote procedure call API">1. Extending the Remote procedure call API</a><br>
+<a href="#2. Implementing these two function calls">2. Implementing these two function calls</a><br>
+<a href="#3. Disable/Enable ioquake AI">3. Disable/Enable ioquake AI</a><br>
+<a href="#4. Python">4. Python</a><br>
+<a href="#5. C">5. C</a><br>
+<a href="#6. Exercise for the reader">6. Exercise for the reader</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

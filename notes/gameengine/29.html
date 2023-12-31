@@ -1,0 +1,466 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:00 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Data structures used in PGE
+<a name="1. Data structures used in PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in this lecture we will examine the
+key data structures used in PGE <li> at the end of the
+lecture you should understand how these data structures are
+used to represent the world of polygons, circles and colours
+in the game engine <li> before we examine the data
+structures we will examine the API layering in a little more
+detail</p>
+
+<p></ul></p><hr>
+
+<h2>2. API layering
+<a name="2. API layering"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26887082.png" alt="Image grohtml-26887082.png"></p>
+
+<p style="margin-top: 1em"><li> recall
+<ul type=square> <li> <tt><small>python/pge.py</small></tt>
+is written in Python <li> <tt><small>c/pgeif.c</small></tt>
+is written in C and its external Python functions are
+defined in <tt><small>i/pgeif.i</small></tt> <li>
+<tt><small>swig</small></tt> generates the wrapping code
+</ul> <li> the file <tt><small>c/pgeif.c</small></tt>
+contains the implementation of all the publically accessible
+Python methods <li> it also ensures that all publically
+created objects in the Physics game engine are remembered
+and stored in this file <li> this allows colours, polygons,
+circles to be mapped onto their high level Python
+counterparts in <tt><small>python/pge.py</small></tt> <li>
+it also allows the implementation of
+<tt><small>python/pge.py</small></tt> to be cleaner as it
+will always obtain any object from
+<tt><small>c/pgeif.c</small></tt> <li> examine the
+implementation for <tt><small>box</small></tt> inside
+<tt><small>c/pgeif.c</small></tt> <li> we see that much of
+<tt><small>c/pgeif.c</small></tt> just calls upon the
+services of the lower layer
+<tt><small>c/twoDsim.c</small></tt> <ul type=square> <li>
+after performing extensive checking of parameter types <br>
+</ul> </ul></p><hr>
+
+<h2>3. Implementation of box
+<a name="3. Implementation of box"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">c/pgeif.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+   box - place a box in the world at (x0,y0),(x0+i,y0+j)
+*/
+
+unsigned int box (double x0, double y0,
+                  double i, double j, unsigned int c)
+{
+  double k;
+
+
+  x0 = check_range (x0, (char *) &quot;box&quot;, 3, (char *) &quot;x0&quot;, 2);
+  y0 = check_range (y0, (char *) &quot;box&quot;, 3, (char *) &quot;y0&quot;, 2);
+  k = check_range (x0+i, (char *) &quot;box&quot;, 3, (char *) &quot;x0+i&quot;, 4);
+  k = check_range (y0+j, (char *) &quot;box&quot;, 3, (char *) &quot;y0+j&quot;, 4);
+  return trace (addDef ((TypeOfDef) object,
+                        twoDsim_box (x0, y0, i, j,
+                        (deviceIf_Colour) lookupDef ((TypeOfDef) colour, c))),
+                (char *) &quot;box&quot;, 3);
+}</pre>
+
+
+<p><font color="#000000"><li> we see that it creates a box
+(using <tt><small>twoDsim_box</small></tt> )
+<ul type=square> <li> it saves this box in its local
+definitions <tt><small>addDef</small></tt> <li> it is saved
+as an <tt><small>object</small></tt> and not a
+<tt><small>colour</small></tt> </ul> <li> also note that the
+5th parameter to <tt><small>twoDsim_box</small></tt> is a
+colour id, <tt><small>c</small></tt> , which is looked up
+using <tt><small>lookupDef</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>4. The data structures inside c/twoDsim.c
+<a name="4. The data structures inside c/twoDsim.c"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">c/twoDsim.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">typedef enum {polygonOb, circleOb, springOb} ObjectType;
+
+typedef enum {frameKind, functionKind, collisionKind} eventKind;
+
+
+typedef enum {frameEvent, circlesEvent, circlePolygonEvent,
+              polygonPolygonEvent, functionEvent} eventType;</pre>
+
+
+<p><font color="#000000"><li>
+<tt><small>ObjectType</small></tt> defines the different
+kinds of object (ignore spring object) <li>
+<tt><small>eventKind</small></tt> defines the three major
+classification of events <li>
+<tt><small>eventType</small></tt> further subclassifies the
+event kind with the collision event info
+<ul type=square> <li> we distinguish between a
+circle/polygon collision and a circle/circle collision and a
+polygon/polygon collision <br>
+</ul> </ul></font></p><hr>
+
+<h2>5. object
+<a name="5. object"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">c/twoDsim.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">typedef struct _T2_r {
+      unsigned int id;          /* the id of the object.  */
+      unsigned int deleted;     /* has it been deleted?   */
+      unsigned int fixed;       /* is it fixed to be world?  */
+      unsigned int stationary;  /* is it stationary?  */
+      double vx;                /* velocity along x-axis.  */
+      double vy;                /* velocity along y-axis.  */
+      double ax;                /* acceleration along x-axis.  */
+      double ay;                /* acceleration along y-axis.  */
+      double inertia;           /* a constant for the life of the object used for rotation.  */
+      double angleOrientation;  /* the current rotation angle of the object.  */
+      double angularVelocity;   /* the rate of rotation.  (Rotation per second).  */
+      double angularMomentum;   /* used to hold the current momemtum after a collision.  */
+      unsigned int interpen;    /* a count of the times the object is penetrating another object.  */
+      ObjectType object;  /* case tag */
+      union {
+              Polygon p;  /* object is either a polygon, circle or string.  */
+              Circle c;
+              Spring s;
+            };
+    };</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+c/twoDsim.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">typedef struct _T2_r _T2;
+typedef _T2 *Object;</pre>
+
+
+<p><font color="#000000"><li> notice you can ignore the
+<tt><small>inertia</small></tt> ,
+<tt><small>angleOrientation</small></tt> ,
+<tt><small>angularVelocity</small></tt> and
+<tt><small>angularMomentum</small></tt> as these are used to
+implement rotation <br>
+</ul></font></p><hr>
+
+<h2>6. Circle
+<a name="6. Circle"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">c/twoDsim.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">typedef struct Circle_r Circle;
+
+
+struct Circle_r {
+      coord_Coord pos;   /* center of the circle in the world.  */
+      double r;             /* radius of circle.  */
+      double mass;          /* mass of the circle.  */
+      deviceIf_Colour col;  /* colour of circle.  */
+};</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Polygon
+<a name="7. Polygon"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">c/twoDsim.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">typedef struct Polygon_r Polygon;
+struct _T3_a { polar_Polar array[MaxPolygonPoints+1]; };
+struct Polygon_r {
+                   unsigned int nPoints;
+                   _T3 points;
+                   double mass;
+                   deviceIf_Colour col;
+                   coord_Coord cOfG;
+                 };
+typedef struct _T3_a _T3;</pre>
+
+
+<p><font color="#000000"><li> the polygon has an array
+which is used to contain each corner <ul type=square> <li> a
+corner is a polar coordinate from the centre of gravity
+</ul> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887083.png" alt="Image grohtml-26887083.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><big></ul></big></font></p> <hr>
+
+<h2>8. Polar coordinates
+<a name="8. Polar coordinates"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> remember that
+a polar coordinate has a magnitude and an angle
+<ul type=square> <li> an angle of 0 radians is along the
+x-axis <li> magnitude of, <i>r</i> and an angle of
+<img src="grohtml-2688708-5.png" alt="Image grohtml-2688708-5.png">
+</ul> <li> so we can convert a polar to cartesian coordinate
+by: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887085.png" alt="Image grohtml-26887085.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887086.png" alt="Image grohtml-26887086.png"></font></p>
+
+<p><font color="#000000"><li> in our diagram
+<li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887087.png" alt="Image grohtml-26887087.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887088.png" alt="Image grohtml-26887088.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26887089.png" alt="Image grohtml-26887089.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268870810.png" alt="Image grohtml-268870810.png"></font></p>
+
+<p><font color="#000000"><li> where p1, p2, p3, p4 are the
+lengths of the line from the CofG to the corner
+<ul type=square> <li> dotted lines in our diagram </ul> <li>
+the angle values in the polar coordinates for our polygon
+are the offset of the angle for the particular corner
+<ul type=square> <li> the angularVelocity is used to
+determine the rotation of the polygon, this is added to each
+corner to find out the corner position at any time </ul>
+<li> this allows rotation of the polygon to be modelled at a
+later date <li> at any time in the future,
+<img src="grohtml-2688708-12.png" alt="Image grohtml-2688708-12.png">
+we can determine the polygons corner, <i>i</i> by:
+<li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268870811.png" alt="Image grohtml-268870811.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268870812.png" alt="Image grohtml-268870812.png"></font></p>
+
+<p><font color="#000000"><li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268870813.png" alt="Image grohtml-268870813.png"></font></p>
+
+<p><font color="#000000"><li> we can see how this data
+structure represents a polygon by following the
+<tt><small>dumpPolygon</small></tt> function <li> see how
+each corner is defined by following through the function
+<tt><small>box</small></tt> <ul type=square> <li> into
+<tt><small>poly4</small></tt> </ul> <li> how it calculates
+the box CofG <li> how it defines each corner relative to the
+CofG and as a polar coordinate <ul type=square> <li> each
+corner is orbiting the CofG</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>9. dumpPolygon
+<a name="9. dumpPolygon"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">c/twoDsim.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">static void dumpPolygon (Object o)
+{
+  unsigned int i;
+  coord_Coord c0;
+
+
+  libc_printf ((char *) &quot;polygon mass %g colour %d\\n&quot;, 27,
+               o-&gt;p.mass, o-&gt;p.col);
+  libc_printf ((char *) &quot;  c of g  (%g,%g)\\n&quot;, 19,
+               o-&gt;p.cOfG.x, o-&gt;p.cOfG.y);
+  for (i=0; i&lt;=o-&gt;p.nPoints-1; i++)
+    {
+      c0 = coord_addCoord (o-&gt;p.cOfG,
+           polar_polarToCoord (polar_rotatePolar
+           ((polar_Polar) o-&gt;p.points.array[i], o-&gt;angleOrientation)));
+      libc_printf ((char *) &quot;  point at (%g,%g)\\n&quot;, 20, c0.x, c0.y);
+    }
+}</pre>
+
+
+<p><font color="#000000"><li> follow through the function
+<tt><small>doDrawFrame</small></tt> and see how the corners
+of a polygon are updated dependant upon the
+<tt><small>angularVelocity</small></tt> ,
+<tt><small>angleOrientation</small></tt> and the
+acceleration and velocity components <li> examine
+<tt><small>newPositionRotationCoord</small></tt> ,
+<tt><small>newPositionRotationSinScalar</small></tt> and
+<tt><small>newPositionRotationCosScalar</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>10. Acceleration and Conclusion
+<a name="10. Acceleration and Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+function <tt><small>getAccelCoord</small></tt> and see if
+you can think how you might modify PGE to allow per object
+gravity <li> now consider how per object elasticity might be
+implemented</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Which files in PGE need changing if an API change is to be made?
+<a name="11. Which files in PGE need changing if an API change is to be made?"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<tt><small>i/pgeif.i</small></tt> <ul type=square> <li> is
+the swig interface (remember there are two copies of each
+prototype) </ul> <li> <tt><small>c/pgeif.c</small></tt>
+<ul type=square> <li> translates the Python object ids into
+twoDsim objects </ul> <li>
+<tt><small>c/Gpgeif.h</small></tt> <ul type=square> <li>
+header file for <tt><small>pgeif.c</small></tt> </ul> <li>
+<tt><small>c/GtwoDsim.h</small></tt> <ul type=square> <li>
+header file for <tt><small>c/twoDsim.c</small></tt> </ul>
+<li> <tt><small>c/twoDsim.c</small></tt>
+<ul type=square> <li> the game engine C/C++ code</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>12. Work flow
+<a name="12. Work flow"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> to completely
+rebuild pge <ul type=square> <li> this is particularly
+useful if you edit a <tt><small>.h</small></tt> file </ul>
+<li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd $HOME/Sandpit</b>
+<tt><br>
+$</tt> <b>rm -rf build-pge</b> <tt><br>
+$</tt> <b>mkdir build-pge</b> <tt><br>
+$</tt> <b>cd build-pge</b> <tt><br>
+$</tt> <b>../pge/configure --enable-langc</b> <tt><br>
+$</tt> <b>make</b> <li> if you edit a
+<tt><small>.c</small></tt> file you can simply <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/build-pge</b> <tt><br>
+$</tt> <b>make</b> <li> to run your pge you need to: <li>
+<tt><br>
+$</tt> <b>cd $HOME/Sandpit/build-pge</b> <tt><br>
+$</tt> <b>./localrun.sh
+../pge/examples/breakout/breakout.py</b></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt></ul></tt></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Data structures used in PGE">1. Data structures used in PGE</a><br>
+<a href="#2. API layering">2. API layering</a><br>
+<a href="#3. Implementation of box">3. Implementation of box</a><br>
+<a href="#4. The data structures inside c/twoDsim.c">4. The data structures inside c/twoDsim.c</a><br>
+<a href="#5. object">5. object</a><br>
+<a href="#6. Circle">6. Circle</a><br>
+<a href="#7. Polygon">7. Polygon</a><br>
+<a href="#8. Polar coordinates">8. Polar coordinates</a><br>
+<a href="#9. dumpPolygon">9. dumpPolygon</a><br>
+<a href="#10. Acceleration and Conclusion">10. Acceleration and Conclusion</a><br>
+<a href="#11. Which files in PGE need changing if an API change is to be made?">11. Which files in PGE need changing if an API change is to be made?</a><br>
+<a href="#12. Work flow">12. Work flow</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

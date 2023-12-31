@@ -1,0 +1,500 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:00 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Creating shared libraries under GNU/Linux
+<a name="1. Creating shared libraries under GNU/Linux"></a>
+</h2>
+
+
+<p><ul type=disc> <li> focus on the major advantage <li>
+interfacing C, C++, Modula-2 with scripting languages
+<ul type=square> <li> Python, Perl, Ruby, TCL <li> further
+focus examples around Python </ul> <li> Python&rsquo;s
+modules are either written in Python or are implemented as a
+shared library <ul type=square> <li> or a combination of
+both </ul> <li> we will briefly examine the following tools
+<ul type=square> <li> <tt><small>gcc</small></tt> ,
+<tt><small>g++</small></tt> ,
+<tt><small>libtool</small></tt> ,
+<tt><small>swig</small></tt> , <tt><small>make</small></tt>
+and <tt><small>gm2</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Simple pedagogical example
+<a name="2. Simple pedagogical example"></a>
+</h2>
+
+
+<p><ul type=disc> <li> let us create a module to sum two
+integers, we will use <tt><small>swig</small></tt> to call C
+functions from Python <li></p>
+
+
+<p><b><small><small><font color="#196633">mymodule.i</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">%module mymodule
+%{
+extern int sum (int a, int b);
+%}
+extern int sum (int a, int b);</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+mymodule.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">int sum (int a, int b)
+{
+  return a + b;
+}</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>swig -python mymodule.i</b> <li> generates the
+following files: <ul type=square> <li>
+<tt><small>mymodule_wrap.c</small></tt> and
+<tt><small>mymodule.py</small></tt> <br>
+</ul> </ul></font></p><hr>
+
+<h2>3. Use gcc and libtool to compile and link the shared library
+<a name="3. Use gcc and libtool to compile and link the shared library"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>libtool --tag=CC
+--mode=compile gcc -g -I/usr/include/python2.7
+\</b></font></p>
+
+<pre>  -c mymodule_wrap.c -o mymodule_wrap.lo
+$<b> libtool --tag=CC --mode=compile gcc -g -I/usr/include/python2.7 \
+</b>  -c mymodule.c -o mymodule.lo
+$<b> libtool --tag=CC --mode=link gcc -g mymodule.lo mymodule_wrap.lo \
+</b>  -rpath &lsquo;pwd&lsquo; -lc -lm -o libmymodule.la
+$<b> cp .libs/libmymodule.so _mymodule.so</b></pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+testsum.py</font></small></small></b></p>
+<pre style="margin-top: 1em">#!/usr/bin/python
+
+import mymodule
+
+print mymodule.sum (1, 2)</pre>
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>python testsum.py</b></font></p>
+<pre>3</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. libtool on GNU/Linux
+<a name="4. libtool on GNU/Linux"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> notice the
+file extensions <tt><small>.lo</small></tt> and
+<tt><small>.la</small></tt> <li>
+<tt><small>libtool</small></tt> is told about the library
+dependents and where other shared libraries
+reside</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Output from running previous libtool command
+<a name="5. Output from running previous libtool command"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<pre>libtool: compile:  gcc -g -I/usr/include/python2.7 -c mymodule_wrap.c  -fPIC -DPIC -o .libs/mymodule_wrap.o
+libtool: compile:  gcc -g -I/usr/include/python2.7 -c mymodule_wrap.c -o mymodule_wrap.o &gt;/dev/null 2&gt;&amp;1
+libtool: compile:  gcc -g -I/usr/include/python2.7 -c mymodule.c  -fPIC -DPIC -o .libs/mymodule.o
+libtool: compile:  gcc -g -I/usr/include/python2.7 -c mymodule.c -o mymodule.o &gt;/dev/null 2&gt;&amp;1
+libtool: link: rm -fr  .libs/libmymodule.a .libs/libmymodule.la .libs/libmymodule.lai \
+  .libs/libmymodule.so .libs/libmymodule.so.0 .libs/libmymodule.so.0.0.0
+libtool: link: gcc -shared  -fPIC -DPIC  .libs/mymodule.o .libs/mymodule_wrap.o \
+   -L&lsquo;pwd&lsquo;/lib64 -lc -lm    -Wl,-soname -Wl,libmymodule.so.0 -o .libs/libmymodule.so.0.0.0
+libtool: link: (cd &quot;.libs&quot; &amp;&amp; rm -f &quot;libmymodule.so.0&quot; &amp;&amp; ln -s &quot;libmymodule.so.0.0.0&quot; &quot;libmymodule.so.0&quot;)
+libtool: link: (cd &quot;.libs&quot; &amp;&amp; rm -f &quot;libmymodule.so&quot; &amp;&amp; ln -s &quot;libmymodule.so.0.0.0&quot; &quot;libmymodule.so&quot;)
+libtool: link: ar cru .libs/libmymodule.a  mymodule.o mymodule_wrap.o
+libtool: link: ranlib .libs/libmymodule.a
+libtool: link: ( cd &quot;.libs&quot; &amp;&amp; rm -f &quot;libmymodule.la&quot; &amp;&amp; ln -s &quot;../libmymodule.la&quot; &quot;libmymodule.la&quot; )</pre>
+
+
+<p><font color="#000000"><li> note that this is the output
+from the slide containing the three
+<tt><small>libtool</small></tt> commands <li>
+<tt><small>libtool</small></tt> is a highly portable
+mechanism to compile and link shared libraries
+<ul type=square> <li> the output from the
+<tt><small>libtool</small></tt> commands will be different
+under OSX and Windows and or different versions of
+<tt><small>gcc</small></tt> and <tt><small>g++</small></tt>
+<br>
+</ul> </ul></font></p><hr>
+
+<h2>6. PGE and libtool
+<a name="6. PGE and libtool"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+file <tt><small>pge/c/Makefile.am</small></tt>
+<ul type=square> <li> notice the rule starting with the text
+<li> <tt><small>libpgeif.la:</small></tt> this rule
+generates the library <tt><small>libpgeif.la</small></tt>
+using a variant of the command given on the previous slides
+</ul> <li></font></p>
+
+<pre>swig -outdir . -o pgeif_wrap.cxx -c++ -python $(top_srcdir)/i/pgeif.i
+$(LIBTOOL) --tag=CC --mode=compile g++ -g -c pgeif_wrap.cxx \
+  -I/usr/include/python$(PYTHON_VERSION) -o pgeif_wrap.lo
+gm2 -c -g -I$(SRC_PATH_PIM) -fcpp -fmakelist \
+  -I$(top_srcdir)/m2 $(top_srcdir)/m2/pgeif.mod
+gm2 -c -g -I$(SRC_PATH_PIM) -fcpp -fmakeinit -fshared \
+  -I$(top_srcdir) $(top_srcdir)/m2/pgeif.mod
+$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+  --mode=compile gcc -c $(CFLAGS_FOR_TARGET) $(LIBCFLAGS) \
+  $(libgm2_la_M2FLAGS) $(srcdir)/pgeif.c -o pgeif.lo
+$(LIBTOOL) --tag=CC --mode=compile g++ -g -c _m2_pgeif.cpp -o _m2_pgeif.lo
+$(LIBTOOL) --tag=CC --mode=link gcc -g _m2_pgeif.lo $(MY_DEPS) \
+    pgeif_wrap.lo \
+   -L$(GM2LIBDIR)/lib64 \
+   -rpath &lsquo;pwd&lsquo; -liso -lgcc -lstdc++ -lpth -lc -lm -o libpgeif.la
+cp .libs/libpgeif.so ../_pgeif.so
+cp pgeif.py ../pgeif.py</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. More complex example
+<a name="7. More complex example"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> passing data
+from Python into C, C++, Modula-2 shared library
+<ul type=square> <li> can pass <tt><small>int</small></tt> ,
+<tt><small>float</small></tt> ,
+<tt><small>double</small></tt> and enums easily enough </ul>
+<li> strings are also reasonably well supported <li> how do
+we pass aggregate data types between Python and C/C++?
+<ul type=square> <li> how do we return aggregate from C/C++
+into Python?</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>8. Aggregate data types
+<a name="8. Aggregate data types"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> an aggregate
+data type is a data type which contains different sub types
+<ul type=square> <li> for example a struct containing an int
+and a char field </ul> <li></font></p>
+
+<pre>typedef struct aggregate_t {
+  int field1;
+  char field2;
+} aggregate;</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Passing aggregate data types from Python into C/C++
+<a name="9. Passing aggregate data types from Python into C/C++"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> fortunately
+binary strings of data can be passed between Python and
+C/C++ using swig <li> we can build a sequence of bytes using
+the Python <tt><small>struct</small></tt> module
+<ul type=square> <li> the <tt><small>struct</small></tt>
+module uses a printf formatting structure to pack and unpack
+binary data</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>10. Why do we need to pass aggregate data types from C/C++ to Python?
+<a name="10. Why do we need to pass aggregate data types from C/C++ to Python?"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> consider,
+<tt><small>pge</small></tt> , the shared library module
+generate events which might be: <ul type=square> <li> a draw
+frame event <li> a collision event <li> a timer event </ul>
+<li> the draw frame event <ul type=square> <li> contains a
+list of polygons and circles and their position and colour
+which need to be rendered to represent the world <li> this
+is a dynamic list of objects containing many different data
+types </ul> <li> a collision event <ul type=square> <li>
+contains the time of collision, position of the collision
+<li> and the object <tt><small>id</small></tt> s in
+collision </ul> <li> this will be a fixed aggregate
+structure of known length <li> the timer event will have a
+time field ( <tt><small>double</small></tt> ) and the timer
+<tt><small>id</small></tt> ( <tt><small>integer</small></tt>
+) as well as a few other fields <ul type=square> <li> this
+is also fixed in length and represented in C as a
+<tt><small>struct</small></tt></font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>11. Passing aggregate data from C, C++, Modula-2 into Python
+<a name="11. Passing aggregate data from C, C++, Modula-2 into Python"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we can use the
+string passing mechanism to pass bytes <ul type=square> <li>
+the <tt><small>.i</small></tt> file needs extra information
+to say which functions return binary data</font>
+<font color="#A51933">and also that the shared library can
+set the length</font> <font color="#000000"></ul>
+<li></font></p>
+
+
+<p><b><small><small><font color="#196633">pge/i/pgeif.i</font></small></small></b></p>
+
+<pre style="margin-top: 1em">...
+%include cstring.i
+%cstring_output_allocate_size(char **s, int *slen, );
+
+
+%{
+extern &quot;C&quot; void get_cbuf (char **s, int *slen);
+extern &quot;C&quot; void get_ebuf (char **s, int *slen);
+extern &quot;C&quot; void get_fbuf (char **s, int *slen);
+...</pre>
+
+
+<p><font color="#000000"><li> notice that a Python string
+is created in the shared library and passed back to the
+Python caller <li> also notice that
+<tt><small>get_cbuf</small></tt> is a function!
+<ul type=square> <li> returning a string </ul> <li> the
+<tt><small>swig</small></tt> information <li></font></p>
+
+<pre>%include cstring.i
+%cstring_output_allocate_size(char **s, int *slen, );</pre>
+
+
+<p><font color="#000000"><li> indicates these types and
+name match a return string allocated in the shared library
+<li></font> <b><small><small><font color="#196633"><br>
+pge/python/pge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def runbatch (t):
+    if t &lt; 0.0:
+        t = 30.0
+    _debugf (&quot;runbatch (%f)\n&quot;, t)
+    pgeif.check_objects ()
+    cData = pgeif.get_cbuf ()
+    fData = pgeif.get_fbuf ()
+    _draw_frame (cData, len (cData), fData, len (fData))
+    pgeif.empty_fbuffer ()
+    pgeif.empty_cbuffer ()</pre>
+
+
+<p><font color="#000000"><li> <tt><small>swig</small></tt>
+has many mechanisms to allow binary strings of data to be
+retrieved <ul type=square> <li> above is the safest - as it
+contains the <tt><small>length</small></tt> <br>
+</ul> </ul></font></p><hr>
+
+<h2>12. PGE structure
+<a name="12. PGE structure"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26886472.png" alt="Image grohtml-26886472.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><big></ul></big></font></p> <hr>
+
+<h2>13. Passing aggregate data from C, C++, Modula-2 into Python
+<a name="13. Passing aggregate data from C, C++, Modula-2 into Python"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+function <tt><small>_draw_frame</small></tt> which calls the
+function <li></font></p>
+
+
+<p><b><small><small><font color="#196633">pge/python/pge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  _pyg_draw_frame - draws a frame on the pygame display.
+#
+
+
+def _pyg_draw_frame (cdata, clength, fdata, flength):
+    global nextFrame, call, _record</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+pge/python/pge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    if _record:
+        _begin_record_frame (cdata, clength, fdata, flength)
+    elif flength &gt; 0:
+        _draw_background ()
+    f = _myfile (cdata + fdata)
+    while f.left () &gt;= 3:
+        header = struct.unpack (&quot;3s&quot;, f.read (3))[0]
+        header = header[:2]
+        if call.has_key (header):
+            f = call[header] (f)
+        else:
+            print &quot;not understood header =&quot;, header
+            sys.exit (1)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+pge/python/pge.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    if flength &gt; 0:
+        _draw_foreground ()
+    if _record:
+        _end_record_frame ()
+    if flength &gt; 0:
+        _doFlipBuffer ()  # flipping the buffer for an empty frame looks ugly
+    nextFrame += 1
+    _debugf (&quot;moving onto frame %d\n&quot;, nextFrame)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>14. Inside the shared library
+<a name="14. Inside the shared library"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> it creates the
+byte string containing aggregate data <li></font></p>
+
+
+<p><b><small><small><font color="#196633">pge/c/buffers.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  buffers - wrap the event buffer contents into a binary string.
+ */
+
+extern void deviceIf_getFrameBuffer (void **start,
+                                     int *length, int *used);
+
+
+void get_fbuf (void **start, unsigned int *used)
+{
+  int length;
+#if !defined (DEBUGGING)
+  printf (&quot;calling deviceIf_getFrameBuffer\n&quot;);
+#endif
+  deviceIf_getFrameBuffer (start, &amp;length, used);
+}</pre>
+
+
+<p><font color="#000000"><li> examine the file
+<tt><small>pge/c/deviceIf.c</small></tt>
+<ul type=square> <li> follow the functions:
+<tt><small>deviceIf_emptyFbuffer</small></tt> ,
+<tt><small>deviceIf_useBuffer</small></tt> and
+<tt><small>deviceIf_finish</small></tt> </ul> <li> notice
+the use of the module <tt><small>MemStream</small></tt>
+<ul type=square> <li> read the documentation of
+<tt><small>MemStream</small></tt>
+<a href="http://nongnu.org/gm2/gm2-libs-isomemstream.html">http://nongnu.org/gm2/gm2-libs-isomemstream.html</a>
+</ul> <li> <tt><small>MemStream</small></tt> allows the
+caller to use file operations to maintain a byte string
+which is contiguous and held in memory <br>
+</ul></font></p><hr>
+
+<h2>15. Conclusion and pgeif.i
+<a name="15. Conclusion and pgeif.i"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the full API
+describing the C interface is described in
+<tt><small>pge/i/pgeif.i</small></tt> <ul type=square> <li>
+examine this file and see how a
+<tt><small>circle</small></tt> ,
+<tt><small>colour</small></tt> and
+<tt><small>box</small></tt> are created </ul> <li> now read
+the file <tt><small>pge/python/pge.py</small></tt> and see
+how a call to <tt><small>box</small></tt> and
+<tt><small>colour</small></tt> is mapped into the
+<tt><small>pgeif.i</small></tt> calls</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Creating shared libraries under GNU/Linux">1. Creating shared libraries under GNU/Linux</a><br>
+<a href="#2. Simple pedagogical example">2. Simple pedagogical example</a><br>
+<a href="#3. Use gcc and libtool to compile and link the shared library">3. Use gcc and libtool to compile and link the shared library</a><br>
+<a href="#4. libtool on GNU/Linux">4. libtool on GNU/Linux</a><br>
+<a href="#5. Output from running previous libtool command">5. Output from running previous libtool command</a><br>
+<a href="#6. PGE and libtool">6. PGE and libtool</a><br>
+<a href="#7. More complex example">7. More complex example</a><br>
+<a href="#8. Aggregate data types">8. Aggregate data types</a><br>
+<a href="#9. Passing aggregate data types from Python into C/C++">9. Passing aggregate data types from Python into C/C++</a><br>
+<a href="#10. Why do we need to pass aggregate data types from C/C++ to Python?">10. Why do we need to pass aggregate data types from C/C++ to Python?</a><br>
+<a href="#11. Passing aggregate data from C, C++, Modula-2 into Python">11. Passing aggregate data from C, C++, Modula-2 into Python</a><br>
+<a href="#12. PGE structure">12. PGE structure</a><br>
+<a href="#13. Passing aggregate data from C, C++, Modula-2 into Python">13. Passing aggregate data from C, C++, Modula-2 into Python</a><br>
+<a href="#14. Inside the shared library">14. Inside the shared library</a><br>
+<a href="#15. Conclusion and pgeif.i">15. Conclusion and pgeif.i</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

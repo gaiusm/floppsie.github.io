@@ -1,0 +1,491 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:56 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. AI in ioquake
+<a name="1. AI in ioquake"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Quake 3 arena box AI is layered <li>
+much like a network protocol stack <li> decisions made at
+higher layers are executed through lower layers <li></p>
+
+
+<p align="left"><img src="grohtml-26880573.png" alt="Image grohtml-26880573.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>2. Layer one
+<a name="2. Layer one"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the input and output layer for the
+bot <ul type=square> <li> area awareness system is the
+system which provides the bot with all information about the
+world <li> much of the information has already been
+preprocessed when building the maps <li> some of it will be
+dynamic <li> access to it is fast <li> everything the bot
+senses goes through the Area Awareness System
+<small>AAS</small> </ul> <li> basic actions are the output
+of the bot <ul type=square> <li> outputs are presented in a
+way which is very similar to keyboard/mouse input of a human
+player</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Layer two
+<a name="3. Layer two"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides the intelligence that is
+often subconscious to a skilled human player
+<ul type=square> <li> includes AI to select goals using
+fuzzy logic <li> AI to navigate towards a goal <li> AI to
+interpret chats <li> AI to construct chats </ul> <li>
+functionality to store and retrieve characteristics of bots,
+for example <ul type=square> <li> aim skill <li> aim
+accuracy <li> aggression <li> weapon jumping</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Layer three
+<a name="4. Layer three"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a mixture of production rules
+<ul type=square> <li> and an AI network with special nodes
+for different situations and states of mind <li> very
+similar to a state machine <li> many <tt><small>if then
+else</small></tt> rules </ul> <li> all higher level thinking
+and reasoning takes place in this layer <li> it also
+contains the command module <ul type=square> <li> which
+allows the bot to understand orders and commands <li> from
+other players or a team leader </ul> <li> misc AI module
+supports AI for fighting, navigating around obstacles and
+solving puzzles</p>
+
+<p></ul></p><hr>
+
+<h2>5. Layer four
+<a name="5. Layer four"></a>
+</h2>
+
+
+<p><ul type=disc> <li> one of the bots is designated as
+team leader which enables this layer <ul type=square> <li>
+all other bots disable this layer </ul> <li> typically the
+leader might request other bot to follow me
+<ul type=square> <li> track enemy, attack enemy etc</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Tutorial work
+<a name="6. Tutorial work"></a>
+</h2>
+
+
+<p><ul type=disc> <li> for each <tt><small>.C</small></tt>
+file in
+<tt><small>Sandpit/ioquake-latest/ioquake3/code/botlib</small></tt>
+<li> write a one line summary of what it does and determine
+to which level it belongs</p>
+
+<p></ul></p><hr>
+
+<h2>7. AI system
+<a name="7. AI system"></a>
+</h2>
+
+
+<p><ul type=disc> <li> AI system runs in small time frames
+<ul type=square> <li> referred to as a time-based simulation
+</ul> <li> system runs at <tt><small>10Hz</small></tt> <li>
+this matches the game physics, although they are not locked
+in step <li> each frame the bot checks upon its health and
+situation and decides the best action to be taken</p>
+
+<p></ul></p><hr>
+
+<h2>8. Information flow between the layers
+<a name="8. Information flow between the layers"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26880574.png" alt="Image grohtml-26880574.png"></p>
+
+<p style="margin-top: 1em"><li> upward arrows represent
+information about the bots environment and its status
+<ul type=square> <li> used to keep up to date with the world
+<li> used in the decision making to achieve certain goals
+</ul> <li> data moving up the layered architecture
+represents more and more abstract concepts <li> all
+information flowing downwards is from the result of a
+decision taken by the bot <ul type=square> <li> will
+normally result in a basic action being taken
+<ul type=circle> <li> jump, move forward etc </ul> </ul>
+<li> limited inter layer communication <li> in the third
+layer <ul type=square> <li> AI network retrieves information
+from both the Misc AI and Command components </ul> <li> in
+the second layer <ul type=square> <li> Goals retrieves
+information from Fuzzy </ul> <li> code at higher layers
+requests information from lower layers <li> information
+readily available is passed back immediately
+<ul type=square> <li> other calculations might need to be
+made, however such calculations must not take more than a
+couple of milliseconds <li> otherwise the game will hitch
+</ul> <li> at <tt><small>10Hz</small></tt> a delay during a
+calculation can become noticeable <br>
+</ul></p><hr>
+
+<h2>9. Structure of the ioquake game engine
+<a name="9. Structure of the ioquake game engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26880575.png" alt="Image grohtml-26880575.png"></p>
+
+<p style="margin-top: 1em"><li> the
+<tt><small>game</small></tt> module sets the rules and
+dictates how the game works <ul type=square> <li> capture
+the flag or death match or team arena </ul> <li>
+<tt><small>server</small></tt> provides functionality to
+allow players to connect to the game <li>
+<tt><small>client</small></tt> , <tt><small>client
+game</small></tt> , and <tt><small>renderer</small></tt>
+modules together provide the input/output functionality for
+the human player <li> <tt><small>client</small></tt> module
+passes input events to the server <li>
+<tt><small>client</small></tt> also forwards information
+from the server to the <tt><small>client game</small></tt>
+<ul type=square> <li> for example what is visible </ul> <li>
+<tt><small>client game</small></tt> interprets this
+information and passes necessary data to the
+<tt><small>renderer</small></tt> <li> <tt><small>client
+game</small></tt> sends information about which sounds can
+be heard to the <tt><small>client</small></tt> <li> the
+<tt><small>game</small></tt> module provides the Area
+Awareness System with all the necessary information about
+the state of the game world <li> information consists mainly
+of entity data <ul type=square> <li> position, type,
+appearance of entities are communicated to the Area
+Awareness System <li> gibs, player models, skins etc </ul>
+<li> bot input, or basic actions are sent to the
+<tt><small>game</small></tt> module <br>
+</ul></p><hr>
+
+<h2>10. Remote procedure call
+<a name="10. Remote procedure call"></a>
+</h2>
+
+
+<p><ul type=disc> <li> RPC marshalling of arguments
+<ul type=square> <li> make sure you have read
+Tanenbaum&rsquo;s description of how RPC&rsquo;s operate
+<li> and how marshalling is employed and why it is necessary
+</ul> <li> Andrew Tanenbaum, Modern Operating Systems,
+Prentice-Hall International <ul type=square> <li> sections
+10.3, 10.3.1, 10.3.2</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>11. md3 bot files
+<a name="11. md3 bot files"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a <tt><small>md3</small></tt> file
+package is just a <tt><small>zip</small></tt> archive <li>
+inside a <tt><small>md3</small></tt> archive is a collection
+of files</p>
+
+<p></ul></p><hr>
+
+<h2>12. Some of Alien .pk3 files
+<a name="12. Some of Alien .pk3 files"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>alien/models/players/alien/head_1.md3
+alien/models/players/alien/lower_default.skin
+alien/models/players/alien/head_default.skin
+alien/models/players/alien/animation.cfg
+alien/models/players/alien/head.tga
+alien/models/players/alien/lower_1.md3
+alien/scripts/Alien.bot
+alien/botfiles/bots/alien_i.c
+alien/botfiles/bots/alien_c.c
+alien/botfiles/bots/alien_w.c
+alien/botfiles/bots/alien_t.c
+alien/botfiles/bots/alien.bot</pre>
+
+
+<p><li> some of the files have been left out of the list
+above <ul type=square> <li> left out different colour alien
+</ul> <li> notice that filenames are case insensitive
+<ul type=square> <li> take care under GNU/Linux which by
+default differentiates between case <br>
+</ul> </ul></p><hr>
+
+<h2>13. contents of alien/botfiles/bots/alien.bot
+<a name="13. contents of alien/botfiles/bots/alien.bot"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>{
+name            Alien
+model           Alien
+funname         Alien
+color           4
+aifile  bots/alien_c.c
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>14. Contents of bots/alien_c.c
+<a name="14. Contents of bots/alien_c.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &quot;chars.h&quot;
+
+skill 1
+{
+   CHARACTERISTIC_NAME          &quot;alien&quot;
+   CHARACTERISTIC_GENDER        &quot;it&quot;
+   CHARACTERISTIC_ATTACK_SKILL  0.75
+   CHARACTERISTIC_WEAPONWEIGHTS &quot;bots/alien_w.c&quot;
+   CHARACTERISTIC_AIM_SKILL     0.5
+   CHARACTERISTIC_CHAT_FILE     &quot;bots/alien_t.c&quot;
+   CHARACTERISTIC_CHAT_NAME     &quot;alien&quot;
+
+   ...
+
+
+   CHARACTERISTIC_ITEMWEIGHTS   &quot;bots/alien_i.c&quot;
+   CHARACTERISTIC_AGGRESSION    0.95
+   CHARACTERISTIC_SELFPRESERVATION 0.25
+   CHARACTERISTIC_VENGEFULNESS  0.95
+   CHARACTERISTIC_CAMPER        0.5
+   CHARACTERISTIC_EASY_FRAGGER  0.1
+   CHARACTERISTIC_ALERTNESS     0.5
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>15. alien/botfiles/bots/alien_t.c
+<a name="15. alien/botfiles/bots/alien_t.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>chat &quot;alien&quot;
+{
+#include &quot;teamplay.h&quot;
+
+  type &quot;game_enter&quot;
+  {
+     &quot;You cannot hide in &quot;, 4, &quot;. This we like.&quot;;
+     &quot;We hunt. We kill. We feed. Queen happy.&quot;;
+     &quot;We see &quot;, 1, &quot;! Good sacrifice for Queen. Much joy.&quot;;
+     &quot;There will be much meat in &quot;, 4, &quot;. You will all die.&quot;;
+  }
+
+
+  type &quot;game_exit&quot;
+  {
+     &quot;I go find Ripley.&quot;;
+     &quot;I go find some space marines to play with now.&quot;;
+     4, &quot; not good.&quot;;
+     1, &quot; is like newborn from pod.&quot;;
+  }
+  ...
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>16. extending .pk3 archive
+<a name="16. extending .pk3 archive"></a>
+</h2>
+
+
+<p><ul type=disc> <li> new files: <li>
+<tt><small>&lt;name&gt;/models/players/&lt;name&gt;/&lt;name&gt;.body</small></tt>
+<li>
+<tt><small>&lt;name&gt;/bot-&lt;name&gt;/botfiles/bots/&lt;scriptname&gt;.py</small></tt>
+<li>
+<tt><small>&lt;name&gt;/models/players/&lt;name&gt;/gibs/</small></tt>
+<ul type=square> <li> <tt><small>abdomen.md3 arm.md3
+brain.md3 fist.md3 foot.md3 forearm.md3 gibs.jpg
+intestine.md3 leg.md3 skull.md3</small></tt> </ul> <li> for
+example in alien we have:</p>
+
+<p></ul></p><hr>
+
+<h2>17. alien/models/players/alien/alien.body
+<a name="17. alien/models/players/alien/alien.body"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>//
+//  extra body features
+//
+{
+  BODY_NO_OF_SKULLS        3
+  BODY_NO_OF_BRAINS        3
+  BODY_NO_OF_ABDOMENS     16
+  BODY_NO_OF_ARMS          4
+  BODY_NO_OF_FISTS         4
+  BODY_NO_OF_FEET          4
+  BODY_NO_OF_FOREARMS      4
+  BODY_NO_OF_INTESTINES   32
+  BODY_NO_OF_LEGS          8
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>18. Tutorial
+<a name="18. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> make the model
+<tt><small>vince</small></tt> into a bot and give him:
+<li></p>
+
+<pre>  BODY_NO_OF_INTESTINES   32
+  BODY_NO_OF_ABDOMENS     32</pre>
+
+
+<p><li> and the appropriate number of other entities <li>
+make a new legoman model copy (lego-red) <li> which only has
+one colour and remove the blood from the lego gibs
+<ul type=square> <li> restore the gibs to lego colours <br>
+</ul> </ul></p><hr>
+
+<h2>19. Extending bot scripts to use Python
+<a name="19. Extending bot scripts to use Python"></a>
+</h2>
+
+
+<p><ul type=disc> <li> for example examine
+<tt><small>bot-legoman/botfiles/bots/legoman.py</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>20. bot-legoman/botfiles/bots/legoman.py
+<a name="20. bot-legoman/botfiles/bots/legoman.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>import botlib, time
+
+
+id = botlib.bot(&quot;localhost&quot;, 7000)
+print &quot;hello world, python is alive in Quake 3&quot;
+id.defaults()
+print &quot;bot is now active!&quot;
+id.disableAI()
+while True:
+    print &quot;trying to crouch&quot;
+    id.crouch()
+    print &quot;in crouch position&quot;
+    time.sleep(1)
+    id.jump()
+    print &quot;in jump position&quot;
+    time.sleep(1)
+    id.fire()
+    print &quot;fire&quot;
+    time.sleep(1)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>21. Python botlib
+<a name="21. Python botlib"></a>
+</h2>
+
+
+<p><ul type=disc> <li> examine the botlib code and see how
+the parameters are marshalled
+<tt><small>python-bot/bot-legoman/botfiles/bots/botlib.py</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. AI in ioquake">1. AI in ioquake</a><br>
+<a href="#2. Layer one">2. Layer one</a><br>
+<a href="#3. Layer two">3. Layer two</a><br>
+<a href="#4. Layer three">4. Layer three</a><br>
+<a href="#5. Layer four">5. Layer four</a><br>
+<a href="#6. Tutorial work">6. Tutorial work</a><br>
+<a href="#7. AI system">7. AI system</a><br>
+<a href="#8. Information flow between the layers">8. Information flow between the layers</a><br>
+<a href="#9. Structure of the ioquake game engine">9. Structure of the ioquake game engine</a><br>
+<a href="#10. Remote procedure call">10. Remote procedure call</a><br>
+<a href="#11. md3 bot files">11. md3 bot files</a><br>
+<a href="#12. Some of Alien .pk3 files">12. Some of Alien .pk3 files</a><br>
+<a href="#13. contents of alien/botfiles/bots/alien.bot">13. contents of alien/botfiles/bots/alien.bot</a><br>
+<a href="#14. Contents of bots/alien_c.c">14. Contents of bots/alien_c.c</a><br>
+<a href="#15. alien/botfiles/bots/alien_t.c">15. alien/botfiles/bots/alien_t.c</a><br>
+<a href="#16. extending .pk3 archive">16. extending .pk3 archive</a><br>
+<a href="#17. alien/models/players/alien/alien.body">17. alien/models/players/alien/alien.body</a><br>
+<a href="#18. Tutorial">18. Tutorial</a><br>
+<a href="#19. Extending bot scripts to use Python">19. Extending bot scripts to use Python</a><br>
+<a href="#20. bot-legoman/botfiles/bots/legoman.py">20. bot-legoman/botfiles/bots/legoman.py</a><br>
+<a href="#21. Python botlib">21. Python botlib</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

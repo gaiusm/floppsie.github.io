@@ -1,0 +1,370 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:05 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. How to start implementing frozen bubble in PGE
+<a name="1. How to start implementing frozen bubble in PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly understand the rules of
+frozenbubble <ul type=square> <li> try playing it in the
+labs </ul> <li> start by examining the bagatelle example
+<tt><small>examples/bagatelle/bagatelle.py</small></tt> <li>
+remove triangles, silos and pegs</p>
+
+<p></ul></p><hr>
+
+<h2>2. How to solve the bubble freezing and unfreezing?
+<a name="2. How to solve the bubble freezing and unfreezing?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these are code hints, they will need
+polishing <ul type=square> <li> this code has been used to
+implement the frozen bubble game </ul> <li> note that this
+code is available in the pge examples
+<tt><small>pge/examples/frozenbubble/frozenbubble.py</small></tt>
+<ul type=square> <li> however your
+<tt><small>pge</small></tt> will not run the code as it
+needs the <tt><small>unfix</small></tt> function to be
+implemented </ul> <li></p>
+
+
+<p><b><small><small><font color="#196633">pge/examples/frozenbubble/frozenbubble.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  bubble class which is used to record, colour, circle and children
+#  children are bubbles which connect below the current bubble
+#
+
+
+class bubble:
+    def __init__ (self, cir, col):
+        self.circle = cir
+        self.colour = col
+        self.circle.fix ()
+        self.circle.on_collision (bubble_hits_bubble)
+        self.children = []  #  no bubbles attached below this bubble</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>    #
+    #  addChild - adds bubble, b, as a child of self.
+    #
+    def addChild (self, b):
+        self.children += [b]
+    #
+    #  removeChild - removes all bubbles in blist from the children field.
+    #
+    def removeChild (self, blist):
+        if self.children != []:
+            self.children = [x for x in self.children if x not in blist]</pre>
+
+
+<p><font color="#000000"><li></font></p>
+
+<pre>bubbleDict = {}  # allows us to obtain a bubble list from a pge circle
+currentCircle = None
+currentColour = None</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  removeChildren - remove all bubbles in blist from all children in all bubbles.
+#
+
+
+def removeChildren (blist):
+    for circle in bubbleDict.keys ():
+        for b in bubbleDict[circle]:
+            b.removeChild (blist)</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  unfreezeList - unfreeze all bubbles in blist and return any children bubbles
+#                 of these bubbles.  Remove any reference to these circles/bubbles
+#                 as they will be deleted as soon as they hit the bottom edge.
+#
+
+
+def unfreezeList (blist):
+    todo = []
+    for b in blist:
+        print &quot;bubble&quot;, b, &quot;should be unfixed&quot;
+        b.circle.unfix ()
+        if bubbleDict.has_key (b.circle):
+            todo += bubbleDict[b.circle]
+            del bubbleDict[b.circle]
+        todo += b.children
+        removeChildren (todo)
+    return todo</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  unfreezeAll - unfreeze all bubbles attached to circle (via children)
+#
+
+
+def unfreezeAll (circle):
+    global bubbleDict
+    blist = bubbleDict[circle]
+    while blist != []:
+        blist = unfreezeList (blist)
+    currentCircle.unfix ()</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  bubble_hits_bar - the callback for the bubble hitting the top edge.
+#
+
+def bubble_hits_bar (o, e):
+    global bubbleDict, currentCircle
+
+
+    if currentCircle != None:
+        if bubbleDict.has_key (currentCircle):
+            print &quot;odd the bubble is already registered&quot;
+        else:
+            initChain (currentCircle, currentColour)
+    currentCircle = None</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  initChain - create an initial bubble in a chain of one.
+#
+
+
+def initChain (circle, colour):
+    global bubbleDict
+    b = bubble (circle, colour)
+    bubbleDict[circle] = [b]   # the first bubble in a chain is keyed via a circle</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>#
+#  updateChains - adds currentCircle/currentColour bubble to the chain specified by circle.
+#
+
+
+def updateChains (circle):
+    global bubbleDict
+    print &quot;updateChains&quot;
+    blist = bubbleDict[circle]
+    print &quot;blist&quot;, blist, &quot;len (blist) =&quot;, len (blist)
+    blist += [bubble (currentCircle, currentColour)]
+    print &quot;blistis now&quot;, blist, &quot;len (blist) =&quot;, len (blist)
+    # and update all circle -&gt; chain entries
+    for b in blist:
+        bubbleDict[b.circle] = blist</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. addBubble
+<a name="3. addBubble"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> is only called
+when adding a bubble to an existing bubble chain. <li> the
+bubble keyed by circle will be known and
+currentCircle/currentColour is the new bubble which is added
+onto the chain. <li> Prerequiste <ul type=square> <li>
+circle is a pge object which has not been deleted. </ul>
+<li> Postrequisite <ul type=square> <li> assuming that
+circle is already known in the bubbleDict and if the
+collided chain has two bubbles of the same colour then
+unfreeze these bubble and their children. A same colour
+collision is appended to the chain. A different colour
+collision creates a new chain with a single
+bubble.</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>4. bubble_hits_bubble
+<a name="4. bubble_hits_bubble"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#
+#  bubble_hits_bubble - call back for a circle hitting a frozen bubble.
+#
+
+
+def bubble_hits_bubble (o, e):
+    global currentCircle
+    print &quot;bubble hits bubble, currentCircle =&quot;, currentCircle
+    if currentCircle != None:
+        b = e.collision_between ()
+        for o in b:
+            if o.is_fixed ():
+                print &quot;object, o, is fixed&quot;, o
+            else:
+                print &quot;object, o, is not fixed&quot;, o
+            if not currentCircle.is_fixed ():
+                addBubble (o)
+        currentCircle = None</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. unfix and is_fixed
+<a name="5. unfix and is_fixed"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> it would be
+useful to implement <tt><small>unfix</small></tt> and
+<tt><small>is_fixed</small></tt> in pge <li> in order to
+achieve this we need to modify the following files
+<ul type=square> <li> <tt><small>pge/i/pgeif.i</small></tt>
+<li> <tt><small>pge/c/Gpgeif.h</small></tt> <li>
+<tt><small>pge/c/pgeif.c</small></tt> <li>
+<tt><small>pge/c/GtwoDsim.h</small></tt> <li>
+<tt><small>pge/c/twoDsim.c</small></tt></font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>6. Layers and source files to be altered
+<a name="6. Layers and source files to be altered"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<tt><small>pge/python/pge.py</small></tt>
+<ul type=square> <li> the user level python API file <li>
+this is the only PGE visible file to the user </ul> <li>
+<tt><small>pge/i/pgeif.i</small></tt> <ul type=square> <li>
+the swig interface (python calling C/C++ definition) <li>
+remember to edit both sections (C/C++ section and the Python
+section) <li> hint look for <tt><small>%{</small></tt> and
+<tt><small>}%</small></tt> delimiters </ul> <li>
+<tt><small>pge/c/Gpgeif.h</small></tt> <ul type=square> <li>
+header file for <tt><small>pgeif.c</small></tt> <li>
+contains the external functions implemented inside
+<tt><small>pgeif.c</small></tt> </ul> <li>
+<tt><small>pge/c/pgeif.c</small></tt> <ul type=square> <li>
+its purpose is to allow, colours, polygons, circles,
+springs, to be given a unique integer <li> thereafter all
+references to objects will be achieved via the objects, id.
+<li> notice that inside
+<tt><small>pge/c/twoDsim.c</small></tt> colours and circles
+are different </ul> <li>
+<tt><small>pge/c/GtwoDsim.h</small></tt> contains the
+prototypes and external declarations for
+<tt><small>pge/c/twoDsim.c</small></tt></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. unfix hints
+<a name="7. unfix hints"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> in the five
+files mentioned on the previous slides <ul type=square> <li>
+search for the <tt><small>fix</small></tt> function <li>
+duplicate it, and change the duplicate to
+<tt><small>unfix</small></tt> <li> adjust the implementation
+of the function (if necessary) <li> finally correct the
+comments! </ul> <li> note that the file
+<tt><small>pge/python/pge.py</small></tt> will need a few
+edits to change the runtime checking <ul type=square> <li>
+it currently checks to ensure that a
+<tt><small>fix</small></tt> ed object has no mass <li> and a
+<tt><small>fix</small></tt> ed object can not be given an
+acceleration/velocity <li> obviously this needs to be
+changed <li> in effect these checks need to be
+removed</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>8. pge/python/pge.py
+<a name="8. pge/python/pge.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> removing the
+checking code <ul type=square> <li> the checking code is
+found in many methods and will look similar to </ul>
+<li></font></p>
+
+<pre>def velocity (self, vx, vy):
+     ...
+     self._check_not_fixed (&quot;assign a velocity&quot;)
+     ...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Running your pge code
+<a name="9. Running your pge code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+Sandpit/build-pge</b> <tt><br>
+$</tt> <b>./localrun.sh
+../pge/frozenbubble/frozenbubble.py</b> <li> example of
+frozen bubble implemented with the above code in
+<tt><small>pge</small></tt>
+<a href="http://floppsie.comp.glam.ac.uk/pge/frozenbubble.mp4">frozenbubble.mp4</a></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. How to start implementing frozen bubble in PGE">1. How to start implementing frozen bubble in PGE</a><br>
+<a href="#2. How to solve the bubble freezing and unfreezing?">2. How to solve the bubble freezing and unfreezing?</a><br>
+<a href="#3. addBubble">3. addBubble</a><br>
+<a href="#4. bubble_hits_bubble">4. bubble_hits_bubble</a><br>
+<a href="#5. unfix and is_fixed">5. unfix and is_fixed</a><br>
+<a href="#6. Layers and source files to be altered">6. Layers and source files to be altered</a><br>
+<a href="#7. unfix hints">7. unfix hints</a><br>
+<a href="#8. pge/python/pge.py">8. pge/python/pge.py</a><br>
+<a href="#9. Running your pge code">9. Running your pge code</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

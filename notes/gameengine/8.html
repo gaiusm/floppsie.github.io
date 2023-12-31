@@ -1,0 +1,73 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:55 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. PGE Tutorial: discrete event simulation within a game engine
+<a name="1. PGE Tutorial: discrete event simulation within a game engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li> notice that a single polygon bounces
+unconvincingly along the ramps <li> open up the source file
+<tt><small>twoDsim.mod</small></tt> and change
+<tt><small>Debugging = FALSE</small></tt> to
+<tt><small>Debugging = TRUE</small></tt> near the top of the
+file <li> now rebuild ramps2 and run it again <li></p>
+
+<p><tt>$</tt> <b>make ramps2 &amp;&amp; ./run</b> <li>
+notice you can now see the game engine searching for the
+earliest collision <li> now change the line
+<tt><small>2491</small></tt> to
+<tt><small>drawCollisionFrame := FALSE</small></tt> <li>
+remake and rerun <tt><small>ramps2</small></tt> <li> turn
+off debugging, by undoing the
+<tt><small>Debugging</small></tt> change <li> this time you
+only see the game engine searching for collisions (events)
+<li> using a pencil and paper, convince your self that the
+function
+<tt><small>collideCircleAgainstFixedEdge</small></tt> will
+yield the correct velocity vector after hitting a horizontal
+and vertical wall <li> hint only the sign for the
+appropriate x and y velocity component should change
+<ul type=square> <li> if it bumps into a vertical wall then
+the x component changes sign <li> if it bumps into a
+horizontal wall then the y component changes sign</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. PGE Tutorial: discrete event simulation within a game engine">1. PGE Tutorial: discrete event simulation within a game engine</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

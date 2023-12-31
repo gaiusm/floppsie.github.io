@@ -1,0 +1,401 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:01 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Adding auto lights to chisel
+<a name="1. Adding auto lights to chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> propose to add two options to
+<tt><small>txt2pen.py</small></tt> <ul type=square> <li>
+<tt><small>-l</small></tt> to enable auto lights <li>
+<tt><small>-f num</small></tt> to change the default
+frequency of lights (default is every five squares)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Code changes to chisel/python/txt2pen.py
+<a name="2. Code changes to chisel/python/txt2pen.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>inputFile = None
+defines = {}
+verbose = False
+debugging = False
+autoLights = False
+floor = []
+rooms = {}
+maxx, maxy = 0, 0
+doorValue, wallValue, emptyValue = 0, -1, -2
+versionNumber = 0.1
+lightFrequency = 5</pre>
+
+
+<p><li> notice the new global variables
+<tt><small>autoLights</small></tt> and
+<tt><small>lightFrequency</small></tt> <li></p>
+
+<pre>def usage (code):
+    print &quot;Usage: txt2pen [-dhlvV] [-f frequency] [-o outputfile] inputfile&quot;
+    print &quot;  -d debugging&quot;
+    print &quot;  -h help&quot;
+    print &quot;  -l automatic lighting&quot;
+    print &quot;  -f frequency    (every frequency squares place a light)&quot;
+    print &quot;  -V verbose&quot;
+    print &quot;  -v version&quot;
+    print &quot;  -o outputfile name&quot;
+    sys.exit (code)</pre>
+
+
+<p><li></p>
+
+<pre>class roomInfo:
+    def __init__ (self, w, d):
+        self.walls = w
+        self.doors = d
+        self.doorLeadsTo = []
+        self.monsters = []
+        self.weapons = []
+        self.ammo = []
+        self.lights = []
+        self.autoLights = []
+        self.worldspawn = []</pre>
+
+
+<p><li></p>
+<pre>def handleOptions ():
+    global debugging, verbose, outputName, autoLights, lightFrequency
+
+
+    outputName = None
+    try:
+        optlist, l = getopt.getopt(sys.argv[1:], &rsquo;:df:hlo:vV&rsquo;)
+        for opt in optlist:
+            if opt[0] == &rsquo;-d&rsquo;:
+                debugging = True
+            elif opt[0] == &rsquo;-h&rsquo;:
+                usage (0)
+            elif opt[0] == &rsquo;-l&rsquo;:
+                autoLights = True
+            elif opt[0] == &rsquo;-f&rsquo;:
+                lightFrequency = int (opt[1])
+            elif opt[0] == &rsquo;-o&rsquo;:
+                outputName = opt[1]
+etc...</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. New function checkLight
+<a name="3. New function checkLight"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def checkLight (p, l, lightCount):
+    if lightCount == lightFrequency:
+        li = light ()      # create light
+        li.settype (&rsquo;MID&rsquo;) # on a pillar
+        l += [p + [li]]    # [position and light]
+        lightCount = 0
+    else:
+        lightCount += 1
+    return l, lightCount</pre>
+
+
+<p><li> which is called from your
+<tt><small>introduceLights</small></tt> <br>
+</ul></p><hr>
+
+<h2>4. txt2pen changes
+<a name="4. txt2pen changes"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def generateRoom (r, p, mapGrid, start, i):
+    global verbose, rooms, debugging
+
+
+    if verbose:
+        print &quot;room&quot;, r,
+    p = moveBy (p, [-1, -1], mapGrid)
+    if verbose:
+        print &quot;top left is&quot;, p
+    s = p
+    walls, doors = scanRoom (s, p, mapGrid, [], [])
+    if debugging:
+        print walls
+    rooms[r] = roomInfo (walls, doors)
+    rooms[r].autoLights += introduceLights (p, mapGrid, [], [])</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. function printRoom changes
+<a name="5. function printRoom changes"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>etc...
+    o = printMonsters (rooms[r].monsters, o)
+    o = printAmmo (rooms[r].ammo, o)
+    o = printWeapons (rooms[r].weapons, o)
+    if autoLights and (rooms[r].lights == []):
+        o = printLights (rooms[r].autoLights, o)
+    else:
+        o = printLights (rooms[r].lights, o)
+    o = printSpawnPlayer (rooms[r].worldspawn, o)
+    o.write (&quot;END\n\n&quot;)
+    return o</pre>
+
+
+<p><li> you need to complete
+<tt><small>introduceLights</small></tt> to make these
+changes take effect <br>
+</ul></p><hr>
+
+<h2>6. pen2map
+<a name="6. pen2map"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<tt><small>chisel/python/pen2map.py</small></tt>
+<ul type=square> <li> <tt><small>pen2map</small></tt>
+converts a <tt><small>pen</small></tt> file into a
+<tt><small>map</small></tt> file (doom3) </ul> <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python pen2map.py -h</b></p>
+
+<pre>Usage: pen2map [-c filename.ss] [-dhmtvV] [-o outputfile] inputfile
+  -c filename.ss    use filename.ss as the defaults for the map file
+  -d                debugging
+  -e                provide comments in the map file
+  -g type           game type.  The type must be &rsquo;single&rsquo; or &rsquo;deathmatch&rsquo;
+  -h                help
+  -m                create a doom3 map file from the pen file
+  -s                generate statistics about the map file
+  -t                create a txt file from the pen file
+  -V                generate verbose information
+  -v                print the version
+  -o outputfile     place output into outputfile</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. pen2map overview
+<a name="7. pen2map overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li> parses a pen file, creates internal
+data structures representing the pen map
+<ul type=square> <li> it then iterates over the rooms and
+generates a doom3 map file </ul> <li> conceptually the
+generation of the rooms is rather like virtualised lego
+(within chisel) <ul type=square> <li> pen2map generates
+blocks and places these blocks into a world <li> it will
+attempt to join blocks together as long as this results in a
+bigger cuboid structure </ul> <li> however the doom3 map
+uses planes and not blocks!</p>
+
+<p></ul></p><hr>
+
+<h2>8. Construct the program in logical units
+<a name="8. Construct the program in logical units"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Henry Legard proverb <li> one way to
+achieve this is to layer the solution <ul type=square> <li>
+divide and conquer </ul> <li> consider our doom3 tools</p>
+
+<p></ul></p><hr>
+
+<h2>9. Doom3 and chisel layering
+<a name="9. Doom3 and chisel layering"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26889672.png" alt="Image grohtml-26889672.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>10. Minimal box defined in the map format
+<a name="10. Minimal box defined in the map format"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>brushDef3
+{
+  // floor of fbrick
+  (0 0 -1 0) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // ceiling of fbrick
+  (0 0 1 -288) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // top most horizontal of fbrick
+  (-1 0 0 -480) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // left most vertical of fbrick
+  (0 -1 0 -576) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // bottom most horizontal of fbrick
+  (1 0 0 432) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // right most vertical of fbrick
+  (0 1 0 528) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+}</pre>
+
+
+<p><font color="#000000"><li> six planes which define a
+cuboid <br>
+</ul></font></p><hr>
+
+<h2>11. The second plane
+<a name="11. The second plane"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> is the ceiling
+in our example <li> <tt>(0 0 1 -288) ((0.0078125 0 0.5) (0
+-0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0
+0</tt> <li></font> <font color="#A51933">(0 0 1 -288)</font>
+<font color="#000000"><ul type=square> <li> vector (0, 0, 1)
+and the closest it reaches the origin is -288 units <li>
+this infinite plane will have the texture
+<tt><small>textures/hell/cbrick2b</small></tt> applied to
+it</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>12. Texture transformation matrix
+<a name="12. Texture transformation matrix"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the texture
+uses the transformation matrix, T</font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26889673.png" alt="Image grohtml-26889673.png"></font></p>
+
+<p><font color="#000000"><li> general transformation matrix
+is: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26889674.png" alt="Image grohtml-26889674.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>13. Each coordinate is transformed by
+<a name="13. Each coordinate is transformed by"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26889675.png" alt="Image grohtml-26889675.png"></font></p>
+
+<p><font color="#000000"><li> and mapped into the image
+file at this new grid coordinate <li> fortunately we
+conceptualise chisel as creating a variety of lego bricks
+(each is a cuboid) <li> <tt><small>pen2map.py</small></tt>
+generates floor bricks, wall bricks and ceiling
+bricks</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>14. Conclusion
+<a name="14. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> layered
+software is an important concept which allows large systems
+to be built and it can hide complexity behind well defined
+interfaces <li> cuboids are represented by brushes in the
+map <ul type=square> <li> six planes define a
+brush</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>15. Tutorial
+<a name="15. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> finish off
+your automatic light code in
+<tt><small>txt2pen.py</small></tt> <li> see if you can make
+the floor level vary <ul type=square> <li> by lowering
+slightly every odd room number floor <li> leave the even
+room number floor alone </ul> <li> need to examine and
+change <tt><small>pen2map.py</small></tt></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Adding auto lights to chisel">1. Adding auto lights to chisel</a><br>
+<a href="#2. Code changes to chisel/python/txt2pen.py">2. Code changes to chisel/python/txt2pen.py</a><br>
+<a href="#3. New function checkLight">3. New function checkLight</a><br>
+<a href="#4. txt2pen changes">4. txt2pen changes</a><br>
+<a href="#5. function printRoom changes">5. function printRoom changes</a><br>
+<a href="#6. pen2map">6. pen2map</a><br>
+<a href="#7. pen2map overview">7. pen2map overview</a><br>
+<a href="#8. Construct the program in logical units">8. Construct the program in logical units</a><br>
+<a href="#9. Doom3 and chisel layering">9. Doom3 and chisel layering</a><br>
+<a href="#10. Minimal box defined in the map format">10. Minimal box defined in the map format</a><br>
+<a href="#11. The second plane">11. The second plane</a><br>
+<a href="#12. Texture transformation matrix">12. Texture transformation matrix</a><br>
+<a href="#13. Each coordinate is transformed by">13. Each coordinate is transformed by</a><br>
+<a href="#14. Conclusion">14. Conclusion</a><br>
+<a href="#15. Tutorial">15. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:53 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+</head>
+<body bgcolor="#FFFFFF">
+
+<a href="#1. Collision prediction between circles">1. Collision prediction between circles</a><br>
+<a href="#2. De-tour">2. De-tour</a><br>
+<a href="#3. Collision prediction between circles">3. Collision prediction between circles</a><br>
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Collision prediction between circles
+<a name="1. Collision prediction between circles"></a>
+</h2>
+
+
+<p><ul type=disc> <li> de-tour <ul type=square> <li> recall
+we can predict the time a point travels a distance by: </ul>
+<li></p>
+
+
+<p align="left"><img src="grohtml-26874343.png" alt="Image grohtml-26874343.png"></p>
+
+<p><li></p>
+
+<pre>s = distance
+u = initial velocity
+a = acceleration
+t = time</pre>
+
+
+<p></ul></p><hr>
+
+<h2>2. De-tour
+<a name="2. De-tour"></a>
+</h2>
+
+
+<p><ul type=disc> <li> if we were to drop a small ball
+bearing from 1 metre, how long would it take to hit the
+ground? <li> initial velocity <tt><small>(u =
+0)</small></tt> <li> acceleration approx <tt><small>(a = 10)
+<img src="grohtml-2687434-4.png" alt="Image grohtml-2687434-4.png"></small></tt>
+<li> thus <li></p>
+
+
+<p align="left"><img src="grohtml-26874344.png" alt="Image grohtml-26874344.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><img src="grohtml-26874345.png" alt="Image grohtml-26874345.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><img src="grohtml-26874346.png" alt="Image grohtml-26874346.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><img src="grohtml-26874347.png" alt="Image grohtml-26874347.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><img src="grohtml-26874348.png" alt="Image grohtml-26874348.png"></p>
+
+<p><li> t = 0.45 <li> t = -0.45 <li> we also note that for
+more complicated quadratic equations we can use the formula:
+<li></p>
+
+
+<p align="left"><img src="grohtml-26874349.png" alt="Image grohtml-26874349.png"></p>
+
+<p><li> for any equation matching:
+<img src="grohtml-2687434-11.png" alt="Image grohtml-2687434-11.png"></p>
+
+<p></ul></p><hr>
+
+<h2>3. Collision prediction between circles
+<a name="3. Collision prediction between circles"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-268743410.png" alt="Image grohtml-268743410.png"></p>
+
+<p style="margin-top: 1em"><li> each circle has a radius,
+position, velocity and acceleration <ul type=square> <li>
+radius is a scalar, all others are vectors </ul> <li>
+remember that when these circles collide the distance
+between the two circle mid points will be
+<img src="grohtml-2687434-17.png" alt="Image grohtml-2687434-17.png">
+<li> we know generally that the distance between the circles
+can be calculated as:</p>
+
+
+<p align="left"><img src="grohtml-268743411.png" alt="Image grohtml-268743411.png"></p>
+
+<p><li> so we need to find the time when:</p>
+
+
+<p align="left"><img src="grohtml-268743412.png" alt="Image grohtml-268743412.png"></p>
+
+<p><li> using the formula for initial position, velocity
+and acceleration:</p>
+
+
+<p align="left"><img src="grohtml-268743413.png" alt="Image grohtml-268743413.png"></p>
+
+<p>it is also known that the position circle
+<img src="grohtml-2687434-21.png" alt="Image grohtml-2687434-21.png">
+at time,
+<img src="grohtml-2687434-22.png" alt="Image grohtml-2687434-22.png">
+, is:</p>
+
+
+<p align="left"><img src="grohtml-268743414.png" alt="Image grohtml-268743414.png"></p>
+
+<p><li> correspondingly the position circle
+<img src="grohtml-2687434-24.png" alt="Image grohtml-2687434-24.png">
+at time,
+<img src="grohtml-2687434-25.png" alt="Image grohtml-2687434-25.png">
+, is:</p>
+
+
+<p align="left"><img src="grohtml-268743415.png" alt="Image grohtml-268743415.png"></p>
+
+<p><li> recall Pythagorean theorem can be used to find the
+length of the hypotenuse from the length of the base and
+height of a right angled triangle <li></p>
+
+
+<p align="left"><img src="grohtml-268743416.png" alt="Image grohtml-268743416.png"></p>
+
+<p style="margin-top: 1em"><li></p>
+
+
+<p align="left"><img src="grohtml-268743417.png" alt="Image grohtml-268743417.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><img src="grohtml-268743418.png" alt="Image grohtml-268743418.png"></p>
+
+<p><li>
+<img src="grohtml-2687434-30.png" alt="Image grohtml-2687434-30.png">
+is the radius of circle 0 and circle 1
+<ul type=square> <li></p>
+
+
+<p align="left"><img src="grohtml-268743419.png" alt="Image grohtml-268743419.png"></p>
+
+<p></ul> <li>
+<img src="grohtml-2687434-32.png" alt="Image grohtml-2687434-32.png">
+is the difference of the y-axis position of the circles <li>
+<img src="grohtml-2687434-33.png" alt="Image grohtml-2687434-33.png">
+is the difference of the x-axis position of the circles <li>
+therefore we need to find the time at which the distance
+between both circles is
+<img src="grohtml-2687434-34.png" alt="Image grohtml-2687434-34.png">
+which is: <li></p>
+</body>
+</html>

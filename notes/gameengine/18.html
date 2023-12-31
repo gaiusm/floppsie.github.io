@@ -1,0 +1,506 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:57 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. ioquake eye candy changes
+<a name="1. ioquake eye candy changes"></a>
+</h2>
+
+
+<p><ul type=disc> <li> include: <ul type=square> <li> smoke
+<li> blood <li> gibs <li> simple python bot basic
+movements</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Smoke
+<a name="2. Smoke"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly note that in
+<tt><small>qcommon/q_shared.h</small></tt> the definition
+<li></p>
+<pre>#define GORE</pre>
+
+<p><li> all gore related changes should be bound by:
+<li></p>
+
+<pre>#if defined(GORE)
+/* modified code */
+#else
+/* original code */
+#endif</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. changes to cgame/cg_particles.c
+<a name="3. changes to cgame/cg_particles.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>#if defined(GORE)
+#   define PARTICLE_GRAVITY       10
+#   define MAX_PARTICLES    1024 * 8 * 128
+#else
+#   define PARTICLE_GRAVITY       40
+#   define MAX_PARTICLES    1024 * 8
+#endif</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. changes to cgame/cg_weapons.c
+<a name="4. changes to cgame/cg_weapons.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the function rocket trail is altered
+to yield <ul type=square> <li> twice the density of smoke
+<li> to allow grenades to smoke even if stationary </ul>
+<li></p>
+
+<pre>#if defined(GORE)
+        step = 25;
+#else
+        step = 50;
+#endif</pre>
+
+
+<p><li></p>
+
+<pre>#if defined(GORE)
+    // grenades smoke even if stationary :-)
+#else
+    // if object (e.g. grenade) is stationary, don&rsquo;t toss up smoke
+    if ( es-&gt;pos.trType == TR_STATIONARY ) {
+         ent-&gt;trailTime = cg.time;
+         return;
+    }
+#endif</pre>
+
+
+<p><li></p>
+
+<pre>#if defined(GORE)
+    if ( es-&gt;pos.trType == TR_STATIONARY ) {
+       smoke = CG_SmokePuff( lastPos, up,
+                             wi-&gt;trailRadius,
+                             1, 1, 1, 0.33f,
+                             wi-&gt;wiTrailTime,
+                             t,
+                             0,
+                             0,
+                             cgs.media.smokePuffShader );
+       // use the optimized local entity add
+       smoke-&gt;leType = LE_SCALE_FADE;
+       return;
+    }
+#endif</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. cgame/cg_marks.c
+<a name="5. cgame/cg_marks.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li> handles particles and their
+dissipation <li></p>
+
+<pre>#if defined(GORE)
+#   define              PARTICLE_GRAVITY        10
+#   define              MAX_PARTICLES   1024 * 8 * 128
+#else
+#   define              PARTICLE_GRAVITY        40
+#   define              MAX_PARTICLES   1024
+#endif</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. function CG_ParticleDust
+<a name="6. function CG_ParticleDust"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>void CG_ParticleDust (centity_t *cent, vec3_t origin, vec3_t dir)
+
+etc
+
+#if defined(GORE)
+  if (length)
+    p-&gt;endtime = cg.time + (4500*10) + (crandom() * 3500);
+  else
+    p-&gt;endtime = cg.time + (750*10) + (crandom() * 500);
+#else
+  if (length)
+    p-&gt;endtime = cg.time + 4500 + (crandom() * 3500);
+  else
+    p-&gt;endtime = cg.time + 750 + (crandom() * 500);
+#endif
+
+etc</pre>
+
+<p></ul></p><hr>
+
+<h2>7. Adding per model gibs
+<a name="7. Adding per model gibs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> files altered <ul type=square> <li>
+<tt><small>q3_ui/ui_local.h</small></tt> <li>
+<tt><small>q3_ui/ui_players.c</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. playerInfo_t extended in q3_ui/ui_local.h
+<a name="8. playerInfo_t extended in q3_ui/ui_local.h"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>#if 1
+        qhandle_t               gibSkull;
+        qhandle_t               gibBrain;
+        qhandle_t               gibAbdomen;
+        qhandle_t               gibArm;
+        qhandle_t               gibFist;
+        qhandle_t               gibFoot;
+        qhandle_t               gibForearm;
+        qhandle_t               gibChest;
+        qhandle_t               gibIntestine;
+        qhandle_t               gibLeg;
+        int                     nSkulls;
+        int                     nBrains;
+        int                     nAbdomens;
+        int                     nArms;
+        int                     nFists;
+        int                     nFeet;
+        int                     nForearms;
+        int                     nChests;
+        int                     nIntestines;
+        int                     nLegs;
+#endif</pre>
+
+
+<p><li> notice that this is not switchable on/off at
+compile time by the <tt><small>GORE</small></tt> definition
+<li> as it would probably mean it would be incompatible with
+other clients built without <tt><small>GORE</small></tt>
+<ul type=square> <li> in general it is safer <b>not</b> to
+make data structures compile time switchable
+<ul type=circle> <li> any mistake could prove very very
+costly to debug <br>
+</ul> </ul> </ul></p><hr>
+
+<h2>9. q3_ui/ui_players.c
+<a name="9. q3_ui/ui_players.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>/*
+==========================
+UI_RegisterClientModelname
+==========================
+*/
+qboolean UI_RegisterClientModelname (playerInfo_t *pi,
+                                     const char *modelSkinName,
+                                     const char *headModelSkinName,
+                                     const char *teamName)
+{
+  char modelName[MAX_QPATH];
+  char skinName[MAX_QPATH];
+  char headModelName[MAX_QPATH];
+  char headSkinName[MAX_QPATH];
+  char filename[MAX_QPATH];
+  char *slash;
+
+
+  Com_Printf (&quot;Inside UI_RegisterClientModelname&quot;);
+  pi-&gt;torsoModel = 0;
+  pi-&gt;headModel = 0;</pre>
+
+
+<p><li></p>
+<pre>  if (! modelSkinName[0])
+     return qfalse;
+
+  Q_strncpyz (modelName, modelSkinName, sizeof(modelName));
+
+
+  slash = strchr (modelName, &rsquo;/&rsquo;);
+  if (!slash) {
+    // modelName did not include a skin name
+    Q_strncpyz (skinName, &quot;default&quot;, sizeof(skinName));
+  } else {
+    Q_strncpyz (skinName, slash+1, sizeof(skinName));
+    *slash = &rsquo;\0&rsquo;;
+  }</pre>
+
+
+<p><li></p>
+
+<pre>  Q_strncpyz (headModelName, headModelSkinName, sizeof (headModelName));
+  slash = strchr (headModelName, &rsquo;/&rsquo;);
+  if (!slash)
+    // modelName did not include a skin name
+    Q_strncpyz (headSkinName, &quot;default&quot;, sizeof (skinName));
+  else {
+    Q_strncpyz (headSkinName, slash + 1, sizeof (skinName));
+        *slash = &rsquo;\0&rsquo;;
+  }</pre>
+
+
+<p><li></p>
+<pre>  // load cmodels before models so filecache works
+
+  pi-&gt;legsModel = UI_doModelFile (&quot;models/players/%s/lower.md3&quot;,
+                                  &quot;models/players/characters/%s/lower.md3&quot;,
+                                  modelName);
+  if (!pi-&gt;legsModel) {
+    Com_Printf (&quot;Failed to load model file %s\n&quot;, filename);
+    return qfalse;
+  }
+
+
+  pi-&gt;torsoModel = UI_doModelFile (&quot;models/players/%s/upper.md3&quot;,
+                                   &quot;models/players/characters/%s/upper.md3&quot;,
+                                   modelName);
+  if (!pi-&gt;torsoModel) {
+    Com_Printf (&quot;Failed to load model file %s\n&quot;, filename);
+    return qfalse;
+  }</pre>
+
+
+<p><li></p>
+<pre>  if (headModelName[0] == &rsquo;*&rsquo; )
+    Com_sprintf( filename, sizeof (filename),
+                 &quot;models/players/heads/%s/%s.md3&quot;,
+                 &amp;headModelName[1], &amp;headModelName[1] );
+  else
+    Com_sprintf( filename, sizeof (filename),
+                 &quot;models/players/%s/head.md3&quot;, headModelName);
+
+  pi-&gt;headModel = trap_R_RegisterModel( filename );
+  if ( !pi-&gt;headModel &amp;&amp; headModelName[0] != &rsquo;*&rsquo;) {
+    Com_sprintf( filename, sizeof( filename ),
+       &quot;models/players/heads/%s/%s.md3&quot;, headModelName, headModelName);
+    pi-&gt;headModel = trap_R_RegisterModel( filename );
+  }
+
+
+  if (!pi-&gt;headModel) {
+    Com_Printf( &quot;Failed to load model file %s\n&quot;, filename );
+    return qfalse;
+  }</pre>
+
+
+<p><li></p>
+
+<pre>#if 1
+    // Gaius
+    UI_ParseBodyFile (&quot;models/players/%s/%s.body&quot;, modelName, pi);
+#endif</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. new function doModelFile
+<a name="10. new function doModelFile"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>static qhandle_t UI_doModelFile (const char *preferredPath,
+                                 const char *defaultPath,
+                                 const char *modelName)
+{
+  char filename[MAX_QPATH*2];
+  qhandle_t q;
+
+
+  Com_sprintf (filename, sizeof (filename), preferredPath, modelName);
+  q = trap_R_RegisterModel (filename);
+  if (q == 0 &amp;&amp; defaultPath != NULL) {
+    Com_sprintf (filename, sizeof (filename), defaultPath, modelName);
+    q = trap_R_RegisterModel (filename);
+  }
+  return q;
+}</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>/*
+================
+UI_ParseBodyFile
+================
+*/
+void UI_ParseBodyFile (const char *fmt, const char *modelName, playerInfo_t *pi)
+{
+  char          *textPtr;
+  int            len;
+  char          *token;
+  char           text[20000];
+  char           filename[MAX_QPATH];
+  fileHandle_t   f;
+
+
+  UI_set_default_body_parts (pi);
+  Com_sprintf (filename, sizeof (filename), fmt, modelName, modelName);
+  Com_Printf (&quot;About to read file: %s&quot;, filename);</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>  // load the file
+  len = trap_FS_FOpenFile (filename, &amp;f, FS_READ);
+  if (len &lt;= 0)
+    return ;
+
+  if (len &gt;= (sizeof (text)-1)) {
+    Com_Printf(&quot;File %s too long\n&quot;, filename);
+    trap_FS_FCloseFile (f);
+    return;
+  }
+  trap_FS_Read (text, len, f);
+  text[len] = 0;
+  trap_FS_FCloseFile(f);
+
+  Com_Printf(&quot;About to parse file: %s&quot;, filename);
+
+  // parse the text
+  textPtr = &amp;text[0];</pre>
+
+<p><font color="#000000"><li></font></p>
+
+<pre>  token = COM_Parse (&amp;textPtr);
+  if (UI_seen_token (token, &quot;{&quot;)) {
+    token = COM_Parse (&amp;textPtr);
+    while ((token != NULL) &amp;&amp; (! UI_seen_token (token, &quot;}&quot;))) {
+      if (UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_SKULLS&quot;, &amp;pi-&gt;nSkulls) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_BRAINS&quot;, &amp;pi-&gt;nBrains) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_ABDOMENS&quot;, &amp;pi-&gt;nAbdomens) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_ARMS&quot;, &amp;pi-&gt;nArms) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_FISTS&quot;, &amp;pi-&gt;nFists) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_FEET&quot;, &amp;pi-&gt;nFeet) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_FOREARMS&quot;, &amp;pi-&gt;nForearms) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_CHESTS&quot;, &amp;pi-&gt;nChests) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_INTESTINES&quot;, &amp;pi-&gt;nIntestines) ||
+          UI_seen_value (&amp;textPtr, &amp;token, &quot;BODY_NO_OF_LEGS&quot;, &amp;pi-&gt;nLegs))
+        ;
+      else
+        token = COM_Parse (&amp;textPtr);
+    }
+  }</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. q3_ui/ui_players.c
+<a name="11. q3_ui/ui_players.c"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>static int UI_seen_token (char *token, const char *match)
+{
+  return (Q_stricmp (token, match) == 0);
+}
+
+
+static int UI_seen_value (char **textPtr, char **token,
+                          const char *match, int *value)
+{
+  if (UI_seen_token (*token, match)) {
+    *token = COM_Parse (textPtr);
+    if (token != NULL)
+      if (isdigit (**token)) {
+        *value = atoi (*token);
+        *token = COM_Parse (textPtr);
+        return qtrue;
+      }
+  }
+  return qfalse;
+}</pre>
+
+
+<p><font color="#000000"><li></font></p>
+<pre>/*
+ *  UI_set_default_body_parts - sets the default for human structures.
+ */
+
+
+static void UI_set_default_body_parts (playerInfo_t *pi)
+{
+  pi-&gt;nSkulls = 1;
+  pi-&gt;nBrains = 1;
+  pi-&gt;nAbdomens = 1;
+  pi-&gt;nArms = 2;
+  pi-&gt;nFists = 2;
+  pi-&gt;nFeet = 2;
+  pi-&gt;nForearms = 2;
+  pi-&gt;nChests = 1;
+  pi-&gt;nIntestines = 1;
+  pi-&gt;nLegs = 2;
+}</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. ioquake eye candy changes">1. ioquake eye candy changes</a><br>
+<a href="#2. Smoke">2. Smoke</a><br>
+<a href="#3. changes to cgame/cg_particles.c">3. changes to cgame/cg_particles.c</a><br>
+<a href="#4. changes to cgame/cg_weapons.c">4. changes to cgame/cg_weapons.c</a><br>
+<a href="#5. cgame/cg_marks.c">5. cgame/cg_marks.c</a><br>
+<a href="#6. function CG_ParticleDust">6. function CG_ParticleDust</a><br>
+<a href="#7. Adding per model gibs">7. Adding per model gibs</a><br>
+<a href="#8. playerInfo_t extended in q3_ui/ui_local.h">8. playerInfo_t extended in q3_ui/ui_local.h</a><br>
+<a href="#9. q3_ui/ui_players.c">9. q3_ui/ui_players.c</a><br>
+<a href="#10. new function doModelFile">10. new function doModelFile</a><br>
+<a href="#11. q3_ui/ui_players.c">11. q3_ui/ui_players.c</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:07 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial and installing Doom3 data files
+<a name="1. Tutorial and installing Doom3 data files"></a>
+</h2>
+
+
+<p><ul type=disc> <li> finish off your automatic light code
+in <tt><small>txt2pen.py</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>2. Installing data files on your R-Pi or VMware image
+<a name="2. Installing data files on your R-Pi or VMware image"></a>
+</h2>
+
+
+<p><ul type=disc> <li> dhewm3 is the game engine which is
+free software (GPL) <li> the data files are not free and
+thus need to be bought from steam
+(<a href="https://github.com/gaiusm/pybot-dhewm3/blob/master/README.md">please see these notes</a>)
+and also the
+<a href="https://github.com/dhewm/dhewm3/wiki/FAQ">FAQ</a>
+<li> when you have obtained your doom3 pk4 files they must
+be placed into the directory
+<tt><small>/usr/share/dhewm3</small></tt> <li> you need to
+copy the pk4 into /usr/share/dhewm3 <ul type=square> <li>
+hint this is done in GNU/Linux by: </ul> <li></p>
+
+<p><tt>$</tt> <b>cd
+into_your_directory_where_the_pk4_files_exist</b> <tt><br>
+$</tt> <b>sudo mkdir -p /usr/share/dhewm3/base</b> <tt><br>
+$</tt> <b>sudo cp *.pk4 /usr/share/dhewm3/base</b> <li>
+where
+<tt><small>into_your_directory_where_the_pk4_files_exist</small></tt>
+will vary from user to user <li> now you can run a tool to
+verify you have the correct pk4 files <li> <tt><br>
+$</tt> <b>md5sum /usr/share/dhewm3/base/*.pk4</b></p>
+
+<pre>71b8d37b2444d3d86a36fd61783844fe  /usr/share/dhewm3/base/pak000.pk4
+4bc4f3ba04ec2b4f4837be40e840a3c1  /usr/share/dhewm3/base/pak001.pk4
+fa84069e9642ad9aa4b49624150cc345  /usr/share/dhewm3/base/pak002.pk4
+f22d8464997924e4913e467e7d62d5fe  /usr/share/dhewm3/base/pak003.pk4
+38561a3c73f93f2e6fd31abf1d4e9102  /usr/share/dhewm3/base/pak004.pk4
+2afd4ece27d36393b7538d55a345b90d  /usr/share/dhewm3/base/pak005.pk4
+a6e7003fa9dcc75073dc02b56399b370  /usr/share/dhewm3/base/pak006.pk4
+6319f086f930ec1618ab09b4c20c268c  /usr/share/dhewm3/base/pak007.pk4
+28750b7841de9453eb335bad6841a2a5  /usr/share/dhewm3/base/pak008.pk4</pre>
+
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><tt><a name="index"></a></tt></p>
+<a href="#1. Tutorial and installing Doom3 data files">1. Tutorial and installing Doom3 data files</a><br>
+<a href="#2. Installing data files on your R-Pi or VMware image">2. Installing data files on your R-Pi or VMware image</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

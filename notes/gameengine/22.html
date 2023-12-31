@@ -1,0 +1,149 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:58 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial 13
+<a name="1. Tutorial 13"></a>
+</h2>
+
+
+<p><ul type=disc> <li> during this tutorial we will
+<ul type=square> <li> understand the PGE API <li> create a
+small snooker game using PGE <li> understand how PGE
+integrates with PyGame</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Using PGE to create a game
+<a name="2. Using PGE to create a game"></a>
+</h2>
+
+
+<p><ul type=disc> <li> full documentation about PGE is
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/homepage.html">available</a>
+<li> any PGE game or simulation must fix a board frame
+around our universe <li></p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-26884812.png" alt="Image grohtml-26884812.png"></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>3. Framing the universe in PGE
+<a name="3. Framing the universe in PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>def placeBoarders (thickness, color):
+    bottom = pge.box (0.0, 0.0, 1.0, thickness, color).fix ()
+    left = pge.box (0.0, 0.0, thickness, 1.0, color).fix ()
+    right = pge.box (1.0-thickness, 0.0, thickness, 1.0, color)\
+           .fix ()
+    top = pge.box (0.0, 1.0-thickness, 1.0, thickness, color)\
+           .fix ()
+    return [bottom, left, right, top]</pre>
+
+
+<p><li> which can be invoked by: <li></p>
+<pre>sides = placeBoarders (0.01, brown)</pre>
+
+<p></ul></p><hr>
+
+<h2>4. Run breakout
+<a name="4. Run breakout"></a>
+</h2>
+
+
+<p><ul type=disc> <li> examine the
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/example_games.html">breakout game source code</a>
+<ul type=square> <li> take a copy of this code and run it
+from the command line using the Python interpreter </ul>
+<li> read the code and mentally make a note about the
+various sections of code and what they are performing</p>
+
+<p></ul></p><hr>
+
+<h2>5. Implement snooker in PGE
+<a name="5. Implement snooker in PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> now create a new simple PGE program
+which just creates the boarders (you will need a
+<tt><small>main</small></tt> which can be borrowed from the
+breakout example) <li> now take a copy and introduce a
+single moving circle (cue ball) which is dropped from the
+point <tt><small>0.5,0.5</small></tt> <ul type=square> <li>
+gravity must be turned on! </ul> <li> now turn gravity off
+and give this circle an impulse upwards (see the breakout
+code for a working example of an impulse)
+<ul type=square> <li> check the PGE documentation for more
+details </ul> <li> add some snooker &quot;red&rsquo;s&quot;
+<ul type=square> <li> observe what happens when the cue ball
+hits the red balls </ul> <li> now add a background green to
+the PGE world <li> now add some pockets <li> implement some
+callbacks for the pockets <ul type=square> <li> to delete a
+&quot;red&quot; <li> reposition the cue ball <li> and
+calculate the &quot;break&quot; value </ul> <li> continue to
+work on this program as part of some directed learning
+throughout the week</p>
+
+<p></ul></p><hr>
+
+<h2>6. Conclusion
+<a name="6. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we have <ul type=square> <li>
+understood more about the PGE API <li> created a small
+snooker game using PGE <li> understood how PGE integrates
+with PyGame </ul> <li> you might want to read around the
+subject by reading this paper
+<a href="../../../Papers/paper21/ieee.pdf">The Construction of a Predictive Collision 2D Game Engine</a></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Tutorial 13">1. Tutorial 13</a><br>
+<a href="#2. Using PGE to create a game">2. Using PGE to create a game</a><br>
+<a href="#3. Framing the universe in PGE">3. Framing the universe in PGE</a><br>
+<a href="#4. Run breakout">4. Run breakout</a><br>
+<a href="#5. Implement snooker in PGE">5. Implement snooker in PGE</a><br>
+<a href="#6. Conclusion">6. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

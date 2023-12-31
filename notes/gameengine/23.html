@@ -1,0 +1,291 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:59 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Internals of PGE (Python)
+<a name="1. Internals of PGE (Python)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> during this lecture we will start to
+look at the internals of PGE <li> we will concentrate on the
+Python module <tt><small>pge.py</small></tt> <li> we can see
+that this sits near the top of the various software levels
+of our game <li></p>
+
+
+<p align="left"><img src="grohtml-26885162.png" alt="Image grohtml-26885162.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>2. What does pge.py provide?
+<a name="2. What does pge.py provide?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> for full details see the section
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/homepage.html">PGE Python API</a>
+in the online documentation <li> it provides the ability for
+users to create the following objects <ul type=square> <li>
+colour <li> circle <li> polygon <li> text </ul> <li> circle,
+polygon and text objects appear on the screen at a position
+<ul type=square> <li> they are also given a level </ul> <li>
+only objects at level 0 are handled by the physics engine
+<ul type=square> <li> objects declared at any level &lt; 0
+are in the background <li> objects declared at any level
+&gt; 0 are in the foreground </ul> <li> all objects are
+drawn in level order <li> <tt><small>pge.py</small></tt>
+front ends the object creation <li> it creates a Python
+object for the <tt><small>circle</small></tt> ,
+<tt><small>polygon</small></tt> ,
+<tt><small>colour</small></tt> and
+<tt><small>text</small></tt> objects <ul type=square> <li>
+the <tt><small>pge.py</small></tt> object contains a
+<tt><small>type</small></tt> field which is set to one of:
+<tt><small>colour_t</small></tt> ,
+<tt><small>box_t</small></tt> ,
+<tt><small>circle_t</small></tt> ,
+<tt><small>fb_box_t</small></tt> ,
+<tt><small>fb_circle_t</small></tt> or
+<tt><small>fb_text_t</small></tt> </ul> <li> it then checks
+the parameters to methods in <tt><small>pge.py</small></tt>
+to ensure that users to not try and create a polygon of
+colour circle! <li></p>
+<pre>#
+#  text - place text string, s, at position [x, y] in colour, c.
+#         The size will be in font size and placed in the
+#         foreground or background depending upon level.
+#         You are not allowed to place text in level zero.
+#
+
+
+def text (x, y, s, c, size, level):
+    global device, screen
+    c._param_colour (&quot;fourth parameter to text is expected to be a colour&quot;)
+    if level == 0:
+        _errorf (&quot;not allowed to place in level 0&quot;)
+    else:
+        ob = object (fb_text_t, \
+                  [x, y, s, size, c._get_pgeif_colour ()], c, level)
+        _add (ob, level)
+    return ob</pre>
+
+
+<p><li> <tt><small>pge.py</small></tt> will check to see
+that users do not try and assign velocity or acceleration to
+fixed objects <li> and ensure that the object still exists
+<li></p>
+
+<pre>#
+#  velocity - Pre-condition:  an circle or polygon object
+#             which is not fixed and exists at level 0.
+#             Post-condition:  assign the velocity (vx, vy)
+#             to this object.
+#
+def velocity (self, vx, vy):
+    self._check_type ([box_t, circle_t], &quot;assign a velocity to a&quot;)
+    self._check_not_fixed (&quot;assign a velocity&quot;)
+    self._check_not_deleted (&quot;a velocity&quot;)
+    self.o = self._check_same (pgeif.velocity (self.o, vx, vy))
+    return self</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. Managing foreground/background and the physics engine
+<a name="3. Managing foreground/background and the physics engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>pge.py</small></tt>
+coordinates the foreground, background and physics engine
+<li> a foreground and background circle is never seen by the
+physics engine <li> it is managed locally in
+<tt><small>pge.py</small></tt> and Pygame <li>
+foreground/background objects have the
+<tt><small>type</small></tt> field set to:
+<tt><small>fb_circle_t</small></tt> ,
+<tt><small>fb_box_t</small></tt> or
+<tt><small>fb_text_t</small></tt> <li></p>
+<pre>#
+#  circle - place a circle at coordinate (x, y)
+#           The circle has a radius, r, and is filled with colour, c.
+#           If the level == 0 it is placed into the physics engine.
+#           A level &lt; 0 is placed into the background.
+#           A level &gt; 0 is placed into the foreground.
+
+
+def circle (x, y, r, c, level = 0):
+    c._param_colour (&quot;fourth parameter to box is expected to be a colour&quot;)
+    if level == 0:
+        id = pgeif.circle (x, y, r, c._get_pgeif_colour ())
+        ob = object (circle_t, id, c, level)
+        _register (id, ob)
+    else:
+        ob = object (fb_circle_t, [x, y, r, c._get_pgeif_colour ()], c, level)
+        _add (ob, level)
+    return ob</pre>
+
+
+<p><small></ul></small></p><hr>
+
+<h2>4. Automatic PGE API documentation
+<a name="4. Automatic PGE API documentation"></a>
+</h2>
+
+
+<p><ul type=disc> <li> notice the naming convention, most
+of the internal methods have an underscore prefixed to them
+<li> this allows for the internal methods to be excluded
+from documentation when it is automatically built
+<ul type=square> <li> by
+<tt><small>pge/tools/py2html.py</small></tt> <li> this
+utility generates the API documentation from the comments
+prior to the method definition <li> it creates a subsection
+for each method <li> and a function index into the
+documentation</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Managing foreground/background and the physics engine
+<a name="5. Managing foreground/background and the physics engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#
+#  circle - place a circle at coordinate (x, y)
+#           The circle has a radius, r, and is filled with colour, c.
+#           If the level == 0 it is placed into the physics engine.
+#           A level &lt; 0 is placed into the background.
+#           A level &gt; 0 is placed into the foreground.
+
+
+def circle (x, y, r, c, level = 0):
+    c._param_colour (&quot;fourth parameter to box is expected to be a colour&quot;)
+    if level == 0:
+        id = pgeif.circle (x, y, r, c._get_pgeif_colour ())
+        ob = object (circle_t, id, c, level)
+        _register (id, ob)
+    else:
+        ob = object (fb_circle_t, [x, y, r, c._get_pgeif_colour ()], c, level)
+        _add (ob, level)
+    return ob</pre>
+
+
+<p><font color="#000000"><li> notice the calls to
+<tt><small>_register</small></tt> and
+<tt><small>_add</small></tt> <li> the function
+<tt><small>_add</small></tt> adds the object to the
+appropriate background/foreground level <li></font></p>
+<pre>#
+#  _add - adds an object at foreground/background, level.
+#         A level value of &gt; 0 will be placed into the foreground.
+#         A level value of &lt; 0 will be placed into the background.
+
+def _add (ob, level):
+    global foreground, background, levels
+
+
+    if level &gt; 0:
+        if not (level in foreground):
+            foreground += [level]
+            foreground.sort ()
+    else:
+        if not (level in background):
+            background += [level]
+            background.sort ()
+    if levels.has_key (level):
+        levels[level] += [ob]
+    else:
+        levels[level] = [ob]</pre>
+
+
+<p><font color="#000000"><li> here there are three main
+data structures <li> <tt><small>foreground</small></tt> and
+<tt><small>background</small></tt> are lists which contain
+integer values of active levels <ul type=square> <li> the
+integers are sorted in order </ul> <li> the dictionary
+<tt><small>levels</small></tt> which uses an integer key to
+lookup a list of objects <br>
+</ul></font></p><hr>
+
+<h2>6. _draw_foreground
+<a name="6. _draw_foreground"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+<pre>#
+#  _draw_foreground - draws all the foreground objects in order.
+#
+
+
+def _draw_foreground ():
+    if foreground != []:
+        for l in foreground:
+            for o in levels[l]:
+                o._draw ()</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Conclusion
+<a name="7. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> during this
+lecture we have started to look at the internals of PGE by
+concentrating on the Python module
+<tt><small>pge.py</small></tt> <li> we have seen how basic
+objects are created and how parameters are checked and how
+foreground/background of objects are maintained</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Internals of PGE (Python)">1. Internals of PGE (Python)</a><br>
+<a href="#2. What does pge.py provide?">2. What does pge.py provide?</a><br>
+<a href="#3. Managing foreground/background and the physics engine">3. Managing foreground/background and the physics engine</a><br>
+<a href="#4. Automatic PGE API documentation">4. Automatic PGE API documentation</a><br>
+<a href="#5. Managing foreground/background and the physics engine">5. Managing foreground/background and the physics engine</a><br>
+<a href="#6. _draw_foreground">6. _draw_foreground</a><br>
+<a href="#7. Conclusion">7. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

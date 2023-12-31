@@ -1,0 +1,596 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:52 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. emacs customisation ($HOME/.emacs)
+<a name="1. emacs customisation ($HOME/.emacs)"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>;; F5 loads in the .gdbinit file ready for debugging ioquake
+(defun my-find-file-debug ()
+  &quot;load a file&quot;
+  (interactive)
+  (find-file (concat (getenv &quot;HOME&quot;) &quot;/Sandpit/ioquake-latest/ioquake3/.gdbinit&quot;)))
+(global-set-key [f5] &rsquo;my-find-file-debug)
+
+;; F12 compiles ioquake
+(setq compile-command &quot;make&quot;)
+(defun my-compile ()
+  &quot;run the compile command after moving to the correct directory&quot;
+  (interactive)
+  (find-file (concat (getenv &quot;HOME&quot;) &quot;/Sandpit/ioquake-latest/ioquake3/.gdbinit&quot;))
+  (compile compile-command))
+
+;; compile ioquake by pressing
+(global-set-key [f12] &rsquo;my-compile)
+
+
+;; F8 moves to the next error in the source file.
+(global-set-key [f8] &rsquo;next-error)</pre>
+
+
+<p><li></p>
+
+<pre>;; initialise GNU Modula-2 development functions
+(load &quot;~/emacs/gm2-emacs&quot;)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>2. ~/emacs/gm2-emacs
+<a name="2. ~/emacs/gm2-emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>(setq graft-gcc (getenv &quot;GCCVERSION&quot;))
+
+(setq graft-home (concat (concat (concat (concat &quot;/home/gaius/GM2/graft-&quot; graft-gcc) &quot;/gcc-&quot;) graft-gcc) &quot;/&quot;))
+
+(setq build-home (concat (concat (concat (concat &quot;/home/gaius/GM2/graft-&quot; graft-gcc) &quot;/build-&quot;) graft-gcc) &quot;/&quot;))
+
+(setq compile-command &quot;make&quot;)
+
+(defun my-compile ()
+  &quot;run the compile command&quot;
+  (interactive)
+  (compile compile-command))
+
+
+(defun my-find-file-debug ()
+  &quot;load a file&quot;
+  (interactive)
+  (find-file (concat build-home &quot;gcc/.gdbinit&quot;)))</pre>
+
+
+<p><li></p>
+<pre>; (add-hook &rsquo;after-save-hook &rsquo;my-rebuild)
+
+
+(defun my-rebuild ()
+  &quot;rebuild gcc&quot;
+  (interactive)
+  (let (source-buffer)
+    (setq source-buffer (current-buffer))
+    (let (gdbinit)
+      (delete-other-windows)
+      (split-window)
+      (other-window 1)
+      (my-find-file-debug)
+      (compile compile-command)
+      (other-window 1)
+      (goto-char (point-max))
+      (other-window 1)
+      (switch-to-buffer source-buffer))))</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. C preprocessor
+<a name="3. C preprocessor"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the C language is two languages
+<ul type=square> <li> the language which defines data types,
+statements, functions and operators <li> there is also the
+language of the preprocessor (
+<tt><small>#include</small></tt> ,
+<tt><small>#define</small></tt> ) etc </ul> <li> we use
+<tt><small>#include</small></tt> to include text within the
+current source file <ul type=square> <li> traditionally
+these text files are <tt><small>.h</small></tt> files or
+library files, but they can be any text file, including
+<tt><small>.c</small></tt> files <li> however including
+<tt><small>.c</small></tt> files is generally considered bad
+practice <ul type=circle> <li> however there are exceptions
+to this rule, for example including machine generated
+<tt><small>.c</small></tt> files</p>
+
+<p></ul> </ul> </ul></p><hr>
+
+<h2>4. Example #include
+<a name="4. Example #include"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the following is held in file
+<tt><small>example.h</small></tt> <li></p>
+<pre>int example_length (char *s);</pre>
+
+<p><li> the following is <tt><small>main1.c</small></tt>
+<li></p>
+<pre>#include &lt;stdio.h&gt;
+#include &quot;example.h&quot;
+
+
+main ()
+{
+   printf(&quot;my length program counts %d characters\n&quot;,
+           example_length(&quot;hello world&quot;));
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. example.c
+<a name="5. example.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>int example_length (char *s)
+{
+   int i=0;
+
+
+   while (s[i] != &rsquo;\0&rsquo;)
+      i++;
+   return i;
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. #include
+<a name="6. #include"></a>
+</h2>
+
+
+<p><ul type=disc> <li> notice that
+<tt><small>main1.c</small></tt> contained two
+<tt><small>#include</small></tt> s, the first was to include
+the prototype for <tt><small>printf</small></tt> <li> also
+notice that it used <tt><small>&lt;&gt;</small></tt> to
+delimit the filename <ul type=square> <li> special meaning,
+it searches using an implementation defined rule to find the
+file </ul> <li> you can modify the search path of the
+<tt><small>gcc</small></tt> compiler by supplying the
+<tt><small>-I</small></tt> argument <li> you can compile and
+link these examples into an executible via: <li></p>
+
+<p><tt>$</tt> <b>gcc -g example.c main1.c</b> <li> and run
+the program via: <li> <tt><br>
+$</tt> <b>./a.out</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>7. Macro substitution
+<a name="7. Macro substitution"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the C preprocessor allows text to be
+substituted, for example <li></p>
+<pre>#define forever while (1)
+#include &lt;stdio.h&gt;
+
+
+main ()
+{
+   forever {
+      printf(&quot;hello world\n&quot;);
+   }
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>8. Macro substituted with arguments
+<a name="8. Macro substituted with arguments"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#define assert(X)   { if (! (X)) \
+                      { fprintf(stderr, &quot;assert failed\n&quot;); }}
+
+main ()
+{
+   int r = write(1, &quot;hello world\n&quot;, 12);
+
+   assert(r==12);
+}</pre>
+
+<p><li> if you are unsure what is happening try asking the
+preprocessor what it is doing (use <tt><small>gcc
+-E</small></tt> ) <li> <tt><br>
+$</tt> <b>gcc -E main2.c</b></p>
+<pre># 1 &quot;main2.c&quot;
+# 1 &quot;&lt;built-in&gt;&quot;
+# 1 &quot;&lt;command line&gt;&quot;
+# 1 &quot;main2.c&quot;
+
+main ()
+{
+   int r = write(1, &quot;hello world\n&quot;, 12);
+
+
+   { if (! (r==12)) { fprintf(stderr, &quot;assert failed\n&quot;); }};
+}</pre>
+
+
+<p><li> use the C preprocessor carefully...
+<ul type=square> <li> do not use the C preprocessor to gain
+execution speed (by avoiding a function call) <li> the C
+compiler will probably make better decisions than you.. <br>
+</ul> </ul></p><hr>
+
+<h2>9. Special tokens in the C preprocessor
+<a name="9. Special tokens in the C preprocessor"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>__LINE__</small></tt> ,
+<tt><small>__DATE__</small></tt> , and
+<tt><small>__FILE__</small></tt> are all special tokens and
+are expanded into their obvious meanings, consider <li> the
+<tt><small>gcc</small></tt> C compiler also substitutes
+<tt><small>__FUNCTION__</small></tt> (but it does this in
+the C language component - not during preprocessing)
+<li></p>
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define assert(X,Y) do_assert(X, Y, __LINE__, __FILE__, __FUNCTION__)
+
+void do_assert (int b, char *m, int line, char *file,
+                const char *func)
+{
+   if (! b) {
+      fprintf(stderr, &quot;%s:%d:  %s in function %s (on %s)\n&quot;,
+                       file, line, m, func, __DATE__);
+      exit(1);
+   }
+}
+
+
+main ()
+{
+  int r = write(1, &quot;hello world\n&quot;, 11);  /* should be 12 */
+  assert(r==12, &quot;write failed&quot;);
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>10. gcc -E main3.c | tail -20
+<a name="10. gcc -E main3.c | tail -20"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>void do_assert (int b, char *m, int line, char *file,
+                const char *func)
+{
+   if (! b) {
+      fprintf(stderr, &quot;%s:%d:  %s in function %s (on %s)\n&quot;,
+                       file, line, m, func, &quot;Feb  4 2008&quot;);
+      exit(1);
+   }
+}
+
+
+main ()
+{
+  int r = write(1, &quot;hello world\n&quot;, 11);
+  do_assert(r==12, &quot;write failed&quot;, 18, &quot;main3.c&quot;, __FUNCTION__);
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>11. Watch out for side effects
+<a name="11. Watch out for side effects"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#define square(X)  (X)*(X)
+
+main ()
+{
+   int i=11;
+
+
+   printf(&quot;square of %d is %d\n&quot;, i, square(i++));
+   printf(&quot;square of %d is %d\n&quot;, i, square(i++));</pre>
+
+
+<p><li> why is this wrong? <li> never use C preprocessor
+for speed, unless you know the hardware better than the
+compiler author.. <br>
+</ul></p><hr>
+
+<h2>12. Correct solution
+<a name="12. Correct solution"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int square (int x)
+{
+  return x*x;
+}
+
+main ()
+{
+   int i=11;
+
+
+   printf(&quot;square of 11 is %d\n&quot;, square(i++));
+   printf(&quot;square of 12 is %d\n&quot;, square(i++));
+}</pre>
+
+
+<p><li> and compile with <tt><small>gcc -O3 -g
+main4.c</small></tt> it will produce great code <br>
+</ul></p><hr>
+
+<h2>13. Compiler assembler output
+<a name="13. Compiler assembler output"></a>
+</h2>
+
+
+<p><ul type=disc> <li> check this is the case! <li> compile
+with <tt><small>gcc -S -g -O3 main4.c</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>14. main4.s
+<a name="14. main4.s"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>.LC0:
+   .string  &quot;square of 11 is %d0
+.LC1:
+   .string  &quot;square of 12 is %d0
+   .text
+main:
+   .loc 1 9 0
+   subq   $8, %rsp
+   .loc 1 12 0
+   movl   $121, %esi
+   movl   $.LC0, %edi
+   xorl   %eax, %eax
+   call   printf
+   .loc 1 13 0
+   movl   $144, %esi
+   movl   $.LC1, %edi
+   xorl   %eax, %eax
+   .loc 1 14 0
+   addq   $8, %rsp
+   .loc 1 13 0
+   jmp    printf</pre>
+
+
+<p></ul></p><hr>
+
+<h2>15. C preprocessor conditionals
+<a name="15. C preprocessor conditionals"></a>
+</h2>
+
+
+<p><ul type=disc> <li> C preprocessor allows the following
+conditionals <ul type=square> <li> <tt><small>#if
+defined(MACRONAME)</small></tt> <ul type=circle> <li> also
+abbreviated to <tt><small>#ifdef MACRONAME</small></tt>
+</ul> <li> first method is preferable as it can be used with
+conditional logic </ul> <li></p>
+<pre>#define FOO
+#define BAR &quot;ok&quot;
+
+
+#if defined(FOO)
+#  include &quot;myfunc1.h&quot;
+#elif defined(BAR) &amp;&amp; (BAR == &quot;ok&quot;)
+#  include &quot;myfunc2.h&quot;
+#else
+#  include &quot;myfunc3.h&quot;
+#endif</pre>
+
+
+<p></ul></p><hr>
+
+<h2>16. Revisiting the example_length
+<a name="16. Revisiting the example_length"></a>
+</h2>
+
+
+<p><ul type=disc> <li> goal is to create a prototype header
+file which allows external access to
+<tt><small>example_length</small></tt> <ul type=square> <li>
+but also allow local prototype checking</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>17. example2.h
+<a name="17. example2.h"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#if !defined(EXAMPLE_H)
+#  define EXAMPLE_H
+#  if defined(EXAMPLE_C)
+#     define EXTERN
+#  else
+#     define EXTERN extern
+#  endif
+
+EXTERN int example_length (char *s);
+
+#endif</pre>
+
+<p></ul></p><hr>
+
+<h2>18. example2.c
+<a name="18. example2.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#define EXAMPLE_C
+#include &quot;example2.h&quot;
+
+int example_length (char *s)
+{
+   int i=0;
+
+
+   while (s[i] != &rsquo;\0&rsquo;)
+      i++;
+   return i;
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>19. main5.c
+<a name="19. main5.c"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &quot;example2.h&quot;
+#include &lt;stdio.h&gt;
+
+
+main ()
+{
+   printf(&quot;my length program counts %d characters\n&quot;,
+           example_length(&quot;hello world&quot;));
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>20. Tutorial
+<a name="20. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> extend the
+<tt><small>example2</small></tt> module above to include a
+function <tt><small>example_reverse</small></tt> whose
+prototype is: <li></p>
+<pre>char *example_reverse (char *s)</pre>
+
+<p><li> and this function must be implemented to create a
+new string but copy the contents of,
+<tt><small>s</small></tt> , in reverse order
+<ul type=square> <li> hint you will need to use malloc </ul>
+<li> extend <tt><small>main5.c</small></tt> to test your
+program <li> finally read about the precedence operator
+<tt><small>##</small></tt> <li> finally what does the
+following code do? <ul type=square> <li> check the C
+preprocessor transformation </ul> <li></p>
+<pre>#include &lt;stdio.h&gt;
+#define FOO(X)   #X &quot; and this is something extra&quot;
+#define DEBUG(X) (&quot;%s:%d:the value of &quot; #X &quot; is %d\n&quot;, \
+                  __FILE__, __LINE__, X)
+#define BAR(X,Y) X ## Y
+
+main()
+{
+  int i=9;
+  int fred=3;
+
+
+  printf(FOO(hi) &quot; to do at the end of the&quot; &quot; lab\n&quot;);
+  printf DEBUG(i);
+  printf(&quot;value of fred is %d\n&quot;, BAR(fr,ed));
+}</pre>
+
+
+<p><li> finally write a macro called
+<tt><small>check_malloc</small></tt> which has the same user
+prototype as <tt><small>malloc</small></tt> but checks that
+the result is non <tt><small>NULL</small></tt>
+<ul type=square> <li> and calls
+<tt><small>fprintf(stderr,</small></tt> etc, if the result
+is <tt><small>NULL</small></tt> </ul> <li> make it as useful
+as possible</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. emacs customisation ($HOME/.emacs)">1. emacs customisation ($HOME/.emacs)</a><br>
+<a href="#2. ~/emacs/gm2-emacs">2. ~/emacs/gm2-emacs</a><br>
+<a href="#3. C preprocessor">3. C preprocessor</a><br>
+<a href="#4. Example #include">4. Example #include</a><br>
+<a href="#5. example.c">5. example.c</a><br>
+<a href="#6. #include">6. #include</a><br>
+<a href="#7. Macro substitution">7. Macro substitution</a><br>
+<a href="#8. Macro substituted with arguments">8. Macro substituted with arguments</a><br>
+<a href="#9. Special tokens in the C preprocessor">9. Special tokens in the C preprocessor</a><br>
+<a href="#10. gcc -E main3.c | tail -20">10. gcc -E main3.c | tail -20</a><br>
+<a href="#11. Watch out for side effects">11. Watch out for side effects</a><br>
+<a href="#12. Correct solution">12. Correct solution</a><br>
+<a href="#13. Compiler assembler output">13. Compiler assembler output</a><br>
+<a href="#14. main4.s">14. main4.s</a><br>
+<a href="#15. C preprocessor conditionals">15. C preprocessor conditionals</a><br>
+<a href="#16. Revisiting the example_length">16. Revisiting the example_length</a><br>
+<a href="#17. example2.h">17. example2.h</a><br>
+<a href="#18. example2.c">18. example2.c</a><br>
+<a href="#19. main5.c">19. main5.c</a><br>
+<a href="#20. Tutorial">20. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

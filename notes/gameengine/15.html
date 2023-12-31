@@ -1,0 +1,218 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:57 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Recommended Reading
+<a name="1. Recommended Reading"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Ian Millington, &quot;Game Physics
+Engine Development&quot;, 2nd Edition, Morgan Kaufmann, 2010
+<li> read chapter 1 <li> read chapter 3</p>
+
+<p></ul></p><hr>
+
+<h2>2. What is a Game Physics?
+<a name="2. What is a Game Physics?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> it could include the way light
+travels and bounces around a simulated world to make better
+looking graphics <li> generally however it does not include
+the above, but refers to classical mechanics <li> mass,
+intertia, elasticity, density, friction, velocity,
+acceleration of objects <li> might include objects which can
+be stacked, destroyed, crumpled <ul type=square> <li>
+ragdoll effects <li> fluid flow <li> flags in wind <li> rope
+<li> springs</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. What is a Physics Engine?
+<a name="3. What is a Physics Engine?"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in early games, physics was coded up
+ad-hoc, per game <ul type=square> <li> usually consisting of
+crude hacks <li> memory was extremely tight, many machines
+did not have floating point units </ul> <li> as machines
+become faster and had more memory developers started to use
+high level languages for games <ul type=square> <li> thus
+the push for reusible code <li> reusible generic code <li>
+became natural to attempt and isolate game physics in a
+module or set of modules</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Advantages of a Physics Engine
+<a name="4. Advantages of a Physics Engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li> development time saving
+<ul type=square> <li> a couple of thousand lines of code
+should solve many of the common effects required </ul> <li>
+quality of game physics <ul type=square> <li> reliability of
+code behaviour <li> accuracy of physics </ul> <li>
+separating the physics engine from the game should allow
+more realistic scenarios <ul type=square> <li> as the
+developer does not need to enumerate each combination</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Weakness of a physics engine
+<a name="5. Weakness of a physics engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li> speed <ul type=square> <li> a
+physics engine can become a simulation <li> feature creep,
+more realism, more computation required </ul> <li> may be
+fine on a desktop <ul type=square> <li> but will be unusable
+on a mobile device </ul> <li> development time, if you build
+a physics engine, be mindful that the game might be improved
+easily by devoting time elsewhere <li> one size fits all,
+rarely</p>
+
+<p></ul></p><hr>
+
+<h2>6. Approaches to Physics Engines
+<a name="6. Approaches to Physics Engines"></a>
+</h2>
+
+
+<p><ul type=disc> <li> first distinction is between
+&quot;rigid body&quot; and &quot;mass aggregate&quot;
+systems <li> consider a crate</p>
+
+<p></ul></p><hr>
+
+<h2>7. Rigid body systems
+<a name="7. Rigid body systems"></a>
+</h2>
+
+
+<p><ul type=disc> <li> our crate is a single object,
+simulated as a whole</p>
+
+<p></ul></p><hr>
+
+<h2>8. Mass aggregate systems
+<a name="8. Mass aggregate systems"></a>
+</h2>
+
+
+<p><ul type=disc> <li> our crate could be considered as
+eight boxes <ul type=square> <li> one per corner, connected
+by rods </ul> <li> these systems are easier to program
+<ul type=square> <li> for example rotation can be considered
+at the center of our crate</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>9. Contact resolution
+<a name="9. Contact resolution"></a>
+</h2>
+
+
+<p><ul type=disc> <li> game engines treat contact
+differently <ul type=square> <li> what happens when an
+object comes to rest touching another? </ul> <li> consider a
+game engine simulating jenga <li> three kinds of contact
+resolution <ul type=square> <li> iterative (fast, but one
+object might effect another) <li> jacobian based (physically
+realistic) <li> reduced coordinate (for a specific scenareo
+we are simulating)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. Impulses and forces
+<a name="10. Impulses and forces"></a>
+</h2>
+
+
+<p><ul type=disc> <li> how does the physics engine resolve
+contacts? <li> consider a box on a table <li> a game engine
+using forces treats gravity as a force pulling the box down,
+equally the table pushing up by the same amount <li> a game
+engine using impulses consider both table and box to be
+having many, many, micro collisions or impulses occurring
+<ul type=square> <li> this is easier to code than the forces
+approach</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>11. Collision detection or prediction
+<a name="11. Collision detection or prediction"></a>
+</h2>
+
+
+<p><ul type=disc> <li> finally there different approaches
+on how collisions are caught <ul type=square> <li> most
+common is frame based collision detection <li> after each
+frame each object is tested to see if it has intersected
+with another <li> in which case a collsion has occurred and
+a re-action is calculated </ul> <li> alternatively the game
+engine can predict when a collision will occur
+<ul type=square> <li> waits until this time and then
+calculates the re-action </ul> <li> the code for reaction
+will be the same <li> the implementation for frame based
+collision is much easier than collision prediction <li>
+collision prediction game engines, might be more efficient,
+more pixel accurate <ul type=square> <li> very complex, so
+much so that normally objects are very restricted </ul> <li>
+collision prediction, works well for simulating bagatelle,
+or snooker <li> frame based collision works well for Rage
+etc</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Recommended Reading">1. Recommended Reading</a><br>
+<a href="#2. What is a Game Physics?">2. What is a Game Physics?</a><br>
+<a href="#3. What is a Physics Engine?">3. What is a Physics Engine?</a><br>
+<a href="#4. Advantages of a Physics Engine">4. Advantages of a Physics Engine</a><br>
+<a href="#5. Weakness of a physics engine">5. Weakness of a physics engine</a><br>
+<a href="#6. Approaches to Physics Engines">6. Approaches to Physics Engines</a><br>
+<a href="#7. Rigid body systems">7. Rigid body systems</a><br>
+<a href="#8. Mass aggregate systems">8. Mass aggregate systems</a><br>
+<a href="#9. Contact resolution">9. Contact resolution</a><br>
+<a href="#10. Impulses and forces">10. Impulses and forces</a><br>
+<a href="#11. Collision detection or prediction">11. Collision detection or prediction</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

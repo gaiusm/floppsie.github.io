@@ -1,0 +1,535 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:04 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Implementing labels in Doom3
+<a name="1. Implementing labels in Doom3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> so far we have implemented labels in
+chisel <ul type=square> <li> and the bot can look up the
+label position </ul> <li> it would be useful to allow the
+bot to test if a label is in it field of view (FOV)
+<ul type=square> <li> we get the doom3 engine to determine
+the FOV <li> fortunately labels (and items, players) are
+contained as entities in the map file <li> the doom3 engine
+can be queried about entities</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Example: section of a .map file
+<a name="2. Example: section of a .map file"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/python/tiny.map</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">// entity 1
+{
+    &quot;classname&quot; &quot;info_player_start&quot;
+    &quot;name&quot; &quot;info_player_start_1&quot;
+    &quot;origin&quot; &quot;-120.000000 -72.000000 12.000000&quot;
+    &quot;angle&quot; &quot;180&quot;
+}
+// entity 2
+{
+    &quot;classname&quot; &quot;python_doommarine_mp&quot;
+    &quot;name&quot; &quot;python_doommarine_mp_1&quot;
+    &quot;anim&quot; &quot;idle&quot;
+    &quot;origin&quot; &quot;-552.000000 -72.000000 12.000000&quot;
+    &quot;ambush&quot; &quot;1&quot;
+}
+...
+// entity 40
+{
+    &quot;classname&quot; &quot;item_default&quot;
+    &quot;name&quot; &quot;label_1&quot;
+    &quot;label&quot; &quot;the_ammo_loc&quot;
+    &quot;origin&quot; &quot;-1320.000000 -312.000000 12.000000&quot;
+}</pre>
+
+
+<p><small><font color="#000000"></ul></font></small></p><hr>
+
+<h2>3. Points of interest about the .map file
+<a name="3. Points of interest about the .map file"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> do not edit it
+- unless you know what you are doing! <li> each asset entity
+has a <tt><small>name</small></tt> and an
+<tt><small>origin</small></tt> <ul type=square> <li> an
+asset is anything other than a wall, ceiling, floor <li> for
+example human player, python bot, monster, ammo, label,
+weapon, armour, health pack, light </ul> <li> entity 0
+contains all walls, ceiling, floors, beams etc <li> entity 1
+is always the human player <ul type=square> <li> pybots are
+numbered after the human player ie entities 2 upwards </ul>
+<li> thereafter each asset has its own entity
+<ul type=square> <li> hint examine
+<tt><small>$HOME/Sandpit/chisel/python/tiny.map</small></tt>
+</ul> <li> for the purpose of this coursework ensure that
+your spawn point is not on the same axis as the Python bot
+<li> make sure you have successfully completed last weeks
+tutorial (adding labels to chisel)</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. $HOME/Sandpit/chisel/python/pen2map.py
+<a name="4. $HOME/Sandpit/chisel/python/pen2map.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> make sure your
+label entity has a name <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/python/pen2map.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def generateLabels (o, e):
+    n = 1
+    for r in list(rooms.keys ()):
+        if debugging:
+            print (rooms[r].labels)
+        for label_desc, xy in rooms[r].labels:
+            o.write (&quot;// entity &quot; + str (e) + &rsquo;\n&rsquo;)
+            o.write (&quot;{\n&quot;)
+            o.write (&rsquo;    &quot;classname&quot; &quot;item_default&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;name&quot; &quot;label_&rsquo; + str (n) + &rsquo;&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;label&quot; &quot;&rsquo; + label_desc + &rsquo;&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;origin&quot; &quot;&rsquo;)
+            xyz = toIntList (xy) + [-invSpawnHeight]
+            xyz = subVec (xyz, [minx, miny, getFloorLevel (r)])
+            v = midReposition (xyz)
+            o.write (&rsquo;%f %f %f&quot;\n&rsquo; % (v[0], v[1], v[2]))
+            o.write (&quot;}\n&quot;)
+            n += 1
+            e += 1
+    return o, e</pre>
+
+
+<p><small><font color="#000000"></ul></font></small></p><hr>
+
+<h2>5. Entity gotya
+<a name="5. Entity gotya"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the entities
+in the <tt><small>.map</small></tt> file are different to
+the runtime entities in the doom3 engine <li> many times
+there is a one to one correspondence (human player is always
+entity 1) <li> the runtime <tt><small>entities</small></tt>
+array also contains player weapon model entities and torso
+component entities and others <li> this means that a label
+entity read from the map file might have a different runtime
+entity number <li> therefore we need a way to translate
+between map entities and runtime entities <li> the example
+code
+<tt><small>$HOME/Sandpit/git-doom/pybot/python_doommarine_find_label.py</small></tt>
+is the same as
+<tt><small>$HOME/Sandpit/git-doom/pybot/python_doommarine.py</small></tt>
+except the function <tt><small>botMain</small></tt> has the
+following code:</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Example bot test code
+<a name="6. Example bot test code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom/pybot/python_doommarine_find_label.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def botMain (b):
+    global me
+    print(&quot;success!  python doom marine is alive&quot;)
+
+    print(&quot;trying to get my id...&quot;, end=&rsquo; &rsquo;)
+    me = b.me ()
+    print(&quot;yes&quot;)
+    print(&quot;the python marine id is&quot;, me)
+
+
+    #    an ugly hack to test entity label lookup
+    label_entity_map = b._cache.getEntityNo (&quot;label&quot;, &quot;the_ammo_loc&quot;)
+    print (&quot;map entity number of label =&quot;, label_entity_map)
+    print (&quot;map entity position =&quot;, b._cache.getEntityPos (label_entity_map))</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom/pybot/python_doommarine_find_label.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    #    end of an ugly hack to test entity label lookup
+    while True:
+        print (&quot;map label&quot;, label_entity_map)
+        label_entity_no = b._cache._basic.mapToRunTimeEntity (label_entity_map)
+        print (&quot;runtime entity label&quot;, label_entity_no)
+        b._cache.reset ()
+        print (&quot;can I see&quot;, label_entity_no, &quot;?&quot;)
+        if b.isvisible (label_entity_no):
+            print (&quot;yes I can see the label&quot;)
+            b.face (label_entity_no)
+            print (&quot;moving towards the label&quot;)
+            moveTowards (label_entity_no)
+            time.sleep (5)
+            moveTowards (1)
+            time.sleep (5)
+        else:
+            print (&quot;no I cannot&quot;)
+            b.face (1)   # turn towards human player
+        time.sleep (1)</pre>
+
+
+<p><font color="#000000"><li> notice the use of
+<tt><small>label_entity_map</small></tt> and
+<tt><small>label_entity_no</small></tt> which is derived by
+using the function
+<tt><small>mapToRunTimeEntity</small></tt> <li> it should be
+possible to clean up this API, but for now it allows for
+experimentation <li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/Game_local.h</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">     int MapToRunTimeEntity (int id);  // (convert map to runtime entity)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/Game_local.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">int idGameLocal::MapToRunTimeEntity (int id)
+{
+  idMapEntity *mapEnt = mapFile-&gt;GetEntity (id);
+  if (mapEnt &amp;&amp; mapEnt-&gt;epairs.FindKey (&quot;name&quot;))
+    {
+      idStr name = mapEnt-&gt;epairs.FindKey (&quot;name&quot;)-&gt;GetKey ();
+      for (int i = 0; i &lt; num_entities; i++)
+     if (entities[i] &amp;&amp; (idStr::Cmp (name, entities[i]-&gt;name) == 0))
+       return i;
+    }
+  return -1;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Example bot test code
+<a name="6. Example bot test code"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">void pyBotClass::interpretRemoteProcedureCall (char *data)
+...
+   else if (idStr::Cmpn (data, &quot;change_weapon &quot;, 14) == 0)
+     rpcChangeWeapon (&amp;data[14]);
+   else if (idStr::Cmpn (data, &quot;map_to_runtime_entity &quot;, 21) == 0)
+     rpcMapToRunTimeEntity (&amp;data[21]);
+...</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botbasic.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    #
+    #  mapToRunTimeEntity - converts a static map entity into a dynamic entity.
+    #
+
+
+    def mapToRunTimeEntity (self, entity_no):
+        if debug_protocol:
+            print(&quot;requesting map_to_runtime_entity&quot;, entity_no)
+        l = &quot;map_to_runtime_entity %d \n&quot; % (entity_no)
+        self.s.send (l.encode (&rsquo;utf-8&rsquo;))
+        l = self.getLine ()
+        if debug_protocol:
+            print(&quot;doom returned&quot;, l)
+        return int (l)</pre>
+
+
+<p><font color="#000000"><li> at this point the Python bot
+should be able to lookup a label and convert it into a
+runtime entity <li> it would be good to give the bot the
+ability to test whether it can see a runtime entity <br>
+</ul></font></p><hr>
+
+<h2>8. isvisible
+<a name="8. isvisible"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botbasic.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    #
+    #  isvisible - returns True if entity_no is visible by the bot.
+    #
+
+
+    def isvisible (self, entity_no):
+        if entity_no &gt;= 0:
+            if debug_protocol:
+                print(&quot;requesting canSeeEntity&quot;, entity_no)
+            l = &quot;can_see_entity %d \n&quot; % (entity_no)
+            self.s.send (l.encode (&rsquo;utf-8&rsquo;))
+            l = self.getLine ()
+            if debug_protocol:
+                print(&quot;doom returned&quot;, l)
+            return int (l) == 1
+        return False</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.h</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">   void rpcGetEntityName (char *data);
+   void rpcCanSeeEntity (char *data);
+   void rpcMapToRunTimeEntity (char *data);</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  rpcCanSeeEntity - returns 1 if this bot can see entity, entNo,
+ *                    returns 0 otherwise.
+ */
+
+void pyBotClass::rpcCanSeeEntity (char *data)
+{
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcCanSeeEntity (%s) call by python0, data);
+
+  char buf[1024];
+  int entNo = atoi (data);
+  int result = 0;
+
+
+  if (entNo &gt;= 0)
+    result = dictionary-&gt;canSeeEntity (rpcId, entNo);
+  idStr::snPrintf (buf, sizeof (buf), &quot;%d0, result);
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcCanSeeEntity responding with: %s0, buf);
+  buffer.pyput (buf);
+  state = toWrite;
+}</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  canSeeEntity - returns true if bot id can see entity entNo.
+ */
+
+
+bool dict::canSeeEntity (int id, int entNo)
+{
+  return entry[id]-&gt;canSeeEntity (entNo);
+}</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">bool dict::aim (int id, int enemy)
+{
+  if (enemy &lt;= maxId)
+    return entry[id]-&gt;aim (entry[enemy]-&gt;getIdEntity ());
+  else
+    return entry[id]-&gt;aim (gameLocal.GetEntity (enemy));
+}</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">void pyBotClass::rpcGetPos (char *data)
+{
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcGetPos (%s) call by python\n&quot;, data);
+
+  char buf[1024];
+  int id = checkId (atoi (data));
+
+
+  if (id &gt; 0)
+    {
+      if (id &lt;= maxId)
+     {
+       /* A pybot or human player.  */
+       const idVec3 &amp;org = dictionary-&gt;getPos (id);
+       idStr::snPrintf (buf, sizeof (buf), &quot;%g %g %g\n&quot;,
+                  org.x, org.y, org.z);
+     }
+      else
+     if (id &lt; gameLocal.num_entities)
+       {
+         /* A doom3 entity.  */
+         const idVec3 &amp;org = gameLocal.entities[id]-&gt;GetPhysics ()-&gt;GetOrigin ();
+         idStr::snPrintf (buf, sizeof (buf), &quot;%g %g %g\n&quot;,
+                    org.x, org.y, org.z);
+       }
+          else
+       strcpy (buf, &quot;None0);
+    }
+  else
+    strcpy (buf, &quot;None0);
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcGetPos responding with: %s\n&quot;, buf);
+  buffer.pyput (buf);
+  state = toWrite;
+}</pre>
+
+
+<p><font color="#000000"><li> notice that
+<tt><small>maxId</small></tt> is used to determine whether
+the entity belongs to a player/python bot <li> it needs to
+be declared inside <li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">static unsigned int maxId = 0;</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp:doRegisterName</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">...
+  active.include (b, instance);
+  allbots.include (b, instance);
+  b-&gt;setInstanceId (instance);
+  b-&gt;setRpcId (rid);
+  if (rid &gt; maxId)
+    maxId = rid;
+  return b;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. interpretRemoteProcedureCall
+<a name="9. interpretRemoteProcedureCall"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">...
+  else if (idStr::Cmpn (data, &quot;can_see_entity &quot;, 15) == 0)
+     rpcCanSeeEntity (&amp;data[15]);
+  else if (idStr::Cmpn (data, &quot;map_to_runtime_entity &quot;, 21) == 0)
+     rpcMapToRunTimeEntity (&amp;data[21]);
+...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Conclusion
+<a name="10. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> at this point
+the bot should be able to lookup a label and test whether it
+is visible <li> the API could be cleaned up and retrofitted
+throughout the botlib and botcache</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Implementing labels in Doom3">1. Implementing labels in Doom3</a><br>
+<a href="#2. Example: section of a .map file">2. Example: section of a .map file</a><br>
+<a href="#3. Points of interest about the .map file">3. Points of interest about the .map file</a><br>
+<a href="#4. $HOME/Sandpit/chisel/python/pen2map.py">4. $HOME/Sandpit/chisel/python/pen2map.py</a><br>
+<a href="#5. Entity gotya">5. Entity gotya</a><br>
+<a href="#6. Example bot test code">6. Example bot test code</a><br>
+<a href="#6. Example bot test code">6. Example bot test code</a><br>
+<a href="#8. isvisible">8. isvisible</a><br>
+<a href="#9. interpretRemoteProcedureCall">9. interpretRemoteProcedureCall</a><br>
+<a href="#10. Conclusion">10. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

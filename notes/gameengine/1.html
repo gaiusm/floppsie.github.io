@@ -1,0 +1,455 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:51 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Introduction to the command line
+<a name="1. Introduction to the command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in this module we will examine:
+<ul type=square> <li> tools necessary to develop game
+engines: <tt><small>gdb</small></tt> ,
+<tt><small>emacs</small></tt> and friends </ul> <li> examine
+how one can integrate Python into a game engine
+<tt><small>doom3</small></tt> <li> examine and extend a
+small physics game engine and expose its API to Python <li>
+also revisit C and familiarise ourselves with pointers and
+indirect function calls <li> learn how to debug shared
+libraries and exploit remote debugging</p>
+
+<p></ul></p><hr>
+
+<h2>2. Introduction to the Command line
+<a name="2. Introduction to the Command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in this lecture series we will be
+using GNU/Linux to develop our understanding of programming
+in C <li> one of the beauties of GNU/Linux is that you can
+do all your development from the command line or
+alternatively from a graphical interface
+<ul type=square> <li> on GNU/Linux the command line
+interface is <b><i>extremely</i></b> powerful <li> once
+learnt it will last you a lifetime <li> different
+GUI&rsquo;s and IDE&rsquo;s come and go</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. GNU/Linux at South Wales
+<a name="3. GNU/Linux at South Wales"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you can create yourself a username
+at South Wales by
+<a href="http://mcgreg.comp.glam.ac.uk/login.html">clicking here</a>
+<ul type=square> <li> the same link can be used to change
+your password, or reset your password if you forget it </ul>
+<li> all machines in J109 are triple boot (will boot into
+GNU/Linux, OSX or Windows) we will be using GNU/Linux</p>
+
+<p></ul></p><hr>
+
+<h2>4. Introduction to the Command line
+<a name="4. Introduction to the Command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> make sure that you have a working
+username and password under GNU/Linux and boot up the imac
+into Linux <li> and login <li> and open up a terminal window
+<li> adjust the window font size so it looks good and
+rearrange the window and this browser so both fit on the
+same screen without overlaps</p>
+
+<p></ul></p><hr>
+
+<h2>5. Introduction to the command line
+<a name="5. Introduction to the command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the first command to be aware of is
+<tt><small>man</small></tt> . To examine what this does
+type: <li></p>
+
+<p><tt>$</tt> <b>man man</b> <li> when you have read
+enough, type &rsquo; <tt><small>q</small></tt> &rsquo; <li>
+to find out whether a command exists for a particular
+function, type <li> <tt><br>
+$</tt> <b>man -k directory</b> <li> this command tells you
+all the commands which are associated with directories <li>
+you can filter the search by: <li> <tt><br>
+$</tt> <b>man -k directory | grep list</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>6. Critical general purpose command line programs
+<a name="6. Critical general purpose command line programs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>cd</small></tt> change
+directory <li> <tt><small>pwd</small></tt> print working
+directory <li> <tt><small>cp</small></tt> copy a file <li>
+<tt><small>mv</small></tt> rename a file (move) <li>
+<tt><small>cat</small></tt> display contents of a file <li>
+<tt><small>less</small></tt> display contents of a file, a
+page at a time <li> <tt><small>grep</small></tt> print lines
+matching a pattern <li> all programs can be combined using
+the pipe operator <li> for example <li></p>
+
+<p><tt>$</tt> <b>man -k directory | less</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>7. Critical development command line programs
+<a name="7. Critical development command line programs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>gcc</small></tt> the C
+GNU compiler <li> <tt><small>gdb</small></tt> the GNU
+debugger <li> <tt><small>emacs</small></tt> the GNU
+editor</p>
+
+<p></ul></p><hr>
+
+<h2>8. File organisation
+<a name="8. File organisation"></a>
+</h2>
+
+
+<p><ul type=disc> <li> please try and keep your
+<tt><small>$HOME</small></tt> directories tidy
+<ul type=square> <li> it is good practice to create separate
+directories for different courses and tutorials </ul> <li>
+for example, here we might want to use the following
+commands: <li></p>
+
+<p><tt>$</tt> <b>mkdir -p cs3s609/tutorial1</b> <tt><br>
+$</tt> <b>cd cs3s609/tutorial1</b> <li> (before moving onto
+the next slide) <br>
+</ul></p><hr>
+
+<h2>9. Minimal introduction to emacs
+<a name="9. Minimal introduction to emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> to start editing the file
+<tt><small>tiny.c</small></tt> with
+<tt><small>emacs</small></tt> editor type: <li></p>
+
+<p><tt>$</tt> <b>emacs tiny.c</b> <li> critical key
+commands <ul type=square> <li> this editor can be controlled
+from the keyboard (without the mouse) </ul> <li> use cursor
+keys, page up, page down, to move around the text <li> in
+this section of the notes the notation
+<tt><small>^C</small></tt> means press the control key and
+then press the <tt><small>C</small></tt> key, finally
+release both keys <li> type <tt><small>^X^S</small></tt> to
+save your file <li> type <tt><small>^X^C</small></tt> to
+quit emacs <br>
+</ul></p><hr>
+
+<h2>10. Creating a simple C program under GNU/Linux
+<a name="10. Creating a simple C program under GNU/Linux"></a>
+</h2>
+
+
+<p><ul type=disc> <li> using <tt><small>emacs</small></tt>
+create the following file (called
+<tt><small>tiny.c</small></tt> ) <li> the contents of this
+<tt><small>tiny.c</small></tt> should be as follows <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+main()
+{
+    int i;
+
+
+    for (i=1; i&lt;=12; i++) {
+        printf(&quot;%d x 8 = %d\n&quot;, i, i*8);
+    }
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>11. Minimal introduction to GCC
+<a name="11. Minimal introduction to GCC"></a>
+</h2>
+
+
+<p><ul type=disc> <li> gcc is the GNU C compiler <li> now
+exit emacs and compiler <tt><small>tiny.c</small></tt> , you
+can compile and link tiny.c like this: <li></p>
+
+<p><tt>$</tt> <b>gcc -g tiny.c</b> <li> this generates a
+file <tt><small>a.out</small></tt> which can be run, from
+the command line by typing: <li> <tt><br>
+$</tt> <b>./a.out</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>12. Minimal introduction to GDB
+<a name="12. Minimal introduction to GDB"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>gdb</small></tt> is the
+GNU debugger, which can be useful to both
+<ul type=square> <li> debug your program <li> understand how
+a program works </ul> <li> for example, suppose we wanted to
+understand which lines of code are executed in your
+<tt><small>tiny.c</small></tt> program, you could <li></p>
+
+<p><tt>$</tt> <b>gdb a.out</b></p>
+
+<pre>GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, etc
+(gdb)<b> break main
+</b>Breakpoint 1 at 0x8048365: file tiny.c, line 7.
+(gdb)<b> run</b></pre>
+
+
+<p><li></p>
+
+<pre>Breakpoint 1, main () at tiny.c:7
+7        for (i=1; i&lt;=12; i++) {
+(gdb)<b> next
+</b>8            printf(&quot;%d x 8 = %d\n&quot;, i, i*8);
+(gdb)<b> next
+</b>1 x 8 = 8
+7        for (i=1; i&lt;=12; i++) {
+(gdb)<b> next
+</b>8            printf(&quot;%d x 8 = %d\n&quot;, i, i*8);
+(gdb)<b> print i
+</b>$1 = 2
+(gdb)<b> next
+</b>2 x 8 = 16
+7        for (i=1; i&lt;=12; i++) {
+(gdb)<b> quit
+</b>The program is running.  Exit anyway? (y or n)<b> y</b></pre>
+
+
+<p><tt></ul></tt></p><hr>
+
+<h2>13. Extending tiny.c to use a function
+<a name="13. Extending tiny.c to use a function"></a>
+</h2>
+
+
+<p><ul type=disc> <li> use <tt><small>emacs</small></tt> to
+modify the <tt><small>tiny.c</small></tt> program (to
+include a mistake) <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int mult (int i)
+{
+    return i*9;
+}
+
+main()
+{
+    int i;
+
+
+    for (i=1; i&lt;=12; i++) {
+        printf(&quot;%d x 8 = %d\n&quot;, i, mult(i));
+    }
+}</pre>
+
+
+<p><li> now recompile the program by: <li> <tt><br>
+$</tt> <b>gcc -g tiny.c</b> <li> and run the program, as
+before <li> <tt><br>
+$</tt> <b>./a.out</b></p>
+
+<pre>1 x 8 = 9
+2 x 8 = 18
+3 x 8 = 27
+4 x 8 = 36
+5 x 8 = 45
+6 x 8 = 54
+7 x 8 = 63
+8 x 8 = 72
+9 x 8 = 81
+10 x 8 = 90
+11 x 8 = 99
+12 x 8 = 108</pre>
+
+
+<p><li> we can single step the program to find out where
+the mistake occurred <li> <tt><br>
+$</tt> <b>gdb a.out</b></p>
+
+<pre>GNU gdb 6.4.90-debian
+Copyright (C) 2006 Free Software Foundation, Inc.
+GDB is free software, etc
+(gdb)<b> break main
+</b>Breakpoint 1 at 0x8048365: file tiny.c, line 7.
+(gdb)<b> run</b></pre>
+
+
+<p><li> <tt><br>
+(gdb)</tt> <b>run</b></p>
+<pre>Starting program: a.out
+
+
+Breakpoint 1, main () at tiny2.c:12
+12       for (i=1; i&lt;=12; i++) {
+(gdb)<b> step
+</b>13           printf(&quot;%d x 8 = %d\n&quot;, i, mult(i));
+(gdb)<b> step
+</b>mult (i=1) at tiny2.c:5
+5        return i*9;
+(gdb)<b> fin
+</b>Run till exit from #0  mult (i=1) at tiny2.c:5
+0x08048388 in main () at tiny2.c:13
+13           printf(&quot;%d x 8 = %d\n&quot;, i, mult(i));
+Value returned is $1 = 9</pre>
+
+
+<p><li> at this point we see our mistake, the function has
+returned <tt><small>9</small></tt> <li> we can see this
+again if we continue around the <tt><small>for</small></tt>
+loop <li> <tt><br>
+(gdb)</tt> <b>step</b></p>
+
+<pre>1 x 8 = 9
+12       for (i=1; i&lt;=12; i++) {
+(gdb)<b> step
+</b>13           printf(&quot;%d x 8 = %d\n&quot;, i, mult(i));
+(gdb)<b> step
+</b>mult (i=2) at tiny2.c:5
+5        return i*9;</pre>
+
+
+<p><li> <tt><br>
+(gdb)</tt> <b>print i</b></p>
+
+<pre>$1 = 2
+(gdb)<b> up
+</b>#1  0x08048388 in main () at tiny2.c:13
+13           printf(&quot;%d x 8 = %d\n&quot;, i, mult(i));
+(gdb)<b> print i
+</b>$2 = 2
+(gdb)<b> down
+</b>#0  mult (i=2) at tiny2.c:5
+5        return i*9;</pre>
+
+
+<p></ul></p><hr>
+
+<h2>14. Using gdb from within emacs
+<a name="14. Using gdb from within emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you can run
+<tt><small>gdb</small></tt> from within
+<tt><small>emacs</small></tt> and have
+<tt><small>emacs</small></tt> perform source file
+correspondence <li> <b><i>if</i></b> you wish to do this
+then it would be sensible to create a file
+<tt><small>.gdbinit</small></tt> and populate it with
+<li></p>
+
+<pre>#
+#  this file is the gdb start up script and
+#  you can place any gdb commands in here
+#
+break main
+run</pre>
+
+
+<p><li> this file is read by <tt><small>gdb</small></tt>
+when <tt><small>gdb</small></tt> is executed <li> now at the
+command line, you can type: <li> <tt><br>
+$</tt> <b>emacs</b> <li> at this point make sure your emacs
+is a large window <li> now type:
+<b>&lt;alt&gt;xgdb&lt;enter&gt;</b> within emacs <li> now
+type: <b>&lt;alt&gt;xgdb-many-windows&lt;enter&gt;</b> <li>
+now you can enter the <tt><small>gdb</small></tt> commands
+<b>step next print fin</b> and <b>quit</b> and emacs will
+track the source file, line number, local variables, call
+frames, output in alternate windows <ul type=square> <li> do
+not resize emacs after this though <br>
+</ul> </ul></p><hr>
+
+<h2>15. Tutorial
+<a name="15. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> work though these lecture notes,
+trying each example in turn</p>
+
+<p></ul></p><hr>
+
+<h2>16. References/Further reading
+<a name="16. References/Further reading"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://shop.fsf.org/product/Introduction_to_Command_Line">Introduction to the command line</a>
+<a href="http://en.flossmanuals.net/CommandLineIntro/FM_16Apr09.pdf">(pdf)</a>
+<li>
+<a href="http://sourceware.org/gdb/current/onlinedocs/gdb">gdb documentation</a></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Introduction to the command line">1. Introduction to the command line</a><br>
+<a href="#2. Introduction to the Command line">2. Introduction to the Command line</a><br>
+<a href="#3. GNU/Linux at South Wales">3. GNU/Linux at South Wales</a><br>
+<a href="#4. Introduction to the Command line">4. Introduction to the Command line</a><br>
+<a href="#5. Introduction to the command line">5. Introduction to the command line</a><br>
+<a href="#6. Critical general purpose command line programs">6. Critical general purpose command line programs</a><br>
+<a href="#7. Critical development command line programs">7. Critical development command line programs</a><br>
+<a href="#8. File organisation">8. File organisation</a><br>
+<a href="#9. Minimal introduction to emacs">9. Minimal introduction to emacs</a><br>
+<a href="#10. Creating a simple C program under GNU/Linux">10. Creating a simple C program under GNU/Linux</a><br>
+<a href="#11. Minimal introduction to GCC">11. Minimal introduction to GCC</a><br>
+<a href="#12. Minimal introduction to GDB">12. Minimal introduction to GDB</a><br>
+<a href="#13. Extending tiny.c to use a function">13. Extending tiny.c to use a function</a><br>
+<a href="#14. Using gdb from within emacs">14. Using gdb from within emacs</a><br>
+<a href="#15. Tutorial">15. Tutorial</a><br>
+<a href="#16. References/Further reading">16. References/Further reading</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

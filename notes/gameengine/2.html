@@ -1,0 +1,554 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:51 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Know your tools
+<a name="1. Know your tools"></a>
+</h2>
+
+
+<p><ul type=disc> <li> &quot;a bad workman blames his
+tools&quot;,</p>
+
+<p>Cambridge Idioms Dictionary <li> we will examine:
+<ul type=square> <li> <tt><small>emacs</small></tt> ,
+<tt><small>etags</small></tt> , <tt><small>grep</small></tt>
+, <tt><small>diff</small></tt> ,
+<tt><small>patch</small></tt> , <tt><small>gcc</small></tt>
+, <tt><small>gm2</small></tt> , <tt><small>cvs</small></tt>
+, <tt><small>gdb</small></tt> , <tt><small>svn</small></tt>
+</ul> <li> although in this lecture we will only cover
+<tt><small>emacs</small></tt> and
+<tt><small>gdb</small></tt> <ul type=square> <li> and revise
+our knowledge of C pointers <br>
+</ul> </ul></p><hr>
+
+<h2>2. For the GNU/Linux game developer GDB is the BFG
+<a name="2. For the GNU/Linux game developer GDB is the BFG"></a>
+</h2>
+
+
+<p><ul type=disc> <li> get to know this tool!</p>
+
+<p></ul></p><hr>
+
+<h2>3. emacs
+<a name="3. emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> GNU Emacs is an extensible,
+customisable text editor-and more <li> at its core is an
+interpreter for Emacs Lisp, a dialect of the Lisp
+programming language with extensions to support text editing
+<li> features of GNU Emacs include: <ul type=square> <li>
+content-sensitive editing modes <li> highly customisable,
+using Emacs Lisp code or a graphical interface <li> can run
+a shell, ssh session, read news, read mail, run
+<tt><small>gdb</small></tt> <li> all the above are editing
+sessions <li> learn how to navigate it once, use it in a
+multitude of ways</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Minimal number of key commands for emacs
+<a name="4. Minimal number of key commands for emacs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> deliberately kept short! <li>
+<tt><small>^c</small></tt> means control key is pressed and
+kept down while the <tt><small>c</small></tt> key is also
+pressed. After which both are released. <li>
+<tt><small>M-x</small></tt> means press the meta key (the
+<tt><small>&lt;alt&gt;</small></tt> key) and then press the
+<tt><small>x</small></tt> key and then release both. <li>
+<tt><small>M-x</small></tt> can also be achieved by pressing
+the <tt><small>&lt;esc&gt;</small></tt> key, releasing it
+and then pressing <tt><small>x</small></tt> and releasing
+it. <li> choose which ever seems most natural</p>
+
+<p></ul></p><hr>
+
+<h2>5. emacs keys
+<a name="5. emacs keys"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>Keys      meaning
+=================
+^x^c      exit emacs
+^x2       split screens horizontally into two
+^xo       move cursor into other window
+^x^f      load in a new file
+^x^s      save current buffer
+^xs       save all buffers
+^s        search forward
+^r        search reverse
+^k        cut rest of line into kill buffer
+^y        yank the last kill buffer (paste it into the current location)
+^&lt;space&gt;  mark the current position
+^w        kill all text between current position and last marked position
+M-x       move to the execute-extended-command line
+^g        stop emacs from doing something
+^xb       change buffer (press tab to see all available buffers)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. emacs function keys
+<a name="6. emacs function keys"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>f5    debug doom3
+f8    goto next compile error
+f11   full screen (toggle)
+f12   recompile doom3</pre>
+
+
+<p><li> can be customised by changing
+<tt><small>$HOME/.emacs</small></tt> <br>
+</ul></p><hr>
+
+<h2>7. Further emacs information
+<a name="7. Further emacs information"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://www.gnu.org/software/emacs">emacs homepage</a>
+<li> the best way to learn how to use emacs is by reading
+the built-in documentation <li> to do this, start emacs and
+then use the commands: <ul type=square> <li> Interactive
+beginners&rsquo; tutorial - to start this from within emacs,
+type <tt><small>^ht</small></tt> <ul type=circle> <li> this
+is an extremely well written tutorial - well worth the
+reading effort </ul> <li> List of Frequently Asked
+Questions, type <tt><small>^h^f</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. C Pointers and arrays revisited
+<a name="8. C Pointers and arrays revisited"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a pointer is a variable that
+contains an address of a (normally different) variable <li>
+arrays and pointers are closely related in C <li> we can
+declare an array of integers by: <li></p>
+<pre>int a[10];</pre>
+
+<p><li> and we can declare a pointer to an integer, by:
+<li></p>
+<pre>int *b;</pre>
+
+<p></ul></p><hr>
+
+<h2>9. Initialising a pointer
+<a name="9. Initialising a pointer"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can make
+<tt><small>b</small></tt> point to the start of the array,
+by: <li></p>
+<pre>int *b = (int *)&amp;a;</pre>
+
+<p><li> to set the first element of the array to
+<tt><small>999</small></tt> we can either use the pointer or
+the array variable <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int main ()
+{
+    int a[10];
+    int *b = (int *)&amp;a;
+
+
+    a[0] = 111;
+    printf(&quot;the first element of the array has been set to %d\n&quot;,
+           a[0]);
+    *b = 999;
+    printf(&quot;the value of the first element is now %d\n&quot;, a[0]);
+    return 0;
+}</pre>
+
+
+<p><li> we can assign <tt><small>777</small></tt> to the
+second element of the array by the following code: <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int main ()
+{
+    int a[10];
+    int *b = (int *)&amp;a;
+
+
+    b++;
+    *b = 777;
+    printf(&quot;the second element of the array has been set to %d\n&quot;,
+           a[1]);
+    return 0;
+}</pre>
+
+
+<p><li> notice that we moved to the second element on the
+array by: <tt><small>b++</small></tt> <li> we could have
+also written the code like this: <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int main ()
+{
+    int a[10];
+    int *b = (int *)&amp;a[1];
+
+
+    *b = 777;
+    printf(&quot;the second element of the array has been set to %d\n&quot;,
+           a[1]);
+    return 0;
+}</pre>
+
+
+<p><li> or like this: <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int main ()
+{
+    int a[10];
+    int *b = ((int *)&amp;a)+1;
+
+
+    *b = 777;
+    printf(&quot;the second element of the array has been set to %d\n&quot;,
+           a[1]);
+    return 0;
+}</pre>
+
+
+<p><li> the addition of <tt><small>1</small></tt> to a
+pointer means increment the address value in the pointer
+variable by: <tt><small>sizeof(*b)</small></tt> bytes <li>
+avoid arithmetic on pointers if at all possible <br>
+</ul></p><hr>
+
+<h2>10. Interchanging pointers and arrays
+<a name="10. Interchanging pointers and arrays"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can also set the third element of
+the array to 444 by: <li></p>
+<pre>#include &lt;stdio.h&gt;
+
+int main ()
+{
+    int a[10];
+    int *b = (int *)&amp;a;
+
+
+    b[3] = 444;
+    printf(&quot;the second element of the array has been set to %d\n&quot;,
+           b[3]);
+    return 0;
+}</pre>
+
+
+<p><li> notice how we are treating
+<tt><small>b</small></tt> as an array, although we declared
+it as a pointer <li> clearer than adding,
+<tt><small>3</small></tt> , to a pointer, and the same code
+is generated by the compiler <li> use the debugger to print
+out values, or set values <li> compile the previous example
+using <li> <tt><br>
+$</tt> <b>gcc -g pointer2.c</b> <li> then we can run the
+debugger as follows <li> <tt><br>
+$</tt> <b>gdb ./a.out</b></p>
+
+<pre>GNU gdb 6.4.90-debian
+Copyright etc...
+(gdb)<b> break main
+</b>Breakpoint 1 at 0x400480: file pointer2.c, line 6.
+(gdb)<b> run
+</b>Starting program: /home/gaius/text/Southwales/gaius/c/a.out
+Breakpoint 1, main () at pointer2.c:6
+6        int *b = (int *)&amp;a;
+(gdb)<b> step
+</b>8        b[3] = 444;
+(gdb)<b> ptype b
+</b>type = int *
+(gdb)<b> step
+</b>9        printf(&quot;the second element of the array has been set to %d\n&quot;,
+step
+the second element of the array has been set to 444
+11   }</pre>
+
+
+<p><li> <tt><br>
+(gdb)</tt> <b>set *b=999</b> <tt><br>
+(gdb)</tt> <b>print b[0]</b></p>
+
+<pre>$2 = 999
+(gdb)<b> print b[3]
+</b>$3 = 444
+(gdb)<b> set *(b+3)=777
+</b>(gdb)<b> print b[3]
+</b>$4 = 777
+(gdb)<b> quit</b></pre>
+
+
+<p><tt></ul></tt></p><hr>
+
+<h2>11. structs and pointers
+<a name="11. structs and pointers"></a>
+</h2>
+
+
+<p><ul type=disc> <li> recall a
+<tt><small>struct</small></tt> can be define a linked list
+like this: <li></p>
+
+<pre>struct list {
+   struct list *right;
+   struct list *left;
+   char         ch;
+}</pre>
+
+
+<p><li> here we declare a <tt><small>list</small></tt>
+structure which has 3 fields <ul type=square> <li>
+<tt><small>right</small></tt> , <tt><small>left</small></tt>
+, and <tt><small>ch</small></tt> <li>
+<tt><small>right</small></tt> and
+<tt><small>left</small></tt> are also pointers to a
+<tt><small>list</small></tt> structure and
+<tt><small>ch</small></tt> is a character <br>
+</ul> </ul></p><hr>
+
+<h2>12. Initialising a pointer to a struct
+<a name="12. Initialising a pointer to a struct"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+struct list {
+   struct list *right;
+   struct list *left;
+   char         ch;
+};
+
+int main ()
+{
+    struct list *h = (struct list *)malloc (sizeof (struct list));
+
+    h-&gt;right = NULL;
+    h-&gt;left = NULL;
+    h-&gt;ch = &rsquo;\0&rsquo;;
+
+    return 0;
+}</pre>
+
+<p></ul></p><hr>
+
+<h2>13. prototype for malloc
+<a name="13. prototype for malloc"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>extern void *malloc (unsigned int nBytes);</pre>
+
+<p><li> which means the function
+<tt><small>malloc</small></tt> takes one parameter, the
+number of bytes requested <ul type=square> <li> and returns
+an address to the start of a memory block which can be used
+to contain <tt><small>nBytes</small></tt> of information
+</ul> <li> remember a generic pointer can be defined by the
+construct <tt><small>void *</small></tt> <br>
+</ul></p><hr>
+
+<h2>14. Implementing a program to create a linked list of characters
+<a name="14. Implementing a program to create a linked list of characters"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+const char *myString = &quot;hello world&quot;;
+
+struct list {
+  struct list *left;
+  struct list *right;
+  char         ch;
+};
+
+int main ()
+{
+  /* unfinished */
+
+  return 0;
+}</pre>
+
+<p><li> fragment of implementation <li></p>
+<pre>struct list *head = NULL;
+
+/* need to complete function add */
+
+int main ()
+{
+  int n = strlen (myString);
+  int i;
+
+
+  for (i=0; i&lt;n; i++) {
+    add(a[i]);
+  }
+  return 0;
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>15. Implementing function add (which contains one deliberate mistake)
+<a name="15. Implementing function add (which contains one deliberate mistake)"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>void add (char ch)
+{
+  struct list *e = (struct list *)malloc (sizeof (struct list));
+  if (e == NULL) {
+     perror(&quot;trying to add an element to the list&quot;);
+     exit(1);
+  }
+  if (head == NULL) {
+     head = e;
+     e-&gt;right = e;
+     e-&gt;left = e;
+     e-&gt;ch = ch;
+  }
+  else {
+    /* add e to the end of the list */
+    e-&gt;right = head;
+    e-&gt;left  = head-&gt;left;
+    head-&gt;left-&gt;right = e;
+    head-&gt;left = e;
+  }
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>16. Function main
+<a name="16. Function main"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>int main ()
+{
+  int n = strlen (myString);
+  struct list *f;
+  int i;
+
+
+  for (i=0; i&lt;n; i++) {
+    add(myString[i]);
+  }
+  if (head != NULL) {
+    f = head;
+    do {
+      printf(&quot;char %c\n&quot;, f-&gt;ch);
+      f = f-&gt;right;
+    } while (f != head);
+  }
+  return 0;
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>17. Tutorial
+<a name="17. Tutorial"></a>
+</h2>
+
+
+<p><ul type=disc> <li> firstly use the debugger and find
+the bug in <tt><small>add</small></tt> <li> secondly can you
+rewrite functions <tt><small>add</small></tt> and
+<tt><small>main</small></tt> so that you always keep a dummy
+head element and therefore you can reduce the
+<tt><small>head==NULL</small></tt> tests
+<ul type=square> <li> the lines of code will reduce and
+there will be no need for an <tt><small>else</small></tt>
+statement</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Know your tools">1. Know your tools</a><br>
+<a href="#2. For the GNU/Linux game developer GDB is the BFG">2. For the GNU/Linux game developer GDB is the BFG</a><br>
+<a href="#3. emacs">3. emacs</a><br>
+<a href="#4. Minimal number of key commands for emacs">4. Minimal number of key commands for emacs</a><br>
+<a href="#5. emacs keys">5. emacs keys</a><br>
+<a href="#6. emacs function keys">6. emacs function keys</a><br>
+<a href="#7. Further emacs information">7. Further emacs information</a><br>
+<a href="#8. C Pointers and arrays revisited">8. C Pointers and arrays revisited</a><br>
+<a href="#9. Initialising a pointer">9. Initialising a pointer</a><br>
+<a href="#10. Interchanging pointers and arrays">10. Interchanging pointers and arrays</a><br>
+<a href="#11. structs and pointers">11. structs and pointers</a><br>
+<a href="#12. Initialising a pointer to a struct">12. Initialising a pointer to a struct</a><br>
+<a href="#13. prototype for malloc">13. prototype for malloc</a><br>
+<a href="#14. Implementing a program to create a linked list of characters">14. Implementing a program to create a linked list of characters</a><br>
+<a href="#15. Implementing function add (which contains one deliberate mistake)">15. Implementing function add (which contains one deliberate mistake)</a><br>
+<a href="#16. Function main">16. Function main</a><br>
+<a href="#17. Tutorial">17. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

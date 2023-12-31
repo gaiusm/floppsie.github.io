@@ -1,0 +1,270 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Adding reload into the Python API
+<a name="1. Adding reload into the Python API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>reload</small></tt> is
+partially implemented and these notes will help you complete
+it <li> the files which need to be modified are split into
+two groups <ul type=square> <li> server side (dhewm3 engine)
+<li> client side (python) </ul> <li> server side files:
+<tt><small>neo/game/Player.cpp</small></tt> ,
+<tt><small>neo/game/Player.h</small></tt> ,
+<tt><small>neo/game/ai/pybot.cpp
+neo/game/ai/pybot.h</small></tt> <li> client side files:
+<tt><small>python-bot/botbasic.py</small></tt> ,
+<tt><small>python-bot/botcache.py</small></tt> ,
+<tt><small>python-bot/botlib.py</small></tt> ,
+<tt><small>python-bot/python_doommarine.py</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>2. python-bot/botlib.py
+<a name="2. python-bot/botlib.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> add this code above the
+<tt><small>sync</small></tt> method <li> this code calls
+upon the <tt><small>_cache</small></tt> library to
+<tt><small>reload_weapon</small></tt> <li></p>
+<pre>    #
+    #  reload_weapon - reload the current weapon
+    #                  It returns the amount of ammo left.
+    #
+
+
+    def reload_weapon (self):
+        return self._cache.reload_weapon ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. python-bot/botcache.py
+<a name="3. python-bot/botcache.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> add this code above the
+<tt><small>sync</small></tt> method <li></p>
+<pre>    #
+    #  reload_weapon - reload the current weapon
+    #                  It returns the amount of ammo left.
+    #
+
+
+    def reload_weapon (self):
+        return self._basic.reload_weapon ()</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. python-bot/botbasic.py
+<a name="4. python-bot/botbasic.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> rename the method
+<tt><small>reloadWeapon</small></tt> into
+<tt><small>reload_weapon</small></tt> for consistency <li>
+python client side changes are complete
+<ul type=square> <li> with the exception of the test code in
+<tt><small>python-bot/python_doommarine.py</small></tt>
+which is left as an exercise for the reader</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. dhewm3 server side changes for reload_weapon
+<a name="5. dhewm3 server side changes for reload_weapon"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">neo/game/Player.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">/*
+===============
+idPlayer::reload_weapon
+===============
+*/
+int idPlayer::reload_weapon (void) {
+  if ( gameLocal.isClient ) {
+    return -1;
+  }
+  if ( spectating || gameLocal.inCinematic || influenceActive ) {
+    return -1;
+  }
+  if ( weapon.GetEntity() &amp;&amp; weapon.GetEntity()-&gt;IsLinked() ) {
+    weapon.GetEntity()-&gt;Reload ();
+    return inventory.ammo[currentWeapon];
+  }
+  return -1;
+}</pre>
+
+
+<p><font color="#000000"><li> add the
+<tt><small>reload_weapon</small></tt> declaration to the
+<tt><small>Player</small></tt> class <ul type=square> <li>
+add it under <tt><small>ChangeWeapon</small></tt> </ul>
+<li></font> <b><small><small><font color="#196633"><br>
+neo/game/Player.h</font></small></small></b></p>
+
+<pre style="margin-top: 1em">     void select (int bitmask);
+     int ChangeWeapon (int new_weapon);
+     int reload_weapon (void);</pre>
+
+
+<p><font color="#000000"><li> the server side has partial
+support for reload weapon but it is currently broken and we
+will fix it <li> fix the code in
+<tt><small>rpcReloadWeapon</small></tt> <li></font>
+<b><small><small><font color="#196633"><br>
+neo/game/ai/pybot.cpp</font></small></small></b></p>
+<pre style="margin-top: 1em">/*
+ *  rpcReloadWeapon - return the amount of ammo available for the current weapon
+ *                    after reloading.
+ */
+void pyBotClass::rpcReloadWeapon (void)
+{
+  char buf[1024];
+  int ammo;
+
+
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcReloadWeapon call by python\n&quot;);
+  if (rpcId &gt; 0)
+    ammo = dictionary-&gt;reload_weapon (rpcId);
+  else
+    ammo = 0;
+  idStr::snPrintf (buf, sizeof (buf), &quot;%d\n&quot;, ammo);
+  buffer.pyput (buf);
+  state = toWrite;
+}</pre>
+
+
+<p><small><font color="#000000"></ul></font></small></p><hr>
+
+<h2>6. Add reload_weapon to the dict class
+<a name="6. Add reload_weapon to the dict class"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> check that the
+declaration also exists in the <tt><small>dict</small></tt>
+class <li> now add this method above the health method
+<li></font></p>
+<pre>/*
+ *  reload_weapon - reload the current weapon and return the
+ *                  ammo available for the current weapon.
+ */
+
+
+int dict::reload_weapon (int id)
+{
+  return entry[id]-&gt;reload_weapon ();
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. reload_weapon in the item class
+<a name="7. reload_weapon in the item class"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> change
+existing declaration to return an
+<tt><small>int</small></tt> . The reload will return the
+amount of ammo left. <li> change the declaration of
+<tt><small>reload_weapon</small></tt> in class item
+<li></font></p>
+
+
+<p><b><small><small><font color="#196633">neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">   int health (void);
+   int angle (void);
+   int reload_weapon (void);
+   bool aim (idEntity *enemy);
+   int turn (int angle, int angle_vel);
+   idEntity *getIdEntity (void);</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  reload_weapon
+ */
+int item::reload_weapon (void)
+{
+  switch (kind)
+    {
+    case item_monster:
+      assert (false);
+      return 0;  // ignore
+      break;
+    case item_player:
+      return idplayer-&gt;reload_weapon ();
+    }
+  assert (false);
+  return 0;
+}</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Adding reload into the Python API">1. Adding reload into the Python API</a><br>
+<a href="#2. python-bot/botlib.py">2. python-bot/botlib.py</a><br>
+<a href="#3. python-bot/botcache.py">3. python-bot/botcache.py</a><br>
+<a href="#4. python-bot/botbasic.py">4. python-bot/botbasic.py</a><br>
+<a href="#5. dhewm3 server side changes for reload_weapon">5. dhewm3 server side changes for reload_weapon</a><br>
+<a href="#6. Add reload_weapon to the dict class">6. Add reload_weapon to the dict class</a><br>
+<a href="#7. reload_weapon in the item class">7. reload_weapon in the item class</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

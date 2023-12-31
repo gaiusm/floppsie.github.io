@@ -1,0 +1,315 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:55 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Circle line collision
+<a name="1. Circle line collision"></a>
+</h2>
+
+
+<p><ul type=disc> <li> assumes that we have a robust
+solution to the circle circle problem which is fully
+debugged and ready to be used :-) <li></p>
+
+
+<p align="left"><img src="grohtml-26876643.png" alt="Image grohtml-26876643.png"></p>
+
+<p style="margin-top: 1em"><li> at what time is the
+earliest collision between the line and circle? <br>
+</ul></p><hr>
+
+<h2>2. Step one
+<a name="2. Step one"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is to consider the line as
+stationary and only the circle as moving:</p>
+
+
+<p align="left"><img src="grohtml-26876644.png" alt="Image grohtml-26876644.png"></p>
+
+<p style="margin-top: 1em"><li> hence we now have the
+relative velocity, acceleration between the circle and line
+<ul type=square> <li> the radius of the circle is
+<img src="grohtml-2687664-17.png" alt="Image grohtml-2687664-17.png">
+<br>
+</ul> </ul></p><hr>
+
+<h2>3. Step two
+<a name="3. Step two"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consider the line to be lying on the
+X axis, say, with [
+<img src="grohtml-2687664-18.png" alt="Image grohtml-2687664-18.png">
+,
+<img src="grohtml-2687664-19.png" alt="Image grohtml-2687664-19.png">
+] on the point [0, 0] <ul type=square> <li> and [
+<img src="grohtml-2687664-20.png" alt="Image grohtml-2687664-20.png">
+,
+<img src="grohtml-2687664-21.png" alt="Image grohtml-2687664-21.png">
+] at [length(L) , 0] </ul> <li> this involves translating
+the line and circle by [
+<img src="grohtml-2687664-22.png" alt="Image grohtml-2687664-22.png">
+,
+<img src="grohtml-2687664-23.png" alt="Image grohtml-2687664-23.png">
+] <li> it also involves rotating the line, circle and the
+relative velocity and acceleration by</p>
+
+
+<p align="left"><img src="grohtml-26876645.png" alt="Image grohtml-26876645.png"></p>
+
+<p><li> we can redraw our diagram as:</p>
+
+
+<p align="left"><img src="grohtml-26876646.png" alt="Image grohtml-26876646.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>4. Step 3
+<a name="4. Step 3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> redraw the diagram as:</p>
+
+
+<p align="left"><img src="grohtml-26876647.png" alt="Image grohtml-26876647.png"></p>
+
+<p style="margin-top: 1em"><ul type=square> <li> the radius
+of the circle is
+<img src="grohtml-2687664-30.png" alt="Image grohtml-2687664-30.png">
+</ul> <li> now we can ask three questions: <li> (i) does the
+point
+<img src="grohtml-2687664-31.png" alt="Image grohtml-2687664-31.png">
+hit the left circle? <ul type=square> <li> in which case the
+circle will hit the left edge of the line </ul> <li> (ii)
+does the point
+<img src="grohtml-2687664-32.png" alt="Image grohtml-2687664-32.png">
+hit the right circle? <ul type=square> <li> in which case
+the circle will hit the right edge of the line </ul> <li>
+(iii) does the point
+<img src="grohtml-2687664-33.png" alt="Image grohtml-2687664-33.png">
+hit inbetween the left and right end points of the line?
+<br>
+</ul></p><hr>
+
+<h2>5. Step 4
+<a name="5. Step 4"></a>
+</h2>
+
+
+<p><ul type=disc> <li> to answer both (i) and (ii) we
+notice that: <li> all we need to do is call our circle
+circle algorithm and ask this question as whether the new
+circle hits point (a circle with a radius of 0) <li> to
+answer (iii) we return to the diagram:</p>
+
+
+<p align="left"><img src="grohtml-26876648.png" alt="Image grohtml-26876648.png"></p>
+
+<p style="margin-top: 1em"><li> we need to know at what
+time,
+<img src="grohtml-2687664-35.png" alt="Image grohtml-2687664-35.png">
+, our point hits the X axis <li> we only need to consider
+the Y values of the velocity, position, acceleration vectors
+<li> so:</p>
+
+
+<p align="left"><img src="grohtml-26876649.png" alt="Image grohtml-26876649.png"></p>
+
+<p><li> and solve for
+<img src="grohtml-2687664-37.png" alt="Image grohtml-2687664-37.png">
+<li> now we have a value for
+<img src="grohtml-2687664-38.png" alt="Image grohtml-2687664-38.png">
+we can find where about on the X axis the point will hit
+using the same formula, but we plug in the X values of the
+velocity, position, acceleration vectors <li> let
+<img src="grohtml-2687664-39.png" alt="Image grohtml-2687664-39.png">
+be the new position <li> if
+<img src="grohtml-2687664-40.png" alt="Image grohtml-2687664-40.png">
+and
+<img src="grohtml-2687664-41.png" alt="Image grohtml-2687664-41.png">
+<ul type=square> <li> then we have a hit! </ul> <li> from
+answering questions (i), (ii), (iii) we ignore any negative
+time values, only remember the smallest time value &gt;= 0
+which tells us the next time of a collision <br>
+</ul></p><hr>
+
+<h2>6. Calculating the Centre of Gravity of a polygon (centroid of polygon)
+<a name="6. Calculating the Centre of Gravity of a polygon (centroid of polygon)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> clearly the centre of gravity for a
+linear mass circle is its centre <li> how do we calculate
+the centre of gravity for a linear mass polygon? <li>
+centroid of a non-self-intersecting closed polygon defined
+by a number of points (or vertices): <ul type=square> <li>
+<img src="grohtml-2687664-42.png" alt="Image grohtml-2687664-42.png">
+<li> each point or vertice <b>must</b> be presented in a
+clockwise or anticlockwise order <li> we need to find
+position
+<img src="grohtml-2687664-43.png" alt="Image grohtml-2687664-43.png">
+which is the centre of gravity of this polygon </ul> <li>
+firstly we need to find the polygons area <li></p>
+
+
+<p align="left"><img src="grohtml-268766410.png" alt="Image grohtml-268766410.png"></p>
+
+<p><li></p>
+
+
+<p align="left"><font color="#196633"><img src="grohtml-268766411.png" alt="Image grohtml-268766411.png"></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"><li> area
+of box is: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268766413.png" alt="Image grohtml-268766413.png"></font></p>
+
+<p><font color="#000000"><li> area =
+<img src="grohtml-2687664-50.png" alt="Image grohtml-2687664-50.png">
+<br>
+</ul></font></p><hr>
+
+<h2>7. Iteration 0.a of the area calculation
+<a name="7. Iteration 0.a of the area calculation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-268766414.png" alt="Image grohtml-268766414.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>8. Iteration 0.b of the area calculation
+<a name="8. Iteration 0.b of the area calculation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#193399"><img src="grohtml-268766415.png" alt="Image grohtml-268766415.png"></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"><li> area
+of red box - blue box = 1 <br>
+</ul></font></p><hr>
+
+<h2>9. Iteration 1.a of the area calculation
+<a name="9. Iteration 1.a of the area calculation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#A51933"><img src="grohtml-268766416.png" alt="Image grohtml-268766416.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>10. Iteration 1.b of the area calculation
+<a name="10. Iteration 1.b of the area calculation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#193399"><img src="grohtml-268766417.png" alt="Image grohtml-268766417.png"></font></p>
+
+<p style="margin-top: 1em"><font color="#000000"><li> red
+box - blue box = -2 <li> exercise for the reader, complete
+the diagrams for the remaining iterations <br>
+</ul></font></p><hr>
+
+<h2>11. Calculating the centre of gravity of a polygon
+<a name="11. Calculating the centre of gravity of a polygon"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<img src="grohtml-2687664-55.png" alt="Image grohtml-2687664-55.png">
+is calculated via: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268766418.png" alt="Image grohtml-268766418.png"></font></p>
+
+<p><font color="#000000"><li>
+<img src="grohtml-2687664-57.png" alt="Image grohtml-2687664-57.png">
+is calculated via: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-268766419.png" alt="Image grohtml-268766419.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>12. Calculating C of G in pge
+<a name="12. Calculating C of G in pge"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> please see
+<tt><small>c/twoDsim.c</small></tt> and the functions
+<tt><small>calculateCofG</small></tt> and
+<tt><small>calcArea</small></tt></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Circle line collision">1. Circle line collision</a><br>
+<a href="#2. Step one">2. Step one</a><br>
+<a href="#3. Step two">3. Step two</a><br>
+<a href="#4. Step 3">4. Step 3</a><br>
+<a href="#5. Step 4">5. Step 4</a><br>
+<a href="#6. Calculating the Centre of Gravity of a polygon (centroid of polygon)">6. Calculating the Centre of Gravity of a polygon (centroid of polygon)</a><br>
+<a href="#7. Iteration 0.a of the area calculation">7. Iteration 0.a of the area calculation</a><br>
+<a href="#8. Iteration 0.b of the area calculation">8. Iteration 0.b of the area calculation</a><br>
+<a href="#9. Iteration 1.a of the area calculation">9. Iteration 1.a of the area calculation</a><br>
+<a href="#10. Iteration 1.b of the area calculation">10. Iteration 1.b of the area calculation</a><br>
+<a href="#11. Calculating the centre of gravity of a polygon">11. Calculating the centre of gravity of a polygon</a><br>
+<a href="#12. Calculating C of G in pge">12. Calculating C of G in pge</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

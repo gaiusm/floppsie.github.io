@@ -1,0 +1,109 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:56 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Current simple Remote procedure call API
+<a name="1. Current simple Remote procedure call API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> includes more than these, but these
+are some of the simplist functions <li> <tt><small>ourself
+() : integer</small></tt> <ul type=square> <li> return the
+id for ourself </ul> <li> <tt><small>noplayers () :
+integer</small></tt> <ul type=square> <li> return the number
+of bots and players in ioquake </ul> <li> <tt><small>player
+(id) : (id, &rsquo;string name&rsquo;)</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>2. Extending the Remote procedure call API
+<a name="2. Extending the Remote procedure call API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> introduce low hanging fruit first:
+<li> <tt><small>disableAI () : boolean</small></tt>
+<ul type=square> <li> disable the in game C AI <li> return
+True/False if successful <li> this has been implemented
+</ul> <li> <tt><small>enableAI () : boolean</small></tt>
+<ul type=square> <li> enable the in game C AI <li> return
+True/False if successful <li> this has been implemented
+</ul> <li> <tt><small>getview () : [x, y, z]</small></tt>
+<ul type=square> <li> get the viewing angle of bot </ul>
+<li> <tt><small>setview ([x, y, z]) : boolean</small></tt>
+<ul type=square> <li> set the viewing angle of bot </ul>
+<li> <tt><small>getposition () : [x, y, x]</small></tt> <li>
+get the position of bot <li> <tt><small>getvisible () :
+[[it0][it1][it2][it3][itn-1]]</small></tt>
+<ul type=square> <li> return a list of objects which are
+visible to bot </ul> <li> where <li></p>
+<pre>it0 = [integer, string, position]   # object id, name, position
+
+position = [x, y, z]</pre>
+
+<p><li> <tt><small>turn (angle) : boolean</small></tt>
+<ul type=square> <li> return True/False if bot can turn
+angle degrees. </ul> <li> <tt><small>alignwith
+(oid)</small></tt> <ul type=square> <li> return True/False
+if bot can turn to align with object id, oid </ul> <li>
+<tt><small>stepLeft (distance)</small></tt>
+<ul type=square> <li> step left by distance units </ul> <li>
+<tt><small>stepRight (distance)</small></tt>
+<ul type=square> <li> step right by distance units </ul>
+<li> <tt><small>stepForward(distance)</small></tt>
+<ul type=square> <li> step forward by distance units </ul>
+<li> <tt><small>stepBack(distance)</small></tt>
+<ul type=square> <li> step backward by distance units </ul>
+<li> improve the select remote procedure call to handle an
+event <tt><small>BUMPEDe</small></tt> <li>
+<tt><small>gettouching() : [id0, id1, id2]</small></tt>
+<ul type=square> <li> get list of touching objects </ul>
+<li> <tt><small>health (id) : integer</small></tt>
+<ul type=square> <li> return an integer of the health of
+bot, id </ul> <li> <tt><small>weapons(id) : [w0, w1, w2, w3,
+wn]</small></tt> <ul type=square> <li> return list of
+weapons <li> w0 = [integer string, ammo] # weapon id, name,
+ammo count </ul> <li> <tt><small>changeweapon (wid) :
+boolean</small></tt> <ul type=square> <li> return True/False
+is bot can change weapon to, wid</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Current simple Remote procedure call API">1. Current simple Remote procedure call API</a><br>
+<a href="#2. Extending the Remote procedure call API">2. Extending the Remote procedure call API</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

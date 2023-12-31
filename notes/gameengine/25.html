@@ -1,0 +1,273 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:59 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Internals of PGE (Python)
+<a name="1. Internals of PGE (Python)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> during this lecture we will start to
+look at the internals of PGE <li> we will concentrate on the
+Python module <tt><small>python/pge.py</small></tt> <li> we
+can see that this sits near the top of the various software
+levels of our game <li></p>
+
+
+<p align="left"><img src="grohtml-26885772.png" alt="Image grohtml-26885772.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>2. pge.py
+<a name="2. pge.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in the last lecture we saw how
+foreground and background objects are maintained in
+<tt><small>python/pge.py</small></tt> <li> we also saw how
+objects were created and are checked at runtime for type
+consistency <li> in this lecture we will examine how
+integrates with Pygame</p>
+
+<p></ul></p><hr>
+
+<h2>3. Obtaining the source to pge
+<a name="3. Obtaining the source to pge"></a>
+</h2>
+
+
+<p><ul type=disc> <li> open up and command line terminal
+and type: <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>git clone https://github.com/gaiusm/pge</b> <li>
+the files for the <tt><small>pge</small></tt> package will
+be available in <tt><small>pge</small></tt> <br>
+</ul></p><hr>
+
+<h2>4. Source directory structure of the pge package
+<a name="4. Source directory structure of the pge package"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the key directories are: <li>
+<tt><small>pge/c</small></tt> <ul type=square> <li> C source
+code </ul> <li> <tt><small>pge/m2</small></tt>
+<ul type=square> <li> Modula-2 source code </ul> <li>
+<tt><small>pge/i</small></tt> swig interface (PGE API
+definition) <li> <tt><small>pge/python</small></tt>
+<ul type=square> <li> python code, (
+<tt><small>pge.py</small></tt> and Python tools, such as
+<tt><small>pgeplayback</small></tt> and
+<tt><small>max2code</small></tt> )</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Key configuration files
+<a name="5. Key configuration files"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<tt><small>pge/configure.ac</small></tt>
+<ul type=square> <li> source code for the classic
+<tt><small>configure</small></tt> command </ul> <li>
+<tt><small>pge/Makefile.am</small></tt>
+<ul type=square> <li> source code for
+<tt><small>Makefile</small></tt> in the top directory of the
+build tree </ul> <li>
+<tt><small>pge/c/Makefile.am</small></tt>
+<ul type=square> <li> source code for
+<tt><small>c/Makefile</small></tt> in the build directory
+</ul> <li> <tt><small>pge/m2/Makefile.am</small></tt>
+<ul type=square> <li> source code for
+<tt><small>m2/Makefile</small></tt> in the build
+directory</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Building pge from source
+<a name="6. Building pge from source"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you can choose either Modula-2 or C
+<li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>mkdir -p build-pge</b> <tt><br>
+$</tt> <b>cd build-pge</b> <tt><br>
+$</tt> <b>../pge/configure --enable-langc</b> <tt><br>
+$</tt> <b>make</b> <li> in this case the pge package is
+built from &gt; 90% of C source files <br>
+</ul></p><hr>
+
+<h2>7. Testing your build
+<a name="7. Testing your build"></a>
+</h2>
+
+
+<p><ul type=disc> <li> one simple test is to run the
+trapped example <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/build-pge</b> <tt><br>
+$</tt> <b>./localrun.sh
+../pge/examples/trapped/trapped.py</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>8. Revisiting pge/python/pge.py
+<a name="8. Revisiting pge/python/pge.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a potential problem surfaces during
+the development of pge and its integration with
+<tt><small>Pygame</small></tt> <li>
+<tt><small>Pygame</small></tt> controls the input sources:
+keyboard, mouse, joystick <ul type=square> <li> and output
+devices, screen, audio etc </ul> <li> internally
+<tt><small>Pygame</small></tt> uses an event queue on which
+all input events (keypress, mouse button press) are posted
+<li> events are meant to be read by the Pygame user
+application code <li> in order for PGE to be integrated with
+Pygame we need to ensure that <ul type=square> <li> a
+program does not block waiting for an input event </ul> <li>
+otherwise the physics engine will be starved from updating
+itself in real time</p>
+
+<p></ul></p><hr>
+
+<h2>9. The PGE event queue
+<a name="9. The PGE event queue"></a>
+</h2>
+
+
+<p><ul type=disc> <li> internally pge also maintains an
+event queue (different from the
+<tt><small>Pygame</small></tt> event queue!) <li> the pge
+event queue is a time ordered list of future events
+<ul type=square> <li> each event predicting what will happen
+in the future <li> it might be a draw frame event <li> or a
+collision event <li> or a timer activation event </ul> <li>
+<tt><small>pge/python/pge.py</small></tt> coordinates the
+pge event queue and also the <tt><small>Pygame</small></tt>
+event queue (input source) <li></p>
+
+
+<p align="left"><img src="grohtml-26885773.png" alt="Image grohtml-26885773.png"></p>
+
+<p style="margin-top: 1em"><li> notice the different kinds
+of events <ul type=square> <li> relative time ordered </ul>
+<li> although there might be another collision event at,
+say, time (20+10+1) 31 there is no point predicting it as
+the event at time 30 might change the world <br>
+</ul></p><hr>
+
+<h2>10. pge/configure.ac
+<a name="10. pge/configure.ac"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is the source file which builds the
+file <tt><small>pge/configure</small></tt> <li> it is
+written in a language called
+<tt><small>autoconf</small></tt> which is compiled into a
+portable shell script <li> <tt><small>autoconf</small></tt>
+allows you to specify dependancies such as the build machine
+must have certain tools: <tt><small>awk</small></tt> ,
+<tt><small>cpp</small></tt> , <tt><small>c++</small></tt>
+and <tt><small>make</small></tt> <ul type=square> <li> and
+the build machine must also have the
+<tt><small>-lpth</small></tt> library </ul> <li> it also
+allows you to add extra configuration arguments
+<ul type=square> <li> ie pge can be built using C sources,
+or built from Modula-2 <li> and one can enable maintainer
+mode (dont do this unless you know what you are doing!)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>11. Example sections of pge/configure.ac
+<a name="11. Example sections of pge/configure.ac"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>AS_MKDIR_P(c)
+AS_MKDIR_P(m2)
+AS_MKDIR_P(python)
+
+LT_INIT
+...
+AC_ARG_ENABLE([maintainer],
+[  --enable-maintainer    Turn on maintainer],
+[case &quot;${enableval}&quot; in
+ yes) maintainer=true ;;
+  no) maintainer=false ;;
+   *) AC_MSG_ERROR([bad value ${enableval} for --enable-maintainer]) ;;
+ esac],[maintainer=false])
+AM_CONDITIONAL([MAINTAINER], [test x$maintainer = xtrue])
+...
+
+
+AC_HAVE_LIBRARY(-lpth)
+AC_SUBST([langm2])
+AC_SUBST([langc])
+AC_SUBST([maintainer])</pre>
+
+
+<p><li> we can see that <tt><small>autoconf</small></tt>
+allows us to use a library of routines
+<tt><small>AS_MKDIR_P</small></tt> <li> and also we can
+create our own code to drive an option in rule
+<tt><small>AC_ARG_ENABLE</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Internals of PGE (Python)">1. Internals of PGE (Python)</a><br>
+<a href="#2. pge.py">2. pge.py</a><br>
+<a href="#3. Obtaining the source to pge">3. Obtaining the source to pge</a><br>
+<a href="#4. Source directory structure of the pge package">4. Source directory structure of the pge package</a><br>
+<a href="#5. Key configuration files">5. Key configuration files</a><br>
+<a href="#6. Building pge from source">6. Building pge from source</a><br>
+<a href="#7. Testing your build">7. Testing your build</a><br>
+<a href="#8. Revisiting pge/python/pge.py">8. Revisiting pge/python/pge.py</a><br>
+<a href="#9. The PGE event queue">9. The PGE event queue</a><br>
+<a href="#10. pge/configure.ac">10. pge/configure.ac</a><br>
+<a href="#11. Example sections of pge/configure.ac">11. Example sections of pge/configure.ac</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:01 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Inside Chisel
+<a name="1. Inside Chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> design goals <ul type=square> <li>
+in the style of Unix <li> command line only <li> one command
+to achieve one task well </ul> <li>
+<tt><small>chisel</small></tt> is a package with at least
+three command line programs <ul type=square> <li>
+<tt><small>txt2pen</small></tt> convert a
+<tt><small>txt</small></tt> file into a
+<tt><small>pen</small></tt> file <li>
+<tt><small>pen2map</small></tt> convert a
+<tt><small>pen</small></tt> file into a
+<tt><small>map</small></tt> file (doom3) <li>
+<tt><small>rndpen</small></tt> generate a random pen file
+</ul> <li> for your coursework you should consider
+extending: <ul type=square> <li>
+<tt><small>pen2map</small></tt> or
+<tt><small>txt2pen</small></tt> or introducing a third which
+could manipulate a <tt><small>pen</small></tt> or
+<tt><small>txt</small></tt> file</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. rndpen
+<a name="2. rndpen"></a>
+</h2>
+
+
+<p><ul type=disc> <li> generate a random
+<tt><small>pen</small></tt> map <li> highly alpha code, but
+it will generate a corridor based random pen file <li> the
+program does always find a map <li> so some experimentation
+is required for the pseudo random numbers to mesh with the
+algorithm to generate a map <li></p>
+
+<p><tt>$</tt> <b>rndmap -h</b></p>
+
+<pre>Usage rndpen [-a minroomsize] [-b maxroomsize] \
+  [-c mincorridorlength] [-d maxcorridorlength] \
+  [-e totalcorridorlength] [-h] [-o outputfile] \
+  [-s seed] [-x maxx] [-y maxy]
+  -a minroomsize            (default is 6)
+  -b maxroomsize            (default is 13)
+  -c mincorridorsize        (default is 15)
+  -d maxcorridorsize        (default is 70)
+  -e totalcorridorlength    (default is 300)
+  -o outputfile             (default is stdout)
+  -s seed                   (default is 3)
+  -x minx for whole map     (default is 120)
+  -y maxy for whole map     (default is 80)</pre>
+
+
+<p><li> <tt><br>
+$</tt> <b>rndmap -s 3 -a 5 -b 10 -c 5 -d 10 -e 20 -x 30 -y
+30 | pen2map -t -</b> <li> notice how the command line tools
+can be combined using the pipe <li></p>
+
+<pre>#######################
+######
+######
+######
+######
+######..######...##
+#####
+#####...##
+#...#######
+###...########
+#.#
+#.#
+#.#
+######
+################...##
+###
+#.#
+#.#
+########.#
+#.######
+#.######
+###
+######
+####
+##
+##
+##
+##
+##
+######</pre>
+
+
+<p><li> <tt><small>rndpen</small></tt> prioritises placing
+random corridors on the map <li> it then tries to fill in
+the remaining gaps with boxes and will combine boxes to give
+rooms of desired min/max dimensions <li> it also restricts
+the number of walls to 8 <li> it might be useful if you
+wanted to generate a map quickly <ul type=square> <li>
+however it might generate concave rooms (pen2map can only
+encode convex rooms currently) <br>
+</ul> </ul></p><hr>
+
+<h2>3. Inside: txt2pen
+<a name="3. Inside: txt2pen"></a>
+</h2>
+
+
+<p><ul type=disc> <li> source is in one file:
+<tt><small>$HOME/Sandpit/chisel/python/txt2pen.py</small></tt>
+<ul type=square> <li> 690 lines of Python </ul> <li> uses
+the following command line options <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python txt2pen.py -h</b></p>
+
+<pre>  -d debugging
+  -h help
+  -V verbose
+  -v version
+  -o outputfile name</pre>
+
+
+<p><li> notice the <tt><small>-o</small></tt> option which
+takes an additional argument (filename) <li> it uses the
+<tt><small>getopt</small></tt> module to handle the options
+<ul type=square> <li> see function
+<tt><small>handleOptions</small></tt> </ul> <li></p>
+<pre>def handleOptions ():
+    global debugging, verbose, outputName
+
+    outputName = None
+    try:
+       optlist, l = getopt.getopt(sys.argv[1:], ':dho:vV')
+       for opt in optlist:
+           if opt[0] == '-d':
+               debugging = True
+           elif opt[0] == '-h':
+               usage (0)
+           elif opt[0] == '-o':
+               outputName = opt[1]
+           elif opt[0] == '-v':
+               printf (&quot;txtpen version &quot; + str (versionNumber) + &quot;\n&quot;)
+               sys.exit (0)
+           elif opt[0] == '-V':
+               verbose = True
+       if l != []:
+           return (l[0], outputName)
+
+
+    except getopt.GetoptError:
+       usage (1)
+    return (None, outputName)</pre>
+
+
+<p><li> it uses a dictionary to maintain the defines <li>
+stores the map in a 2D list (array) <ul type=square> <li>
+<tt><small>mapGrid</small></tt> </ul> <li> it determines the
+walls of a room <ul type=square> <li> it finds the room
+number (location) <li> moves to the top left inside the room
+( <tt><small>generateRoom</small></tt> ) <li> it then
+attempts to turn left as it moves around the room (the wall
+is always on the left) <li> examine
+<tt><small>scanRoom</small></tt> for the implementation <li>
+it looks the square forward and square forward left
+comparing the two characters: <tt><small>##</small></tt> or
+<tt><small>--</small></tt> or <tt><small>#-</small></tt>
+<ul type=circle> <li> <tt><small>#</small></tt> wall and
+<tt><small>-</small></tt> for space </ul> </ul> <li> a space
+should be thought of as not a wall <li>
+<tt><small>scanRoom</small></tt> will start at the top right
+corner of a room and walk around the edge with the wall
+always on the left <ul type=square> <li> it builds a list of
+walls, a wall stops/starts at each turn </ul> <li> if it
+sees <tt><small>##</small></tt> then it must turn right
+<ul type=square> <li> the old wall is stored and a new start
+position is remembered </ul> <li> if it sees
+<tt><small>--</small></tt> then it must turn left
+<ul type=square> <li> the old wall is stored and a new start
+position is remembered </ul> <li> if it sees
+<tt><small>#-</small></tt> then it continues moving a square
+forward <br>
+</ul></p><hr>
+
+<h2>4. Extending chisel (txt2pen)
+<a name="4. Extending chisel (txt2pen)"></a>
+</h2>
+
+
+<p><ul type=disc> <li> one of the obvious improvements is
+for chisel to automatically introduce lights
+<ul type=square> <li> add another option to enable automatic
+lighting <li> <tt><small>-l</small></tt> </ul> <li> copy
+<tt><small>scanRoom</small></tt> into a new function
+<tt><small>introduceLights</small></tt> <li> adapt this new
+function to add lights <ul type=square> <li> but only if the
+rooms has no user defined lights</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Inside: pen2map
+<a name="5. Inside: pen2map"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<tt><small>chisel/python/pen2map.py</small></tt> is 2086
+lines of Python <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python pen2map.py -h</b></p>
+
+<pre>Usage: pen2map [-c filename.ss] [-dhmtvV] [-o outputfile] inputfile
+  -c filename.ss    use filename.ss as the defaults for the map file
+  -d                debugging
+  -e                provide comments in the map file
+  -g type           game type.  The type must be 'single' or 'deathmatch'
+  -h                help
+  -m                create a doom3 map file from the pen file
+  -s                generate statistics about the map file
+  -t                create a txt file from the pen file
+  -V                generate verbose information
+  -v                print the version
+  -o outputfile     place output into outputfile</pre>
+
+
+<p></ul></p><hr>
+
+<h2>6. Example style sheet for the map
+<a name="6. Example style sheet for the map"></a>
+</h2>
+
+
+<p><ul type=disc> <li> how are textures defined - could use
+the defaults - and ignore this slide! <ul type=square> <li>
+or examine <tt><small>chisel/python/tiny.ss</small></tt>
+</ul> <li></p>
+<pre># style sheet for simple doom3 maps
+
+
+define floor textures/hell/qfloor
+define portal textures/editor/visportal
+define open textures/editor/visportal
+define closed textures/hell/wood1
+define secret textures/hell/bricks1a_d
+define wall textures/hell/cbrick2b
+define ceiling textures/hell/wood1</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. pen2map
+<a name="7. pen2map"></a>
+</h2>
+
+
+<p><ul type=disc> <li> reads in a
+<tt><small>pen</small></tt> file and converts it into a
+doom3 <tt><small>map</small></tt> file <li> the
+<tt><small>pen</small></tt> map is parsed by a top down
+recursive descent parser <ul type=square> <li> the pen
+syntax is described by an ebnf grammar <li> (extended backus
+naur form) <li> hand translated into a top down recursive
+descent parser </ul> <li> recursive descent parsers are fast
+and straightforward to implement once the grammar is defined
+<ul type=square> <li> they also allow for strict syntax
+checking of input <li> they are used extensively in the
+construction of compilers</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. ebnf
+<a name="8. ebnf"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consists of terminal symbols and
+non-terminal production rules which define the legal
+sequence of symbols <li> in C++ for example, a terminal
+symbol might be <tt><small>while</small></tt> ,
+<tt><small>for</small></tt> , <tt><small>do</small></tt> ,
+<tt><small>= ; 0</small></tt> etc <li> a rule might be:
+<li></p>
+<pre>assignment := lhs &quot;=&quot; rhs =:</pre>
+
+<p><li> meaning the <tt><small>assignment</small></tt> rule
+is satisfied if there is a legal <tt><small>lhs</small></tt>
+followed by <tt><small>=</small></tt> followed by
+<tt><small>rhs</small></tt> <br>
+</ul></p><hr>
+
+<h2>9. pen example
+<a name="9. pen example"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>ROOM 1
+   WALL
+     1 21  18 21
+     18 21  18 14
+     18 14  1 14
+     1 14  1 21
+   DOOR 18 18 18 17 STATUS OPEN LEADS TO 2
+   MONSTER python_doommarine_mp AT 13 18
+   LIGHT AT 12 20
+   LIGHT AT 4 15
+   LIGHT AT 15 15
+   SPAWN PLAYER AT 3 18
+END</pre>
+
+
+<p></ul></p><hr>
+
+<h2>10. pen grammar in ebnf
+<a name="10. pen grammar in ebnf"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>FileUnit := RoomDesc { RoomDesc } [ RandomTreasure ] &quot;END.&quot; =:
+
+RoomDesc := 'ROOM' Integer
+            { WallDesc | DoorDesc | TreasureDesc } 'END' =:
+
+WallDesc := 'WALL' WallCoords { WallCoords } =:
+
+WallCoords := Integer Integer Integer Integer =:
+
+DoorDesc := 'DOOR' DoorCoords { DoorCoords } =:</pre>
+
+<p><li></p>
+<pre>DoorCoords := Integer Integer Integer Integer Status
+              'LEADS' 'TO' Integer  =:
+
+Status := 'STATUS' ( 'OPEN'
+                      | 'CLOSED'
+                      | 'SECRET'
+                   ) =:
+
+TreasureDesc := 'TREASURE' 'AT' Integer Integer
+                'IS' Integer =:
+
+
+RandomTreasure := 'RANDOMIZE' 'TREASURE' Integer
+                   { Integer } =:</pre>
+
+
+<p></ul></p><hr>
+
+<h2>11. ebnf meta symbols
+<a name="11. ebnf meta symbols"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>{ foo }</small></tt>
+<ul type=square> <li> means it is legal to have 0 or more
+occurrences of <tt><small>foo</small></tt> </ul> <li>
+<tt><small>[ foo ]</small></tt> <ul type=square> <li> means
+it is legal to have 0 or 1 occurrence of
+<tt><small>foo</small></tt> </ul> <li> <tt><small>( foo |
+bar )</small></tt> <ul type=square> <li> here the
+<tt><small>(</small></tt> and <tt><small>)</small></tt>
+group together the extent of the <tt><small>|</small></tt>
+</ul> <li> <tt><small>&quot;foo&quot;</small></tt>
+represents the terminal symbol <tt><small>f o o</small></tt>
+<li> as opposed to the rule <tt><small>foo</small></tt></p>
+
+<p></ul></p><hr>
+
+<h2>12. Translating ebnf grammar into a top down parser
+<a name="12. Translating ebnf grammar into a top down parser"></a>
+</h2>
+
+
+<p><ul type=disc> <li> once the grammar is defined it is
+straightforward to implement a top down parser <li> if the
+grammar is said to be well formed if we only need to look at
+the next token to determine the flow of control in the
+parser <li> we define a few helper functions
+<ul type=square> <li> <tt><small>expect
+(&quot;foo&quot;)</small></tt> insists that the next token
+is &quot;foo&quot; and generates an error if it is not
+&quot;foo&quot; <li> if &quot;foo&quot; is seen the consume
+this symbol and move onto the next </ul> <li>
+<tt><small>expecting (list)</small></tt>
+<ul type=square> <li> returns <tt><small>True</small></tt>
+if any symbol in <tt><small>list</small></tt> matches the
+current symbol </ul> <li> <tt><small>integer</small></tt>
+return <tt><small>True</small></tt> if the current symbol is
+an integer <ul type=square> <li> if True store the value of
+the integer in <tt><small>curinteger</small></tt></p>
+
+<p></ul> </ul></p><hr>
+
+<h2>13. Conclusion
+<a name="13. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> to be continued next week</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Inside Chisel">1. Inside Chisel</a><br>
+<a href="#2. rndpen">2. rndpen</a><br>
+<a href="#3. Inside: txt2pen">3. Inside: txt2pen</a><br>
+<a href="#4. Extending chisel (txt2pen)">4. Extending chisel (txt2pen)</a><br>
+<a href="#5. Inside: pen2map">5. Inside: pen2map</a><br>
+<a href="#6. Example style sheet for the map">6. Example style sheet for the map</a><br>
+<a href="#7. pen2map">7. pen2map</a><br>
+<a href="#8. ebnf">8. ebnf</a><br>
+<a href="#9. pen example">9. pen example</a><br>
+<a href="#10. pen grammar in ebnf">10. pen grammar in ebnf</a><br>
+<a href="#11. ebnf meta symbols">11. ebnf meta symbols</a><br>
+<a href="#12. Translating ebnf grammar into a top down parser">12. Translating ebnf grammar into a top down parser</a><br>
+<a href="#13. Conclusion">13. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

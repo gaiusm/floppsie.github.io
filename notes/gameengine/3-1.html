@@ -1,0 +1,208 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:06 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Adding auto lights to chisel
+<a name="1. Adding auto lights to chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> propose to add two options to
+<tt><small>txt2pen.py</small></tt> <ul type=square> <li>
+<tt><small>-l</small></tt> to enable auto lights <li>
+<tt><small>-f num</small></tt> to change the default
+frequency of lights (default is every five squares)</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Code changes to chisel/python/txt2pen.py
+<a name="2. Code changes to chisel/python/txt2pen.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>inputFile = None
+defines = {}
+verbose = False
+debugging = False
+autoLights = False
+floor = []
+rooms = {}
+maxx, maxy = 0, 0
+doorValue, wallValue, emptyValue = 0, -1, -2
+versionNumber = 0.1
+lightFrequency = 5</pre>
+
+
+<p><li> notice the new global variables
+<tt><small>autoLights</small></tt> and
+<tt><small>lightFrequency</small></tt> <li></p>
+
+<pre>def usage (code):
+    print &quot;Usage: txt2pen [-dhlvV] [-f frequency] [-o outputfile] inputfile&quot;
+    print &quot;  -d debugging&quot;
+    print &quot;  -h help&quot;
+    print &quot;  -l automatic lighting&quot;
+    print &quot;  -f frequency    (every frequency squares place a light)&quot;
+    print &quot;  -V verbose&quot;
+    print &quot;  -v version&quot;
+    print &quot;  -o outputfile name&quot;
+    sys.exit (code)</pre>
+
+
+<p><li></p>
+
+<pre>class roomInfo:
+    def __init__ (self, w, d):
+        self.walls = w
+        self.doors = d
+        self.doorLeadsTo = []
+        self.monsters = []
+        self.weapons = []
+        self.ammo = []
+        self.lights = []
+        self.autoLights = []
+        self.worldspawn = []</pre>
+
+
+<p><li></p>
+<pre>def handleOptions ():
+    global debugging, verbose, outputName, autoLights, lightFrequency
+
+
+    outputName = None
+    try:
+        optlist, l = getopt.getopt(sys.argv[1:], &rsquo;:df:hlo:vV&rsquo;)
+        for opt in optlist:
+            if opt[0] == &rsquo;-d&rsquo;:
+                debugging = True
+            elif opt[0] == &rsquo;-h&rsquo;:
+                usage (0)
+            elif opt[0] == &rsquo;-l&rsquo;:
+                autoLights = True
+            elif opt[0] == &rsquo;-f&rsquo;:
+                lightFrequency = int (opt[1])
+            elif opt[0] == &rsquo;-o&rsquo;:
+                outputName = opt[1]
+etc...</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. New function checkLight
+<a name="3. New function checkLight"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#
+#  checkLight - add a mid light if lightCount == lightFrequency
+#
+
+
+def checkLight (position, lightList, lightCount):
+    if lightCount == lightFrequency:
+        li = light ()
+        li.settype (&rsquo;MID&rsquo;)
+        lightList += [position + [li]]
+        lightCount = 0
+    else:
+        lightCount += 1
+    return lightList, lightCount</pre>
+
+
+<p><li> which is called from your
+<tt><small>introduceLights</small></tt> <br>
+</ul></p><hr>
+
+<h2>4. txt2pen changes
+<a name="4. txt2pen changes"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def generateRoom (roomNo, position, mapGrid, start, lineNo):
+    global verbose, rooms, debugging
+
+
+    inside = position
+    position = moveBy (position, [-1, -1], mapGrid)
+    if debugging:
+        print (&quot;top left is&quot;, position)
+    start = position
+    walls, doors = scanRoom (start, position, mapGrid, [], [])
+    if debugging:
+        print(walls)
+    rooms[roomNo] = roomInfo (walls, doors)
+    rooms[roomNo].autoLights += introduceLights (position, mapGrid, [], [])
+    rooms[roomNo].inside = inside</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. function printRoom changes
+<a name="5. function printRoom changes"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>etc...
+    outputFile = printMonsters (rooms[roomNo].monsters, outputFile)
+    outputFile = printAmmo (rooms[roomNo].ammo, outputFile)
+    outputFile = printWeapons (rooms[roomNo].weapons, outputFile)
+    if autoLights and (rooms[roomNo].lights == []):
+        outputFile = printLights (rooms[roomNo].autoLights, outputFile)
+    else:
+        outputFile = printLights (rooms[roomNo].lights, outputFile)
+    outputFile = printSpawnPlayer (rooms[roomNo].worldspawn, outputFile)
+etc...</pre>
+
+
+<p><li> you need to complete
+<tt><small>introduceLights</small></tt> to make these
+changes take effect</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Adding auto lights to chisel">1. Adding auto lights to chisel</a><br>
+<a href="#2. Code changes to chisel/python/txt2pen.py">2. Code changes to chisel/python/txt2pen.py</a><br>
+<a href="#3. New function checkLight">3. New function checkLight</a><br>
+<a href="#4. txt2pen changes">4. txt2pen changes</a><br>
+<a href="#5. function printRoom changes">5. function printRoom changes</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:06 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. pen2map
+<a name="1. pen2map"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<tt><small>chisel/python/pen2map.py</small></tt>
+<ul type=square> <li> <tt><small>pen2map</small></tt>
+converts a <tt><small>pen</small></tt> file into a
+<tt><small>map</small></tt> file (doom3) </ul> <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python pen2map.py -h</b></p>
+
+<pre>Usage: pen2map [-c filename.ss] [-dhmtvV] [-o outputfile] inputfile
+  -c filename.ss    use filename.ss as the defaults for the map file
+  -d                debugging
+  -e                provide comments in the map file
+  -g type           game type.  The type must be &rsquo;single&rsquo; or &rsquo;deathmatch&rsquo;
+  -h                help
+  -m                create a doom3 map file from the pen file
+  -s                generate statistics about the map file
+  -t                create a txt file from the pen file
+  -V                generate verbose information
+  -v                print the version
+  -o outputfile     place output into outputfile</pre>
+
+
+<p></ul></p><hr>
+
+<h2>2. pen2map overview
+<a name="2. pen2map overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li> parses a pen file, creates internal
+data structures representing the pen map
+<ul type=square> <li> it then iterates over the rooms and
+generates a doom3 map file </ul> <li> conceptually the
+generation of the rooms is rather like virtualised lego
+(within chisel) <ul type=square> <li> pen2map generates
+blocks and places these blocks into a world <li> it will
+attempt to join blocks together as long as this results in a
+bigger cuboid structure </ul> <li> however the doom3 map
+uses planes and not blocks!</p>
+
+<p></ul></p><hr>
+
+<h2>3. Construct the program in logical units
+<a name="3. Construct the program in logical units"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Henry Legard proverb <li> one way to
+achieve this is to layer the solution <ul type=square> <li>
+divide and conquer </ul> <li> consider our doom3 tools</p>
+
+<p></ul></p><hr>
+
+<h2>4. Doom3 and chisel layering
+<a name="4. Doom3 and chisel layering"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26897892.png" alt="Image grohtml-26897892.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>5. Minimal box defined in the map format
+<a name="5. Minimal box defined in the map format"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>brushDef3
+{
+  // floor of fbrick
+  (0 0 -1 0) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // ceiling of fbrick
+  (0 0 1 -288) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // top most horizontal of fbrick
+  (-1 0 0 -480) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // left most vertical of fbrick
+  (0 -1 0 -576) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // bottom most horizontal of fbrick
+  (1 0 0 432) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+  // right most vertical of fbrick
+  (0 1 0 528) ((0.0078125 0 0.5) (0 -0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0 0
+}</pre>
+
+
+<p><font color="#000000"><li> six planes which define a
+cuboid <br>
+</ul></font></p><hr>
+
+<h2>6. The second plane
+<a name="6. The second plane"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> is the ceiling
+in our example <li> <tt>(0 0 1 -288) ((0.0078125 0 0.5) (0
+-0.0078125 -1)) &quot;textures/hell/cbrick2b&quot; 0 0
+0</tt> <li></font> <font color="#A51933">(0 0 1 -288)</font>
+<font color="#000000"><ul type=square> <li> vector (0, 0, 1)
+and the closest it reaches the origin is -288 units <li>
+this infinite plane will have the texture
+<tt><small>textures/hell/cbrick2b</small></tt> applied to
+it</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>7. Texture transformation matrix
+<a name="7. Texture transformation matrix"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> the texture
+uses the transformation matrix, T</font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26897893.png" alt="Image grohtml-26897893.png"></font></p>
+
+<p><font color="#000000"><li> general transformation matrix
+is: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26897894.png" alt="Image grohtml-26897894.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Each coordinate is transformed by
+<a name="8. Each coordinate is transformed by"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26897895.png" alt="Image grohtml-26897895.png"></font></p>
+
+<p><font color="#000000"><li> and mapped into the image
+file at this new grid coordinate <li> fortunately we
+conceptualise chisel as creating a variety of lego bricks
+(each is a cuboid) <li> <tt><small>pen2map.py</small></tt>
+generates floor bricks, wall bricks and ceiling
+bricks</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Conclusion
+<a name="9. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> layered
+software is an important concept which allows large systems
+to be built and it can hide complexity behind well defined
+interfaces <li> cuboids are represented by brushes in the
+map <ul type=square> <li> six planes define a
+brush</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. pen2map">1. pen2map</a><br>
+<a href="#2. pen2map overview">2. pen2map overview</a><br>
+<a href="#3. Construct the program in logical units">3. Construct the program in logical units</a><br>
+<a href="#4. Doom3 and chisel layering">4. Doom3 and chisel layering</a><br>
+<a href="#5. Minimal box defined in the map format">5. Minimal box defined in the map format</a><br>
+<a href="#6. The second plane">6. The second plane</a><br>
+<a href="#7. Texture transformation matrix">7. Texture transformation matrix</a><br>
+<a href="#8. Each coordinate is transformed by">8. Each coordinate is transformed by</a><br>
+<a href="#9. Conclusion">9. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

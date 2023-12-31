@@ -1,0 +1,320 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:55 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Collision response references
+<a name="1. Collision response references"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Ian Millington, &quot;Game Physics
+Engine Development&quot;, 2nd Edition, Morgan Kaufmann, 2010
+<li> David M Bourg, &quot;Physics for Game Developers&quot;,
+O&rsquo;Reilly Media, November 2001 <li> Andr&eacute;
+LaMothe, &quot;Tricks of the Windows Game Programming Gurus:
+Fundamentals of 2d and 3d Game Programming&quot;, Sams; 2
+edition, June 2002, ISBN-10: 0672323699, ISBN-13:
+978-0672323690</p>
+
+<p></ul></p><hr>
+
+<h2>2. Line on Line collision detection
+<a name="2. Line on Line collision detection"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is actually very easy, if we already
+have implemented: <li> circle circle collision detection
+<li> circle line collision detection <li> consider the
+following diagram:</p>
+
+
+<p align="left"><img src="grohtml-26879323.png" alt="Image grohtml-26879323.png"></p>
+
+<p style="margin-top: 1em"><li> each line has a velocity
+and acceleration vector <li> to find the time of next
+collision, we ask the following questions: <li> what is the
+smallest value of time
+<img src="grohtml-2687932-8.png" alt="Image grohtml-2687932-8.png">
+for the next collision of a circle of radius 0 at
+<ul type=square> <li>
+<img src="grohtml-2687932-9.png" alt="Image grohtml-2687932-9.png">
+crossing line B <li>
+<img src="grohtml-2687932-10.png" alt="Image grohtml-2687932-10.png">
+crossing line B <li>
+<img src="grohtml-2687932-11.png" alt="Image grohtml-2687932-11.png">
+crossing line A <li>
+<img src="grohtml-2687932-12.png" alt="Image grohtml-2687932-12.png">
+crossing line A </ul> <li> thankfully we use the circle line
+algorithm described before <ul type=square> <li> which in
+turn uses the circle circle solution <br>
+</ul> </ul></p><hr>
+
+<h2>3. Game engine structure
+<a name="3. Game engine structure"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there are many components to a game
+engine: (non exclusive taxonomy) <ul type=square> <li>
+collision detection <li> motion of objects <li> contact
+resolution <li> handling forces: gravity, friction <li>
+handling momentum: impacts, collision response <li> managing
+different objects: springs, rigid objects </ul> <li> there
+are also different high level techniques
+<ul type=square> <li> frame based physics <li> event based
+physics </ul> <li> most games use frame based physics
+<ul type=square> <li> we have concentrated on event based
+(collision prediction) </ul> <li> both have advantages and
+disadvantages</p>
+
+<p></ul></p><hr>
+
+<h2>4. Event based
+<a name="4. Event based"></a>
+</h2>
+
+
+<p><ul type=disc> <li> as long as we can compute the time
+of the next event <ul type=square> <li> then we only need to
+alter the state (game) when an event occurs <li> principle
+of discrete event simulation <li> can be highly efficient,
+and accurate <li> the correct solution for modelling a game
+of snooker for example </ul> <li> not good for implementing
+Rage! <ul type=square> <li> as the Mathematics would become
+highly complex </ul> <li> event loop is very simple, here is
+the loop found in <tt><small>c/twoDsim.c</small></tt>
+<li></p>
+
+<pre>   addEvent(0.0, drawFrameEvent);
+   addNextCollisionEvent;
+   while (s&lt;t)
+      {
+         dt = doNextEvent();
+         s = s + dt;
+      }
+   updatePhysics(currentTime-lastCollisionTime);
+   lastCollisionTime = currentTime;</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. Collision response
+<a name="5. Collision response"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PGE implements six collision
+categories <ul type=square> <li> moving circle hitting a
+fixed circle <li> moving circle hitting a moving circle <li>
+moving circle hitting a fixed line <li> moving circle
+hitting moving line (polygon) <li> moving polygon hitting
+fixed polygon collision <li> moving polygon hitting moving
+polygon collision </ul> <li> still to do are:
+<ul type=square> <li> rotating polygon collision prediction
+</ul> <li> worth noting that implementing an event based
+system makes it easier to categorise the above
+<ul type=square> <li> we recall that line on line collision
+builds upon line on circle and circle on circle <li>
+likewise if we remember this information, we can sometimes
+call the simpler collision response routines </ul> <li> for
+example if a circle hits a fixed polygon corner
+<ul type=square> <li> then we call circle hitting fixed
+circle of radius zero</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Response for a moving circle hitting a fixed circle
+<a name="6. Response for a moving circle hitting a fixed circle"></a>
+</h2>
+
+
+<p><ul type=disc> <li> movable is an circle Object <li>
+center is a coordinate which has been hit <li> following
+code uses linear kinetic energy equation</p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-26879324.png" alt="Image grohtml-26879324.png"></p>
+
+<p><li> and energy is conserved:</p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-26879325.png" alt="Image grohtml-26879325.png"></p>
+
+<p><li></p>
+
+<pre>/* calculate normal collision value */
+c.x = movable-&gt;c.pos.x - center.x ;
+c.y = movable-&gt;c.pos.y - center.y ;
+r = sqrt(c.x*c.x+c.y*c.y) ;
+normalCollision.x = c.x/r ;
+normalCollision.y = c.y/r ;
+relativeVelocity.x = movable-&gt;vx ;
+relativeVelocity.y = movable-&gt;vy ;</pre>
+
+
+<p><li></p>
+<pre>j = (-(1.0+1.0) *
+     ((relativeVelocity.x * normalCollision.x) +
+      (relativeVelocity.y * normalCollision.y)))/
+     (((normalCollision.x*normalCollision.x) +
+      (normalCollision.y*normalCollision.y)) *
+      (1.0/movable-&gt;c.mass)) ;
+
+
+movable-&gt;vx := movable-&gt;vx + (j * normalCollision.x) / movable-&gt;c.mass ;
+movable-&gt;vy := movable-&gt;vy + (j * normalCollision.y) / movable-&gt;c.mass ;</pre>
+
+
+<p></ul></p><hr>
+
+<h2>7. Response for a moving circle hitting a moving circle
+<a name="7. Response for a moving circle hitting a moving circle"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>iptr</small></tt> and
+<tt><small>jptr</small></tt> are both circles moving and
+have just collided <li> very similar code <li> David M
+Bourg, &quot;Physics for Game Developers&quot;,
+O&rsquo;Reilly Media, November 2001 see p90-97 <li> in both
+previous and next code <tt><small>j</small></tt> is the
+impulse of the collision <li></p>
+
+<pre>/* calculate normal collision value */
+c.x = iptr-&gt;c.pos.x - jptr-&gt;c.pos.x ;
+c.y = iptr-&gt;c.pos.y - jptr-&gt;c.pos.y ;
+r = sqrt(c.x*c.x+c.y*c.y) ;
+normalCollision.x = c.x/r ;
+normalCollision.y = c.y/r ;
+relativeVelocity.x = iptr-&gt;vx - jptr-&gt;vx ;
+relativeVelocity.y = iptr-&gt;vy - jptr-&gt;vy ;</pre>
+
+
+<p><li></p>
+<pre>j = (-(1.0+1.0) *
+     ((relativeVelocity.x * normalCollision.x) +
+      (relativeVelocity.y * normalCollision.y)))/
+    (((normalCollision.x*normalCollision.x) +
+      (normalCollision.y*normalCollision.y)) *
+     (1.0/iptr-&gt;c.mass + 1.0/jptr-&gt;c.mass)) ;
+
+iptr-&gt;vx = iptr-&gt;vx + (j * normalCollision.x) / iptr-&gt;c.mass ;
+iptr-&gt;vy = iptr-&gt;vy + (j * normalCollision.y) / iptr-&gt;c.mass ;
+
+
+jptr-&gt;vx = jptr-&gt;vx - (j * normalCollision.x) / jptr-&gt;c.mass ;
+jptr-&gt;vy = jptr-&gt;vy - (j * normalCollision.y) / jptr-&gt;c.mass ;</pre>
+
+
+<p></ul></p><hr>
+
+<h2>8. Circle colliding against fixed edge
+<a name="8. Circle colliding against fixed edge"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>cPtr</small></tt> is the
+circle object <tt><small>p1</small></tt> and
+<tt><small>p2</small></tt> are the coordinate pairs of the
+edge <li></p>
+<pre>/* firstly we need to find the normal to the line */
+sortLine(p1, p2) ;  /* p1 is left of p2, or lower than p2 */
+
+/* create the vector p1 -&gt; p2 */
+v1 = subCoord(p2, p1) ;
+
+perpendiculars(v1, n1, n2) ;
+
+/* use n1 */
+n1 = normaliseCoord(n1) ;
+vel = initCoord(cPtr-&gt;vx, cPtr-&gt;vy) ;
+vel = addCoord(scaleCoord(n1, -2.0 * dotProd(vel, n1)), vel) ;
+
+cPtr-&gt;vx = vel.x ;
+cPtr-&gt;vy = vel.y ;</pre>
+
+<p></ul></p><hr>
+
+<h2>9. Further reading
+<a name="9. Further reading"></a>
+</h2>
+
+
+<p><ul type=disc> <li> chapter 13 in <li> Andr&eacute;
+LaMothe, &lsquo;&lsquo;Tricks of the Windows Game
+Programming Gurus: Fundamentals of 2d and 3d Game
+Programming&rsquo;&rsquo;, Sams; 2 edition, June 2002,
+ISBN-10: 0672323699, ISBN-13: 978-0672323690 <li> pages
+90-97 of <li> David M Bourg, &lsquo;&lsquo;Physics for Game
+Developers&rsquo;&rsquo;, O&rsquo;Reilly Media, November
+2001</p>
+
+<p></ul></p><hr>
+
+<h2>10. Coursework helper script
+<a name="10. Coursework helper script"></a>
+</h2>
+
+
+<p><ul type=disc> <li> here is a helper script which might
+be useful to rebuild your pge and run test python code
+<li></p>
+
+<p><tt>$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/Download/targz/run-pge-script</b>
+<tt><br>
+$</tt> <b>chmod 755 run-pge-script</b> <li> you can use this
+to run frozen bubble and friends by: <li> <tt><br>
+$</tt> <b>./run-pge-script
+../pge/examples/frozenbubble/frozenbubble.py</b> <li> the
+argument to the script is the source file which will be run
+from the build-pge directory in Sandpit</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Collision response references">1. Collision response references</a><br>
+<a href="#2. Line on Line collision detection">2. Line on Line collision detection</a><br>
+<a href="#3. Game engine structure">3. Game engine structure</a><br>
+<a href="#4. Event based">4. Event based</a><br>
+<a href="#5. Collision response">5. Collision response</a><br>
+<a href="#6. Response for a moving circle hitting a fixed circle">6. Response for a moving circle hitting a fixed circle</a><br>
+<a href="#7. Response for a moving circle hitting a moving circle">7. Response for a moving circle hitting a moving circle</a><br>
+<a href="#8. Circle colliding against fixed edge">8. Circle colliding against fixed edge</a><br>
+<a href="#9. Further reading">9. Further reading</a><br>
+<a href="#10. Coursework helper script">10. Coursework helper script</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

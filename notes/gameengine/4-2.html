@@ -1,0 +1,157 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:07 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Overview of dhewm3 code
+<a name="1. Overview of dhewm3 code"></a>
+</h2>
+
+
+<p><ul type=disc> <li> lines of code for the id engines</p>
+
+
+<p align="left"><img src="grohtml-26899612.png" alt="Image grohtml-26899612.png"></p>
+
+<p style="margin-top: 1em"><li> the 0 lines of code for the
+doom3 is due because doom3 includes them in game <li> dhewm3
+is about 681075 total lines of code <ul type=square> <li>
+however this includes many tools and libraries </ul> <li>
+actual engine is closer to 137905 lines of code <li>
+abstraction and polymorphic code employed <li> all assets
+are stored in human readable text form <ul type=square> <li>
+this works well on our fast machines now, this design also
+guides our python bot library </ul> <li> templates are used
+in low level utility classes (mainly idlib) but are never
+seen in the upper levels <ul type=square> <li> no STL used
+</ul> <li> well commented code base <br>
+</ul></p><hr>
+
+<h2>2. Overview of dhewm3 and Python Bot code
+<a name="2. Overview of dhewm3 and Python Bot code"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26899613.png" alt="Image grohtml-26899613.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>3. Python Bot Overview
+<a name="3. Python Bot Overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li> note, the bot code is only partially
+complete <li> layered approach <li> top layer,
+<tt><small>botlib</small></tt> will ultimately be the
+interface to user level bots (
+<tt><small>python_doom_marine_1.py</small></tt> ) <li> will
+contain both access to basic movement and access to
+navigation mechanisms <li> maintains the transform between
+the doom3 map and penguin tower map</p>
+
+<p></ul></p><hr>
+
+<h2>4. botaa
+<a name="4. botaa"></a>
+</h2>
+
+
+<p><ul type=disc> <li> contains area awareness code for the
+python bot <li> parses the equivalent pen map and creates
+internal simple 2D map of the world in Python <li>
+implements Dijkstra&rsquo;s algorithm for routing to pickups
+and player/monsters</p>
+
+<p></ul></p><hr>
+
+<h2>5. botcache
+<a name="5. botcache"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides the same interface as
+<ul type=square> <li> <tt><small>botbasic</small></tt> but
+it caches all results <li> which allows the higher layers (
+<tt><small>botaa</small></tt> ) the ability to query the bot
+without having to worry about the overhead of the remote
+procedure call </ul> <li> it also contains a method
+<ul type=square> <li> <tt><small>reset</small></tt> which
+deletes the cache, forcing all future requests to be sent
+over to the dhewm3 engine to retrieve up to date values</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. botbasic
+<a name="6. botbasic"></a>
+</h2>
+
+
+<p><ul type=disc> <li> provides socket connection to the
+dhewm3 engine <li> it also implements the underlying remote
+procedure call mechanism <li> generally maps onto basic
+commands <ul type=square> <li> such as: move, fire, reload,
+turn, aim, etc</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>7. Homework: read how Remote procedure calls work
+<a name="7. Homework: read how Remote procedure calls work"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you need to understand the concept
+of remote procedure call argument marshalling
+<ul type=square> <li> make sure you have read
+Tanenbaum&rsquo;s description of how RPC&rsquo;s operate
+<li> and how marshalling is employed and why it is necessary
+</ul> <li> Andrew Tanenbaum, Modern Operating Systems,
+Prentice-Hall International <ul type=square> <li> sections
+10.3, 10.3.1, 10.3.2</p>
+
+<p style="margin-top: 1em"></ul> </ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Overview of dhewm3 code">1. Overview of dhewm3 code</a><br>
+<a href="#2. Overview of dhewm3 and Python Bot code">2. Overview of dhewm3 and Python Bot code</a><br>
+<a href="#3. Python Bot Overview">3. Python Bot Overview</a><br>
+<a href="#4. botaa">4. botaa</a><br>
+<a href="#5. botcache">5. botcache</a><br>
+<a href="#6. botbasic">6. botbasic</a><br>
+<a href="#7. Homework: read how Remote procedure calls work">7. Homework: read how Remote procedure calls work</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

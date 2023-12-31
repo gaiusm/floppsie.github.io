@@ -1,0 +1,223 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:57 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. C compound data structures
+<a name="1. C compound data structures"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in C we can declare a
+<tt><small>struct</small></tt> using the following
+mechanism: <li></p>
+<pre>struct name {
+  int x;
+  int y;
+}
+
+main ()
+{
+   struct name foo;
+
+   foo.x = 1;
+   foo.y = 2;
+}</pre>
+
+<p></ul></p><hr>
+
+<h2>2. Using typedefs
+<a name="2. Using typedefs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we can introduce a
+<tt><small>typedef</small></tt> to clean up the previous
+code: <li></p>
+<pre>typedef struct name_s {
+  int x;
+  int y;
+} name;
+
+main ()
+{
+   name foo;
+
+   foo.x = 1;
+   foo.y = 2;
+}</pre>
+
+<p><li> notice how we still declare the
+<tt><small>struct</small></tt> , but wrap it in a
+<tt><small>typedef</small></tt> . <br>
+</ul></p><hr>
+
+<h2>3. Forward declaring structs
+<a name="3. Forward declaring structs"></a>
+</h2>
+
+
+<p><ul type=disc> <li> sometimes a data structure needs to
+refer to itself <ul type=square> <li> such as a binary tree
+<li> linked list etc </ul> <li> consider a single linked
+list with a <tt><small>value</small></tt> and a
+<tt><small>next</small></tt> field <li> this could be
+declared as follows <li></p>
+<pre>#include &lt;stdlib.h&gt;
+
+typedef struct node_s node_t;
+typedef node_t *node;
+
+struct node_s {
+               int value;
+               node next;
+             };
+
+static node n;
+
+
+main ()
+{
+  node foo = (node) malloc (sizeof (*foo));
+  foo-&gt;value = 1;
+  foo-&gt;next = foo;
+}</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. Simplified node declaration
+<a name="4. Simplified node declaration"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &lt;stdlib.h&gt;
+
+typedef struct node_s *node;
+
+struct node_s {
+               int value;
+               node next;
+             };
+
+static node n;
+
+main ()
+{
+  node foo = (node) malloc (sizeof (*foo));
+
+  foo-&gt;value = 1;
+  foo-&gt;next = foo;
+}</pre>
+
+<p><li> notice how we have re factored <li></p>
+<pre>typedef struct node_s node_t;
+
+typedef node_t *node;</pre>
+
+<p><li> to <li></p>
+<pre>typedef struct node_s *node;
+
+
+struct node_s {
+               int value;
+               node next;
+             };</pre>
+
+
+<p><li> also note that the <tt><small>typedef</small></tt>
+is using a forward declaration of
+<tt><small>struct</small></tt> <ul type=square> <li> which
+is completed in the next code line <br>
+</ul> </ul></p><hr>
+
+<h2>5. struct&rsquo;s
+<a name="5. struct&rsquo;s"></a>
+</h2>
+
+
+<p><ul type=disc> <li> are the only data type in C which
+can be partially declared (or forward declared) <li> they
+must be completed though at some later point <li>
+<tt><small>struct</small></tt> s can be used to wrap up
+other data types <ul type=square> <li> which can be useful
+if these other data types are self referential</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Example 1: declare a pointer to an array of 10 elements to itself
+<a name="6. Example 1: declare a pointer to an array of 10 elements to itself"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>#include &lt;stdlib.h&gt;
+
+typedef struct mydecl_a *mydecl;
+
+struct mydecl_a { mydecl array[10+1]; };
+static mydecl a;
+
+
+main ()
+{
+  a = (mydecl) malloc (sizeof *a);
+  a-&gt;array[0] = a;
+}</pre>
+
+
+<p><li> of course this is a pedalogical example as it does
+not reference anything else! <li> notice that we cannot join
+the <tt><small>typedef</small></tt> with the
+<tt><small>struct</small></tt> declaration like this:
+<li></p>
+<pre>typedef struct mydecl_a { mydecl array[10+1]; } *mydecl;
+
+/* this will not work.  */</pre>
+
+<p><li> as the definition for
+<tt><small>mydecl</small></tt> involves a use of
+<tt><small>mydecl</small></tt> <br>
+</ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p><a name="index"></a></p>
+<a href="#1. C compound data structures">1. C compound data structures</a><br>
+<a href="#2. Using typedefs">2. Using typedefs</a><br>
+<a href="#3. Forward declaring structs">3. Forward declaring structs</a><br>
+<a href="#4. Simplified node declaration">4. Simplified node declaration</a><br>
+<a href="#5. struct&rsquo;s">5. struct&rsquo;s</a><br>
+<a href="#6. Example 1: declare a pointer to an array of 10 elements to itself">6. Example 1: declare a pointer to an array of 10 elements to itself</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

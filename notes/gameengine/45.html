@@ -1,0 +1,247 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Implementing Jump and Crouch in the Python API
+<a name="1. Implementing Jump and Crouch in the Python API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the files which need to be modified
+are split into two groups <ul type=square> <li> server side
+(dhewm3 engine) <li> client side (python) </ul> <li> server
+side files: <tt><small>neo/game/Player.cpp</small></tt> ,
+<tt><small>neo/game/Player.h</small></tt> ,
+<tt><small>neo/game/ai/pybot.cpp
+neo/game/ai/pybot.h</small></tt> <li> client side files:
+<tt><small>python-bot/botbasic.py</small></tt> ,
+<tt><small>python-bot/botcache.py</small></tt> ,
+<tt><small>python-bot/botlib.py</small></tt> ,
+<tt><small>python-bot/python_doommarine.py</small></tt> <li>
+these are guidelines on how to implement
+<tt><small>stepUp</small></tt> (crouch and jump) <li> the
+notes will require you to add extra code on the server side,
+the client should be complete</p>
+
+<p></ul></p><hr>
+
+<h2>2. Test code: python_doommarine.py
+<a name="2. Test code: python_doommarine.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> add this code somewhere appropriate
+in <tt><small>python_doommarine.py</small></tt> and ensure
+that it is called! <li></p>
+
+
+<p><b><small><small><font color="#196633">python-bot/python_doommarine.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def test_crouch_jump (b):
+    b.reset ()
+    b.stepup (-2, 3*12)
+    b.select ([&rsquo;move&rsquo;])
+    # time.sleep (2)
+    b.stepup (100, 4*12)
+    b.select ([&rsquo;move&rsquo;])</pre>
+
+
+<p><font color="#000000"><li> can see the new method
+<tt><small>stepvec</small></tt> which is a Z-axis movement
+<ul type=square> <li> in doom3 the Z-axis movement, results
+in the player self returning back to the neutral position
+<li> gravity pulls the player back to the ground, and
+likewise happens if the player crouches <br>
+</ul> </ul></font></p><hr>
+
+<h2>3. stepup in botlib.py
+<a name="3. stepup in botlib.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> add
+<tt><small>stepup</small></tt> after the method
+<tt><small>right</small></tt> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">python-bot/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">     #
+     #  stepup - makes the bot jump or crouch.
+     #
+
+
+     def stepup (self, velup, dist):
+         return self._cache.stepup (velup, dist)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python-bot/botcache.py</font></small></small></b></p>
+<pre style="margin-top: 1em">     #
+     #  stepup -
+     #
+
+
+     def stepup (self, velup, dist):
+         self.delpos (self.me ())
+         return self._basic.stepup (velup, dist)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. python-bot/botbasic.py
+<a name="4. python-bot/botbasic.py"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">python-bot/botbasic.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    #
+    #  stepup -
+    #
+
+
+    def stepup (self, velocity, dist):
+        l = &quot;step_up %d %d\n&quot; % (velocity, dist)
+        if debug_protocol:
+            print &quot;requesting a&quot;, l
+        self.s.send (l)
+        l = self.getLine ()
+        if debug_protocol:
+            print &quot;doom returned&quot;, l
+        return int (l)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Server side changes
+<a name="5. Server side changes"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> add the
+declaration of the method <tt><small>stepUp</small></tt>
+<li></font></p>
+
+
+<p><b><small><small><font color="#196633">neo/game/Player.h</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">        bool isVisible (idEntity *enemy);
+        int Fire (bool firing);
+        int Ammo (void);
+        int stepUp (int vel, int dist);
+        int Turn (int angle, int angle_vel);
+        int GetYaw (void);
+        void doTurn (int angle);
+        void select (int bitmask);
+        int ChangeWeapon (int new_weapon);</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. stepUp implementation inside Player.cpp
+<a name="6. stepUp implementation inside Player.cpp"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">neo/game/Player.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+=============
+idPlayer::stepUp  (crouch or jump)
+=============
+ */
+int idPlayer::stepUp (int vel, int dist)
+{
+  int old = (int) usercmd.upmove;
+
+  // gameLocal.Printf( &quot;stepUp %d %d0, vel, dist );
+  usercmd.upmove = (signed char) vel;
+  usercmd.forwardmove = 0;
+  usercmd.rightmove = 0;
+  buttonMask = 0;
+  buttonMask |= BUTTON_RUN;
+  pulseCount.set_run (dist);
+  usercmd.buttons |= BUTTON_RUN;
+  gameLocal.usercmds[entityNumber] = usercmd;
+
+  return old;
+}</pre>
+
+<p><font color="#000000"><li> note that inorder for the
+<tt><small>stepUp</small></tt> to function correctly it will
+require changes made to the <tt><small>Think</small></tt>
+method in the same file <li> you should assign
+<li></font></p>
+
+<pre>   usercmd.upmove = 0;
+   gameLocal.usercmds[entityNumber].upmove = 0;</pre>
+
+
+<p><font color="#000000"><li> when <tt><small>get_run () ==
+0</small></tt> <li> now you need to make changes to
+<tt><small>pybot.cpp</small></tt> to interpret the
+<tt><small>step_up</small></tt> string passed by python and
+decode its two parameters <ul type=square> <li> follow
+though the <tt><small>reload_weapon</small></tt> changes to
+see which classes need to be changed </ul> <li> it might be
+useful to examine the <tt><small>stepVec</small></tt> method
+and how it is implemented <ul type=square> <li> your
+<tt><small>stepUp</small></tt> method should be
+similar</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Implementing Jump and Crouch in the Python API">1. Implementing Jump and Crouch in the Python API</a><br>
+<a href="#2. Test code: python_doommarine.py">2. Test code: python_doommarine.py</a><br>
+<a href="#3. stepup in botlib.py">3. stepup in botlib.py</a><br>
+<a href="#4. python-bot/botbasic.py">4. python-bot/botbasic.py</a><br>
+<a href="#5. Server side changes">5. Server side changes</a><br>
+<a href="#6. stepUp implementation inside Player.cpp">6. stepUp implementation inside Player.cpp</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

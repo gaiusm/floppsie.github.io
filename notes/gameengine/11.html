@@ -1,0 +1,464 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:56 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. If your ioquake is not allowing Pylego to disableAI
+<a name="1. If your ioquake is not allowing Pylego to disableAI"></a>
+</h2>
+
+
+<p><ul type=disc> <li> then you need to download and
+install this tarball <li></p>
+
+<p><tt>$</tt> <b>ssh mcgreg.comp.glam.ac.uk</b></p>
+
+<pre>&lt;enter your linux password&gt;
+$<b> cd $HOME/Sandpit
+</b>$<b> wget http://floppsie.comp.glam.ac.uk/download/c/ioquake-20161025.tar.gz
+</b>$<b> rm -rf ioquake-latest
+</b>$<b> tar zxf ioquake-20161025.tar.gz
+</b>$<b> exit
+</b># your command line is back on the client
+$<b> cd $HOME/Sandpit/ioquake-latest3/ioquake
+</b>$<b> ./compilequake</b></pre>
+
+
+<p><li> please only do the above if you are experiencing
+problems getting pylego to connect <br>
+</ul></p><hr>
+
+<h2>2. python-bot/bot-legoman/botfiles/bots/botlib.py
+<a name="2. python-bot/bot-legoman/botfiles/bots/botlib.py"></a>
+</h2>
+
+
+<p><ul type=disc> <li> enumerated type of rpc meta types:
+<li></p>
+
+<pre>CHAR, WEIGHT, AI, BASIC, GOAL, COMMANDS = range(1, 7)</pre>
+
+
+<p><li> CHAR <ul type=square> <li> the packets contain
+characteristic information </ul> <li> WEIGHT
+<ul type=square> <li> not yet implemented, but it will
+upload weightings for weapons </ul> <li> AI
+<ul type=square> <li> codes are only just being implemented
+they consist of new commands necessary to enable Python to
+connect to ioquake </ul> <li> the following meta types
+correspond to the AI layered architecture in ioquake (they
+should be extended when time permits) <li> BASIC
+<ul type=square> <li> basic actions which we can tell the
+bot to do (jump, crouch, fire) </ul> <li> GOAL
+<ul type=square> <li> interface to the goal logic of the AI
+engine. </ul> <li> COMMANDS <ul type=square> <li> give bot
+commands (as a team leader) </ul> <li></p>
+
+<pre># AI codes
+SKILL, CONT = range(1, 3)
+# BASIC codes
+JUMP, CROUCH, FIRE = range(1, 4)</pre>
+
+
+<p></ul></p><hr>
+
+<h2>3. class bot: __init__
+<a name="3. class bot: __init__"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>def __init__ (self, server, port):
+    global s
+
+
+    self.init_chars()
+    s = socket(AF_INET, SOCK_STREAM)
+    print &quot;bot trying to connect to the server&quot;,
+    while True:
+        try:
+            s.connect((server, port))
+            break
+        except:
+            print &quot;.&quot;,
+            sys.stdout.flush()
+            time.sleep(1)
+    print &quot;bot connected&quot;</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. class bot: init_chars (self)
+<a name="4. class bot: init_chars (self)"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> initialises
+all the characteristics which can be altered in the Python
+bot <li> no data is sent to the ioquake3 server at this
+point <li> the <tt><small>botlib.py</small></tt> is told the
+characteristic name, type, code, max, min values</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Python bot
+<a name="5. Python bot"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> recall our bot
+code can be simplified to <li></font></p>
+
+<pre>id = botlib.bot(&quot;localhost&quot;, 7000)
+print &quot;hello world, python is alive in Quake 3&quot;
+id.defaults()
+print &quot;bot is now active!&quot;
+id.disableAI()
+while True:
+    print &quot;trying to crouch&quot;
+    id.crouch()
+    print &quot;in crouch position&quot;
+    time.sleep(1)
+    id.jump()
+    print &quot;in jump position&quot;
+    time.sleep(1)
+    id.fire()
+    print &quot;fire&quot;
+    time.sleep(1)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. class bot: defaults
+<a name="6. class bot: defaults"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    def defaults(self):
+        if self.skill() == 1:
+            self.c_name.set(&quot;Pylego&quot;)
+            self.c_gender.set(&quot;male&quot;)
+            self.c_attack_skill.set(0.9)
+            self.c_weaponweights.set(&quot;bots/Easy_w.c&quot;)
+            self.c_aim_skill.set(0.95)
+...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. class bot: skill
+<a name="7. class bot: skill"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def skill (self):
+    &quot;&quot;&quot; this must be the next method called after __init__ &quot;&quot;&quot;
+    print &quot;sending skill&quot;
+    return callBI(AI, SKILL)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. callBI
+<a name="8. callBI"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  callBI - makes a call and returns an byte integer.
+#
+
+def callBI (c1, c2):
+    global s
+
+
+    p = makeHeader(struct.pack(&quot;B&quot;, c1), struct.pack(&quot;B&quot;, c2))
+    for i in p:
+        print ord(i),
+    print
+    s.send(p)
+    return getReturnByte(s)</pre>
+
+
+<p><font color="#000000"><li> the</font>
+<tt><small><font color="#A51933">struct.pack(&quot;B&quot;,</font></small></tt>
+<font color="#A51933">c1)</font> <font color="#000000">packs
+a Python integer <tt><small>c1</small></tt> into a byte <br>
+</ul></font></p><hr>
+
+<h2>9. makeHeader
+<a name="9. makeHeader"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  makeHeader - creates the rpc header
+#
+
+
+def makeHeader (meta, data = &quot;&quot;):
+    s = meta + data
+    return prependLength(s)</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  prependLength - places the length byte at the start of the packet
+#
+
+
+def prependLength (s):
+    print &quot;prepending length of&quot;, len(s)
+    return struct.pack(&quot;B&quot;, len(s)) + s</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. getReturnByte
+<a name="10. getReturnByte"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  getReturnByte - defensively receives the return byte
+#
+
+
+def getReturnByte (s):
+    p = &quot;&quot;
+    while True:
+        p = s.recv(1)
+        if len(p) == 1:
+            print &quot;received packet of length&quot;, ord(p[0])
+            break
+    if ord(p[0]) == 2:
+        while True:
+            p = s.recv(1)
+            if len(p) == 1:
+                break
+        printf(&quot;byte returned has value %d\n&quot;, struct.unpack(&quot;B&quot;, p)[0])
+        return struct.unpack(&quot;B&quot;, p)[0]
+    else:
+        printf(&quot;expecting length of 2 received %d\n&quot;, ord(p[0]))
+    return 0</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Protocol
+<a name="11. Protocol"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> first byte
+contains the packet length <li> so the above code expects
+two bytes <ul type=square> <li> a length byte of value, 2
+<li> the second byte is the data byte which is returned as
+an integer</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>12. setchar - low level function to send a characteristic to the ioquake3 server
+<a name="12. setchar - low level function to send a characteristic to the ioquake3 server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/python-bot/bot-legoman/botfiles/bots/botlib.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#
+#  setchar - send value using code, type, value to the server
+#
+
+def setchar (code, type, value):
+    global s
+
+
+    print &quot;sending characteristic&quot;, code, type, value
+    c = struct.pack(&quot;B&quot;, CHAR)
+    d = struct.pack(&quot;B&quot;, code)
+    if type==&quot;int&quot;:
+        s.send(makeHeader(c, d+struct.pack(&quot;i&quot;, value)))
+    elif type==&quot;float&quot;:
+        s.send(makeHeader(c, d+struct.pack(&quot;f&quot;, value)))
+    elif type==&quot;string&quot;:
+        s.send(makeHeader(c, d+struct.pack((&quot;%ds&quot; % (len(value)+1)), value)))
+    if not getReturnBoolean(s):
+        print &quot;failed to set characteristic&quot;, code, &quot;type&quot;, type, &quot;value&quot;, value</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>13. ioquake3 server must match these rpc requests
+<a name="13. ioquake3 server must match these rpc requests"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+file
+<tt><small>$HOME/Sandpit/ioquake-latest/ioquake3/code/botlib/be_ai_py.c</small></tt>
+and in particular start by understanding the function
+<tt><small>initPy</small></tt> <li> then examine
+<tt><small>testFor</small></tt> and
+<tt><small>waitForCont</small></tt> <li> notice that both
+are very similar <li> notice that
+<tt><small>execFunction</small></tt> is called to handle the
+rpc <ul type=square> <li> a return packet is sent back
+provided that the <tt><small>execFunction</small></tt>
+populated the return buffer </ul> <li> understand that the
+rpc server is a state machine <ul type=square> <li>
+<tt><small>py-&gt;state</small></tt> is set to
+<tt><small>pyInit</small></tt> ,
+<tt><small>pyOut</small></tt> ,
+<tt><small>pyIn</small></tt></font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>14. testFor
+<a name="14. testFor"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/ioquake3/code/botlib/be_ai_py.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">int testFor (py_bot_t *py)
+{
+  if (py-&gt;state == pyInit) {
+    py-&gt;in = 0;
+    py-&gt;out = 0;
+    py-&gt;used = 0;
+    py-&gt;state = pyIn;
+  }
+  if (py-&gt;state == pyIn) {
+    if (getPacket(py, qtrue))
+      py-&gt;state = pyInit;
+    else
+      return qfalse;
+    execFunction(py);
+  }</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/botlib/be_ai_py.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  if (py-&gt;state == pyOut) {
+    if (putPacket(py, qtrue)) {
+      py-&gt;out = 0;
+      py-&gt;used = 0;
+      py-&gt;state = pyInit;
+    } else
+      return qfalse;
+  }
+  return qtrue;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>15. Tutorial
+<a name="15. Tutorial"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> read these
+notes carefully and open up emacs and read the actual code
+being discussed <li> take a pen and paper and now create
+your own notes detailing how a Python call to the method
+<tt><small>ourself</small></tt> is executed
+<ul type=square> <li> your notes should include both client
+and server activity</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. If your ioquake is not allowing Pylego to disableAI">1. If your ioquake is not allowing Pylego to disableAI</a><br>
+<a href="#2. python-bot/bot-legoman/botfiles/bots/botlib.py">2. python-bot/bot-legoman/botfiles/bots/botlib.py</a><br>
+<a href="#3. class bot: __init__">3. class bot: __init__</a><br>
+<a href="#4. class bot: init_chars (self)">4. class bot: init_chars (self)</a><br>
+<a href="#5. Python bot">5. Python bot</a><br>
+<a href="#6. class bot: defaults">6. class bot: defaults</a><br>
+<a href="#7. class bot: skill">7. class bot: skill</a><br>
+<a href="#8. callBI">8. callBI</a><br>
+<a href="#9. makeHeader">9. makeHeader</a><br>
+<a href="#10. getReturnByte">10. getReturnByte</a><br>
+<a href="#11. Protocol">11. Protocol</a><br>
+<a href="#12. setchar - low level function to send a characteristic to the ioquake3 server">12. setchar - low level function to send a characteristic to the ioquake3 server</a><br>
+<a href="#13. ioquake3 server must match these rpc requests">13. ioquake3 server must match these rpc requests</a><br>
+<a href="#14. testFor">14. testFor</a><br>
+<a href="#15. Tutorial">15. Tutorial</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

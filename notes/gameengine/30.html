@@ -1,0 +1,75 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:00 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Patching your version of PGE
+<a name="1. Patching your version of PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you might want to install a patch to
+your version of PGE <ul type=square> <li> this patch fixes a
+bug found when two circles collide at exactly the same time
+</ul> <li> to install this bug fix use the following
+commands <li></p>
+
+<p><tt>$</tt> <b>cd into your top level pge directory</b>
+<tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/pge/pge-feb28.diff</b>
+<tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/pge/pge-march01.diff</b>
+<tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/pge/localrun.sh.in</b>
+<tt><br>
+$</tt> <b>patch -p1 &lt; pge-feb28.diff</b> <tt><br>
+$</tt> <b>patch -p1 &lt; pge-march01.diff</b> <li> notice
+the presence of <tt><small>localrun.sh</small></tt> this
+will appear in your build directory (after you have
+configured and compiled PGE) <li>
+<tt><small>localrun.sh</small></tt> can be used to run your
+Python code ( <tt><small>frozenbubble.py</small></tt> ) and
+will ensure that you pick up your local version of PGE
+rather than the system copy <li> to build PGE please examine
+<a href="25.html">previous notes</a></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Patching your version of PGE">1. Patching your version of PGE</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. How to debug the game engine with emacs/gdb
+<a name="1. How to debug the game engine with emacs/gdb"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these are very brief notes on how
+you can debug your <tt><small>dhewm3</small></tt> engine
+with <tt><small>emacs</small></tt> and
+<tt><small>gdb</small></tt> <ul type=square> <li> this game
+engine will also have had python bots capability added </ul>
+<li> firstly it is a good idea to ensure that you have no
+python bots running on your machine <li></p>
+
+<p><tt>$</tt> <b>ps aux | grep python</b> <li> use the Unix
+command line <tt><small>kill</small></tt> command to kill
+any process running python and doom <br>
+</ul></p><hr>
+
+<h2>2. Build a test map including python bot
+<a name="2. Build a test map including python bot"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>cd Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/python.txt</b> <li>
+now run <tt><small>gdb</small></tt> from within
+<tt><small>emacs</small></tt> <ul type=square> <li> start
+<tt><small>emacs</small></tt> and press F5, which will
+compile dhewm3 and start <tt><small>gdb</small></tt> </ul>
+<li> now exit from dhewm3 <li> in the
+<tt><small>.gdbinit</small></tt> emacs buffer add the line
+<tt><small>break idPlayer::RegisterPython</small></tt>
+before the line <tt><small>run</small></tt>
+<ul type=square> <li> we are informing
+<tt><small>gdb</small></tt> that we wish to add a breakpoint
+in the <tt><small>RegisterPython</small></tt> method </ul>
+<li> now press F5 again <ul type=square> <li> this will run
+<tt><small>gdb</small></tt> and set the breakpoint as
+requested </ul> <li> from a command line terminal run the
+python bot <li> <tt><br>
+$</tt> <b>Sandpit/git-doom3/pybot-dhewm3/python-bot</b>
+<tt><br>
+$</tt> <b>python python_doommarine.py 0</b> <li>
+<tt><small>dhewm3</small></tt> should start, now tell
+<tt><small>dhewm3</small></tt> to load in
+<tt><small>tiny.map</small></tt> <ul type=square> <li> it
+should now connect to your python doom marine <li> and then
+it should stop at the break point in RegisterPython </ul>
+<li> in <tt><small>emacs</small></tt> press <tt><small>M-x
+gdb-many-windows</small></tt> <ul type=square> <li> ie
+<tt><small>&lt;ALT&gt; x gdb-many-windows</small></tt> </ul>
+<li> you can now single step and inspect the game engine
+using the gui/mouse interface of emacs or the command line
+in the <tt><small>gdb</small></tt> window</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. How to debug the game engine with emacs/gdb">1. How to debug the game engine with emacs/gdb</a><br>
+<a href="#2. Build a test map including python bot">2. Build a test map including python bot</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

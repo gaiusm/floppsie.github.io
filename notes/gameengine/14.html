@@ -1,0 +1,188 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:56 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Description of changes made to ioquake to disable C ai
+<a name="1. Description of changes made to ioquake to disable C ai"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/ioquake3/code/game/ai_main.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">int BotAI(int client, float thinktime) {
+  bot_state_t *bs;
+  char buf[1024], *args;
+  int j;
+
+  trap_EA_ResetInput(client);
+
+  bs = botstates[client];
+  if (!bs || !bs-&gt;inuse) {
+    BotAI_Print(PRT_FATAL, &quot;BotAI: client %d is not setup0, client);
+    return qfalse;
+  }
+
+
+  //retrieve the current client state
+  BotAI_GetClientState( client, &amp;bs-&gt;cur_ps );</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/game/ai_main.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">#if 1
+     if (trap_use_c_ai (client))    // new code goes here
+       BotAI_Print(PRT_MESSAGE, &quot;yes found use_c_ai is true !!!!0);
+     else
+       BotAI_Print(PRT_MESSAGE, &quot;yes found use_c_ai is false !!!!0);
+     if (! trap_use_c_ai (client))
+       return qtrue;
+
+       // original code follows
+#endif</pre>
+
+<p><font color="#000000"><li> the above code has since been
+modified as it returns too early <br>
+</ul></font></p><hr>
+
+<h2>2. Introducing a trap
+<a name="2. Introducing a trap"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> notice the new
+trap function <tt><small>trap_use_c_ai (client)</small></tt>
+<li> how is this implemented? <ul type=square> <li> it is an
+ioquake system call which will be used to make calls between
+the main program and the shared library </ul>
+<li></font></p>
+
+
+<p><b><small><small><font color="#196633">ioquake-latest/ioquake3/code/game/g_syscalls.asm:54</font></small></small></b></p>
+
+<pre style="margin-top: 1em">equ trap_GetEnemy            -49
+equ trap_SetEnemy            -50
+equ trap_HaveReachedGoal     -51
+equ trap_use_c_ai            -52
+
+equ memset -101
+equ memcpy -102</pre>
+
+<p><font color="#000000"><li> notice that it is possible to
+add extra traps in descending order from
+<tt><small>-53</small></tt> to <tt><small>-101</small></tt>
+<li></font> <b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/game/g_syscalls.c:170</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">// new code goes here!
+int trap_use_c_ai( int ch) {
+  return syscall( G_USE_C_AI, ch );
+}
+// end of new code</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/game/g_local.h</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">void    trap_GetEnemy (int num, int ch, int *enemy);
+void    trap_HaveReachedGoal (int num, int ch);
+int    trap_use_c_ai (int ch);   // new code goes here
+void trap_GetServerinfo( char *buffer, int bufferSize );
+void trap_SetBrushModel( gentity_t *ent, const char *name );</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/game/g_public.h:215</font></small></small></b></p>
+
+<pre style="margin-top: 1em">   G_GETENEMY, // (int clientNum, int *enemy) // gaius added this
+   G_SETENEMY, // (int clientNum, int enemy) // gaius added this
+   G_HAVEREACHEDGOAL, // (int clientNum, int enemy) // gaius added this
+   G_USE_C_AI,  // this allows us to test whether the C AI is enabled
+
+
+   G_GET_ENTITY_TOKEN,   // qboolean ( char *buffer, int bufferSize )
+   // Retrieves the next string token from the entity spawn text, returning</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/server/sv_game.c</font></small></small></b></p>
+
+<pre style="margin-top: 1em">    return SV_SetEnemy (args[1], args[2], args[3] ); // gaius
+  case G_HAVEREACHEDGOAL:
+    return SV_HaveReachedGoal (args[1], args[2] ); // gaius
+  case G_USE_C_AI:  // new code here
+    return SV_use_c_ai (args[1]); // new code here
+
+
+  case G_SET_CONFIGSTRING:
+    SV_SetConfigstring( args[1], VMA(2) );</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+ioquake-latest/ioquake3/code/server/sv_bot.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">int SV_use_c_ai (int client)
+{
+  return use_c_ai (client);
+}</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Description of changes made to ioquake to disable C ai">1. Description of changes made to ioquake to disable C ai</a><br>
+<a href="#2. Introducing a trap">2. Introducing a trap</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

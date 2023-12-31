@@ -1,0 +1,170 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:02 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Chisel floor levels and doom3 botlib experimentation, documentation andextension
+<a name="1. Chisel floor levels and doom3 botlib experimentation, documentation andextension"></a>
+</h2>
+
+
+<p><ul type=disc> <li> for your coursework you need to
+alter chisel and also extend the doom3 botlib API
+<ul type=square> <li> during this tutorial we will attempt
+to modify the floor level in chisel <li> make a start on
+changing the botlib API <ul type=circle> <li> this section
+will start with some experimentation, to gain confidence
+about the botlib API</p>
+
+<p></ul> </ul> </ul></p><hr>
+
+<h2>2. Step 1: new emacs configuration file
+<a name="2. Step 1: new emacs configuration file"></a>
+</h2>
+
+
+<p><ul type=disc> <li> download and install a new emacs
+configuration file <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>rm -f skeleton-doom3-data.tar.gz</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/skeleton-doom3-data.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxvf skeleton-doom3-data.tar.gz</b> <li> this
+new emacs configuration has the cheat sheet built in via,
+F10 <ul type=square> <li> other useful features (shown in
+the cheat sheet) </ul> <li> open up a terminal and update
+your dhewm3 code <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/git-doom3/pybot-dhewm3</b>
+<tt><br>
+$</tt> <b>git pull</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/git-doom3</b> <tt><br>
+$</tt> <b>rm -rf build</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>3. Step 2: chisel floor levels
+<a name="3. Step 2: chisel floor levels"></a>
+</h2>
+
+
+<p><ul type=disc> <li> currently
+<tt><small>pen2map</small></tt> converts a penguin tower
+file into a doom3 map file <ul type=square> <li> however map
+floor is completely level <li> it would be good
+aesthetically to introduce minor floor level changes between
+rooms </ul> <li> start up <tt><small>emacs</small></tt> and
+press F7 and then press F10 <li> in
+<tt><small>pen2map.py</small></tt> search forward for
+<tt><small>floorLevel</small></tt> <li> notice how it is
+initialised to zero in the <tt><small>roomInfo</small></tt>
+constructor <li> modify this so that it is 0 for an even
+room number and -0.25 for an odd room number <li> test these
+changes on a two room map <ul type=square> <li> test these
+changes on a three room map <li> test these changes on a
+four room map </ul> <li> a unit of 1 in a penguin tower map
+represents 48 inches in the doom3 world <li> homework: see
+if you can think of a better algorithm in which to change
+floor levels</p>
+
+<p></ul></p><hr>
+
+<h2>4. Step 3: understanding more about the Python Bot API
+<a name="4. Step 3: understanding more about the Python Bot API"></a>
+</h2>
+
+
+<p><ul type=disc> <li> quit <tt><small>emacs</small></tt>
+<li> make sure that dhewm3 runs in a window (not full
+screen) <li> now set the environment variable
+<tt><small>DEBUG_PYBOT</small></tt> from your command line,
+then restart emacs <ul type=square> <li> this will allow you
+to debug the python bot and the doom3 game engine </ul>
+<li></p>
+
+<p><tt>$</tt> <b>export DEBUG_PYBOT=yes</b> <tt><br>
+$</tt> <b>emacs &amp;</b> <li> use emacs to load the file
+<tt><small>$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/python_doommarine.py</small></tt>
+<ul type=square> <li> remember <tt><small>$HOME</small></tt>
+is shorthand for <tt><small>/home/yourusername</small></tt>
+<li> recall that you can use the &lt;tab&gt; key to complete
+filename and directory names in emacs </ul> <li> now press
+F12 and when this has completed F5 <ul type=square> <li>
+this will compile dhewm3 (F12) and then debug dhewm3 (F5)
+<li> press F10 for help </ul> <li> make sure that dhewm3 has
+been configured to run in a window (not full screen)
+<ul type=square> <li> if not reconfigure it and quit dhewm3
+and then press F5 in emacs </ul> <li> open up another
+terminal <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/onebot.txt</b> <li>
+open up another terminal <li> <tt><br>
+$</tt> <b>cd
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot</b> <tt><br>
+$</tt> <b>python3 python_doommarine.py 0</b> <li> this will
+run the python bot from the command line and allows you to
+see any debugging output <li> return to the dhewm program
+and pull down the in game console (using ~) <li> now type:
+<ul type=square> <li> <tt><small>dmap tiny.map</small></tt>
+<li> <tt><small>map tiny.map</small></tt> </ul> <li> you
+should see Python bot appear and run in a circle
+<ul type=square> <li> the game engine is being run under the
+debugger <li> python bot is being run from the command line
+</ul> <li> see if you can change
+<tt><small>python_doommarine_1.py</small></tt> to make
+Python bot walk around in a circle rather than run <li>
+create two functions <tt><small>walkCircle</small></tt> and
+<tt><small>runCircle</small></tt> <li> finally change the
+program to make Python bot turn without walking
+<ul type=square> <li> see if you can change botlib.py so
+that an turn angle of 0 degrees is straight up in the
+penguin map </ul> <li> you will need to read and study the
+file
+<tt><small>$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botlib.py</small></tt>
+<li> homework, write out a list of functions implemented in
+<tt><small>botlib.py</small></tt> together with their
+functionality <ul type=square> <li> complete the
+walkCircle/runCircle and turn exercises from above </ul>
+<li> consider what extra basic movements are desirable in
+<tt><small>botlib.py</small></tt></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Chisel floor levels and doom3 botlib experimentation, documentation andextension">1. Chisel floor levels and doom3 botlib experimentation, documentation andextension</a><br>
+<a href="#2. Step 1: new emacs configuration file">2. Step 1: new emacs configuration file</a><br>
+<a href="#3. Step 2: chisel floor levels">3. Step 2: chisel floor levels</a><br>
+<a href="#4. Step 3: understanding more about the Python Bot API">4. Step 3: understanding more about the Python Bot API</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:52 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. PGE Predictive Game Engine
+<a name="1. PGE Predictive Game Engine"></a>
+</h2>
+
+
+<p><ul type=disc> <li> purpose <li> to provide a simple
+reference model for predictive collision detection between
+simple 2D objects <li> as an educational experiment</p>
+
+<p></ul></p><hr>
+
+<h2>2. Overview
+<a name="2. Overview"></a>
+</h2>
+
+
+<p><ul type=disc> <li> a game engine will simulate a 2D
+environment which understands and polygons, circles <li>
+each circle and polygon can be fixed or unfixed <li> each
+object may be given a mass, velocity and acceleration <li>
+PGE predicts the time of the next collision <li> and draws
+the world for each frame <li> the game engine is a discrete
+event simulator <ul type=square> <li> so an event is either
+a collision event or a draw frame event</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Limitations
+<a name="3. Limitations"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the game engine does not model
+rotation of objects <li> collision response has a fixed
+inelastic property <ul type=square> <li> no provision to
+have a per object inelastic or elastic property <li> easy to
+do, just not done yet </ul> <li> contact resolution code
+could be improved</p>
+
+<p></ul></p><hr>
+
+<h2>4. Points of note
+<a name="4. Points of note"></a>
+</h2>
+
+
+<p><ul type=disc> <li> designed to be easy to debug <li>
+version 1 used a <tt><small>macroObject</small></tt> module
+which allows more complex objects to be created <li> the 2D
+world is populated via <tt><small>macroObject</small></tt> s
+<li> uses a fractional data type for the render and
+macroObjects <ul type=square> <li> allows for much easier
+debugging</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Structure
+<a name="5. Structure"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26873693.png" alt="Image grohtml-26873693.png"></p>
+
+<p style="margin-top: 1em"><big></ul></big></p><hr>
+
+<h2>6. Fractions
+<a name="6. Fractions"></a>
+</h2>
+
+
+<p><ul type=disc> <li> <tt><small>pge</small></tt> is
+currently 20244 lines of code <ul type=square> <li>
+<tt><small>Fractions</small></tt> accounts for 2973 lines of
+code </ul> <li> nevertheless it provides good visual clues
+when debugging <ul type=square> <li> much easier to spot
+1/80 than 0.0125 </ul> <li> also knows about certain
+symbolic values:
+<img src="grohtml-2687369-4.png" alt="Image grohtml-2687369-4.png">
+,
+<img src="grohtml-2687369-5.png" alt="Image grohtml-2687369-5.png">
+,
+<img src="grohtml-2687369-6.png" alt="Image grohtml-2687369-6.png">
+,
+<img src="grohtml-2687369-7.png" alt="Image grohtml-2687369-7.png">
+<ul type=square> <li> symbolic numbers are only resolved
+once required, thus they might disappear if used
+together</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>7. Example of a debugging session with GDB and PGE
+<a name="7. Example of a debugging session with GDB and PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> let us assume there is a bug
+somewhere in the <tt><small>macroObject_rotate</small></tt>
+function <li> an obvious way to solve this is to use
+<tt><small>gdb</small></tt> and single step the function,
+printing out the variable contents as they are created
+<li></p>
+
+
+<p><b><small><small><font color="#196633">pge/c/macroObjects.c</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">macroObjects_Macro macroObjects_rotate (macroObjects_Macro m,
+                                        Points_Point p, Fractions_Fract r)
+{
+  PolyMatrix3D_Matrix a;
+  PolyMatrix3D_Matrix b;
+  PolyMatrix3D_Matrix c;
+  PolyMatrix3D_Matrix d;
+  macroObjects_Macro n;
+  /* a: translate point, p, to the origin.  */
+  a = Transform3D_translate (Points_negatePoint (Points_dupPoint (p)));
+  b = Transform3D_rotate (r);  /* b: rotate, r, radians.  */
+  c = Transform3D_translate (p);  /* c: translate from origin to point, p.  */
+  d = PolyMatrix3D_mult3 (a, b, c);  /* d: combine a, b and c transforms.  */
+  n = macroObjects_initMacro ();
+  n = foreachObject (n, m, d);   /* n: for every object in m transform using, d. */
+  return n;
+}</pre>
+
+
+<p><font color="#000000"><li> <tt><br>
+$</tt> <b>make npn</b> <tt><br>
+$</tt> <b>gdb a.out <br>
+(gdb)</b> <tt>break macroObjects_rotate</tt> <b><br>
+(gdb)</b> <tt>run <br>
+Breakpoint 24, macroObjects_rotate (m=0x6797f0, p=...,
+r=0x697ef0) \ <br>
+at macroObjects.mod:562</tt> <b><br>
+(gdb)</b> <tt>next</tt> <b><br>
+(gdb)</b> <tt>print dmat(a) <br>
++- <br>
+| 1 0 0 <br>
+| 0 1 0 <br>
+| -.1/4 -.1/4 1 <br>
++- 1 = void</tt> <b><br>
+(gdb)</b> <tt>next</tt> <li> <b><br>
+(gdb)</b> <tt>print dmat(b) <br>
++- <br>
+| cos((pi/2)) -1 0 <br>
+| sin((pi/2)) cos((pi/2)) 0 <br>
+| 0 0 1 <br>
++- 2 = void</tt> <b><br>
+(gdb)</b> <tt>next</tt> <b><br>
+(gdb)</b> <tt>print dmat(c) <br>
++- <br>
+| 1 0 0 <br>
+| 0 1 0 <br>
+| .1/4 .1/4 1 <br>
++- 3 = void</tt> <li> <b><br>
+(gdb)</b> <tt>next</tt> <b><br>
+(gdb)</b> <tt>print dmat(d) <small><small><br>
++- <br>
+|
+((1*((cos((pi/2))*1)+0))+((0*((sin((pi/2))*1)+((cos((pi/2))*0)+0)))+0))
+\ <br>
+
+((1*((cos((pi/2))*0)+-1))+((0*((sin((pi/2))*0)+((cos((pi/2))*1)+0)))+0))
+\ <br>
+
+((1*((cos((pi/2))*0)+0))+((0*((sin((pi/2))*0)+((cos((pi/2))*0)+0)))+0))
+\ <br>
+|
+((0*((cos((pi/2))*1)+0))+((1*((sin((pi/2))*1)+((cos((pi/2))*0)+0)))+0))
+\ <br>
+
+((0*((cos((pi/2))*0)+-1))+((1*((sin((pi/2))*0)+((cos((pi/2))*1)+0)))+0))
+\ <br>
+
+((0*((cos((pi/2))*0)+0))+((1*((sin((pi/2))*0)+((cos((pi/2))*0)+0)))+0))
+\ <br>
+|
+((-.1/4*((cos((pi/2))*1)+0))+((-.1/4*((sin((pi/2))*1)+((cos((pi/2))*0)+0)))+.1/4))
+\ <br>
+
+((-.1/4*((cos((pi/2))*0)+-1))+((-.1/4*((sin((pi/2))*0)+((cos((pi/2))*1)+0)))+.1/4))
+\ <br>
+
+((-.1/4*((cos((pi/2))*0)+0))+((-.1/4*((sin((pi/2))*0)+((cos((pi/2))*0)+0)))+1))
+<br>
++- 4 = void</small></small></tt> <li> <b><br>
+(gdb)</b> <tt>print PolyMatrix3D_eval(d) <br>
+4 = (POINTER TO RECORD ... END ) 0x6876e0</tt> <b><br>
+(gdb)</b> <tt>print dmat(d) <br>
++- <br>
+| 0 -1 0 <br>
+| 1 0 0 <br>
+| 0 .1/2 1 <br>
++- 15 = void <br>
+</ul></tt></font></p><hr>
+
+<h2>8. Performance testing of a game engine
+<a name="8. Performance testing of a game engine"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> let us build
+and run snooker <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>make
+snooker</b></font></p>
+
+<pre>gm2 -pg -g -fiso -fextended-opaque -fonlylink snooker.mod
+$<b> ./a.out</b></pre>
+
+
+<p><font color="#000000"><li> notice the
+<tt><small>-pg</small></tt> flag to gm2 (the same applies to
+gcc) <li> this flag turns on runtime profiling <li> <tt><br>
+$</tt> <b>gprof a.out</b></font></p>
+<pre>Flat profile:
+
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total
+ time   seconds   seconds    calls   s/call   s/call  name
+ 34.22      2.06     2.06    99486     0.00     0.00  initEntity
+ 30.15      3.88     1.82 132186249     0.00     0.00  Indexing_InBounds
+ 29.49      5.65     1.78 132183929     0.00     0.00  Indexing_GetIndice
+  1.41      5.74     0.09                             Indexing_DebugIndex
+  1.08      5.80     0.07     2320     0.00     0.00  Indexing_PutIndice
+  0.50      5.83     0.03   236365     0.00     0.00  unMarkEntity</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Useful to profile version 1 of PGE
+<a name="9. Useful to profile version 1 of PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> version 1 was
+completely implemented in a 3rd generation language
+(Modula-2) <li> we can profile all this code and optimize
+the hotspots <li> as above the
+<tt><small>InBounds</small></tt> was optimized (removed) and
+this gave a 30% performance improvement <li> version 1 did
+not link up to Pygame and the game had to be written in
+Modula-2 as well <li> version 2 interacts with Pygame and
+has a Python interface</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Structure of version 2 PGE
+<a name="10. Structure of version 2 PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26873694.png" alt="Image grohtml-26873694.png"></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><big></ul></big></font></p> <hr>
+
+<h2>11. Conclusion to the construction of version 2 of PGE
+<a name="11. Conclusion to the construction of version 2 of PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> implemented in
+Modula-2, C, C++ and Python <li> the Modula-2 code is
+translated into C or C++ code <ul type=square> <li> the
+translated code conforms to GNU coding standards and is very
+neatly formatted </ul> <li> the
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/homepage.html">Python interface documentation</a>
+is available on line</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>12. Obtaining and building pge for the coursework
+<a name="12. Obtaining and building pge for the coursework"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you can either
+obtain pge from the debian package - or from the git
+repository <ul type=square> <li> I&rsquo;d advise the git
+repository as it will contain very minor incremental
+improvements </ul> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir -p Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>git clone https://github.com/gaiusm/pge</b>
+<tt><br>
+</ul></tt></font></p><hr>
+
+<h2>13. Building PGE
+<a name="13. Building PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you can build
+a local copy by: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir -p Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>rm -rf build-pge</b> <tt><br>
+$</tt> <b>mkdir build-pge</b> <tt><br>
+$</tt> <b>cd build-pge</b> <tt><br>
+$</tt> <b>../pge/configure --prefix=$HOME/opt
+--enable-langc</b> <tt><br>
+$</tt> <b>make</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>14. Testing your local copy of PGE
+<a name="14. Testing your local copy of PGE"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/build-pge</b> <tt><br>
+$</tt> <b>./localrun.sh
+../pge/examples/breakout/breakout.py</b></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt></ul></tt></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. PGE Predictive Game Engine">1. PGE Predictive Game Engine</a><br>
+<a href="#2. Overview">2. Overview</a><br>
+<a href="#3. Limitations">3. Limitations</a><br>
+<a href="#4. Points of note">4. Points of note</a><br>
+<a href="#5. Structure">5. Structure</a><br>
+<a href="#6. Fractions">6. Fractions</a><br>
+<a href="#7. Example of a debugging session with GDB and PGE">7. Example of a debugging session with GDB and PGE</a><br>
+<a href="#8. Performance testing of a game engine">8. Performance testing of a game engine</a><br>
+<a href="#9. Useful to profile version 1 of PGE">9. Useful to profile version 1 of PGE</a><br>
+<a href="#10. Structure of version 2 PGE">10. Structure of version 2 PGE</a><br>
+<a href="#11. Conclusion to the construction of version 2 of PGE">11. Conclusion to the construction of version 2 of PGE</a><br>
+<a href="#12. Obtaining and building pge for the coursework">12. Obtaining and building pge for the coursework</a><br>
+<a href="#13. Building PGE">13. Building PGE</a><br>
+<a href="#14. Testing your local copy of PGE">14. Testing your local copy of PGE</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

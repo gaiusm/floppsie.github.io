@@ -1,0 +1,372 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:58 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. PGE Input and Timers
+<a name="1. PGE Input and Timers"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PGE is a Predictive physics Game
+Engine <ul type=square> <li> it operates by predicting the
+time of next collision rather than using a frame based
+approach</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. PGE Screen and world coordinates 1m x 1m
+<a name="2. PGE Screen and world coordinates 1m x 1m"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left" style="margin-top: 1em"><img src="grohtml-26884242.png" alt="Image grohtml-26884242.png"></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>3. PGE input
+<a name="3. PGE input"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PyGame keyboard and mouse events can
+be utilised in PGE <li> you can define a call back and
+register it within the game <li></p>
+
+
+<p><b><small><small><font color="#196633">examples/breakout/breakout.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    ...
+    pge.register_handler (myquit, [QUIT])
+    pge.register_handler (key_pressed, [KEYDOWN])
+    pge.register_handler (mouse_hit, [MOUSEBUTTONDOWN])
+    ...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Breakout input handler functions
+<a name="4. Breakout input handler functions"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">examples/breakout/breakout.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def finish_game ():
+    sys.exit (0)
+
+def myquit (e):
+    print &quot;goodbye&quot;
+    finish_game ()
+
+
+def key_pressed (e):
+    if e.key == K_ESCAPE:
+        myquit (e)</pre>
+
+
+<p><font color="#000000"><li> notice that the
+<tt><small>PyGame Event</small></tt> object
+<tt><small>e</small></tt> is passed into
+<tt><small>myquit</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>5. Breakout mouse input
+<a name="5. Breakout mouse input"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">examples/breakout/breakout.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def mouse_hit (e):
+    global gb
+    mouse = pge.pyg_to_unit_coord (e.pos)
+    if e.button == 1:
+        # left button
+        gb.put_xvel (gb.get_xvel ()-0.3)
+    elif e.button == 3:
+        # right button
+        gb.put_xvel (gb.get_xvel ()+0.3)
+    elif gb.moving_towards (mouse[0], mouse[1]):
+        # middle button
+        pos = gb.get_unit_coord ()
+        gb.apply_impulse (pge.sub_coord (mouse, pos), 0.4)
+    else:
+        # middle button
+        gb.put_yvel (gb.get_yvel ()+0.4)</pre>
+
+
+<p><font color="#000000"><li> notice a series of helper
+function/methods exist <li> <tt><small>mouse =
+pge.pyg_to_unit_coord (e.pos)</small></tt>
+<ul type=square> <li> mouse is a unit vector
+<tt><small>[x,y]</small></tt> containing the current mouse
+position <li> x and y are in the PGE world range
+<tt><small>0.0</small></tt> to <tt><small>1.0</small></tt>
+</ul> <li> <tt><small>pos = gb.get_unit_coord
+()</small></tt> <ul type=square> <li>
+<tt><small>pos</small></tt> is a unit vector containing the
+gold ball position </ul> <li> we can test whether an object
+is moving towards a position using <li></font></p>
+
+<pre>mouse = pge.pyg_to_unit_coord (e.pos)
+if gb.moving_towards (mouse[0], mouse[1]):
+  ...</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Newton&rsquo;s laws of motion
+<a name="6. Newton&rsquo;s laws of motion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> he stated
+three physical laws that, together, laid the foundation for
+classical mechanics <li> describe the relationship between a
+body and the forces acting upon it <li> describe its motion
+in response to those forces</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. Summary of the First law
+<a name="7. Summary of the First law"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> in an inertial
+reference frame, an object either remains at rest or
+continues to move at a constant velocity, unless acted upon
+by a net force</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. Summary of the Second law
+<a name="8. Summary of the Second law"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> in an inertial
+reference frame, the vector sum of the forces F on an object
+is equal to the mass m of that object multiplied by the
+acceleration a of the object: <li></font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26884243.png" alt="Image grohtml-26884243.png"></font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. Summary of the Third law
+<a name="9. Summary of the Third law"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> when one body
+exerts a force on a second body, the second body
+simultaneously exerts a force equal in magnitude and
+opposite in direction on the first body <li> these three
+laws of motion were first compiled by Isaac Newton in his
+Philosophiae Naturalis Principia Mathematica (Mathematical
+Principles of Natural Philosophy), first published in 1687
+<li> Newton used them to explain and investigate the motion
+of many physical objects and systems</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. Adding energy into the PGE world
+<a name="10. Adding energy into the PGE world"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> one of the
+considerations in building a game engine, is how to
+introduce new energy into the simulation <li> you need to be
+careful, too much and objects become chaotic
+<ul type=square> <li> too little and the objects are starved
+of motion </ul> <li> the amount of energy depends whether
+the object collisions are elastic or inelastic <li> elastic
+object collisions, energy is never lost <li> inelastic
+object collisions, energy is lost (modelling friction, heat,
+noise energy)</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Applying an impulse to an object
+<a name="11. Applying an impulse to an object"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">examples/breakout/breakout.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    gb.apply_impulse (pge.sub_coord (mouse, ball), 0.4)</pre>
+
+
+<p><font color="#000000"><li> applies an impulse to an
+object <li> an impulse is a non-physics term and in the game
+engine it means <li> a force applied instantaneously to an
+object <li> notice that in Newtons 2
+<small><small><small>nd</small></small></small> law we see
+the equation</font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26884244.png" alt="Image grohtml-26884244.png"></font></p>
+
+<p><font color="#000000"><li> the acceleration, implies
+time</font></p>
+
+
+<p align="left"><font color="#000000"><img src="grohtml-26884245.png" alt="Image grohtml-26884245.png"></font></p>
+
+<p><font color="#000000"><li> we don&rsquo;t necessarily
+have a change in velocity over some time
+<ul type=square> <li> we simply want to introduce energy
+into the engine </ul> <li> we will see this same problem
+when handling collisions <ul type=square> <li> it is not
+always necessary to model the world exactly to get the
+desired effect in the game engine </ul> <li> we can also
+instantaneously change an objects velocity
+<ul type=square> <li> violating Newtons 2
+<small><small><small>nd</small></small></small> law </ul>
+<li></font> <b><small><small><font color="#196633"><br>
+
+examples/breakout/breakout.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">        gb.put_yvel (gb.get_yvel ()+0.4)</pre>
+
+
+<p><font color="#000000"><li> obviously we need to be
+careful with these hacks, or the game will feel unnatural
+<br>
+</ul></font></p><hr>
+
+<h2>12. Timers
+<a name="12. Timers"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> PGE allows
+users to introduce timer callbacks <li> here is how a simple
+second count down might be implemented <li></font></p>
+
+
+<p><b><small><small><font color="#196633">examples/breakout/breakout.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">def timer (event = None, unused = None):
+    global seconds_left, previous
+    if seconds_left &gt;= 0:
+        pge.at_time (1.0, timer)
+        s = &quot;%d&quot; % seconds_left
+        if previous != None:
+            previous.rm ()
+        previous = pge.text (0.8, 0.9, s, white, 100, 1)
+        seconds_left -= 1</pre>
+
+
+<p><font color="#000000"><li> which when called from
+<tt><small>main()</small></tt> will display the current
+number of seconds left and register itself to be called
+<tt><small>1.0</small></tt> seconds in the future <li>
+<tt><small>at_time</small></tt> returns an integer
+<tt><small>id</small></tt> representing the timer created
+<li> this timer can be cancelled using <tt><small>at_cancel
+(id)</small></tt> <li> if it is cancelled, the callback
+still occurs, your program could check cancellation by:
+<li></font></p>
+
+<pre>def timer (event = None, unused = None):
+    global seconds_left, previous
+    if seconds_left &gt;= 0:
+        if event != None and event.was_cancelled ():
+           print &quot;event was cancelled&quot;
+        pge.at_time (1.0, timer)
+        s = &quot;%d&quot; % seconds_left
+        if previous != None:
+            previous.rm ()
+        previous = pge.text (0.8, 0.9, s, white, 100, 1)
+        seconds_left -= 1</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>13. Conclusion
+<a name="13. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> we have seen
+how energy can be added into PGE <li> we have also explored
+some of the API calls surrounding <ul type=square> <li>
+timer events <li> mouse movement <li> object movement and
+how to detect if two objects are moving towards each other
+</ul> <li> next week we will examine how the an application
+can interact with collisions</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. PGE Input and Timers">1. PGE Input and Timers</a><br>
+<a href="#2. PGE Screen and world coordinates 1m x 1m">2. PGE Screen and world coordinates 1m x 1m</a><br>
+<a href="#3. PGE input">3. PGE input</a><br>
+<a href="#4. Breakout input handler functions">4. Breakout input handler functions</a><br>
+<a href="#5. Breakout mouse input">5. Breakout mouse input</a><br>
+<a href="#6. Newton&rsquo;s laws of motion">6. Newton&rsquo;s laws of motion</a><br>
+<a href="#7. Summary of the First law">7. Summary of the First law</a><br>
+<a href="#8. Summary of the Second law">8. Summary of the Second law</a><br>
+<a href="#9. Summary of the Third law">9. Summary of the Third law</a><br>
+<a href="#10. Adding energy into the PGE world">10. Adding energy into the PGE world</a><br>
+<a href="#11. Applying an impulse to an object">11. Applying an impulse to an object</a><br>
+<a href="#12. Timers">12. Timers</a><br>
+<a href="#13. Conclusion">13. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

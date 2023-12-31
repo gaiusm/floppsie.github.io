@@ -1,0 +1,349 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:04 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Implementing labels in chisel/pen2map
+<a name="1. Implementing labels in chisel/pen2map"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need to back port the
+changes you made last week into your working chisel
+<tt><small>$HOME/Sandpit/chisel</small></tt> <li> an easy
+way to do this is to use <tt><small>diff</small></tt> and
+<tt><small>patch</small></tt> <ul type=square> <li> hint
+read <tt><small>man diff</small></tt> and <tt><small>man
+patch</small></tt> </ul> <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/labels/chisel</b>
+<tt><br>
+$</tt> <b>git diff</b> <tt><br>
+$</tt> <b>git diff &gt; $HOME/Sandpit/labels/label-diffs</b>
+<tt><br>
+$</tt> <b>cd $HOME/Sandpit/chisel</b> <tt><br>
+$</tt> <b>patch -p1 &lt;
+$HOME/Sandpit/labels/label-diffs</b> <li> the command
+<tt><small>git diff</small></tt> generates a list of
+differences between each file and the last git clone <li>
+the command <tt><small>patch</small></tt> tries to apply
+these differences to the current directory
+<ul type=square> <li> this is used a lot in industry and it
+is a very efficient way to distribute source code changes
+<li> occasionally you need to manual apply a patch which
+fails <li> normally <tt><small>patch</small></tt> will
+complain and store a <tt><small>.rej</small></tt> file </ul>
+<li> these notes are better read using the pdf version <li>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/chisel/maps/label3.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">define 1 room 1
+define s worldspawn
+define i light
+define a ammo ammo_shells_large 16
+define l label the_ammo_loc [a]
+define P monster python_doommarine_mp
+
+
+####################################
+# 1                                #
+#          P                       #
+#  s                               #
+#                      l           #
+#                                  #
+####################################</pre>
+
+
+<p><font color="#000000"><li> given the map source file
+above can be transformed into a pen map using <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>python3 txt2pen.py ../maps/label3.txt</b> <li> if
+you want autolights you need to add the
+<tt><small>-l</small></tt> option <li></font></p>
+<pre>ROOM 1
+   WALL
+     1 7  36 7
+     36 7  36 1
+     36 1  1 1
+     1 1  1 7
+   MONSTER python_doommarine_mp AT 12 5
+   AMMO ammo_shells_large AMOUNT 16 AT 24 4
+   SPAWN PLAYER AT 4 4
+   INSIDE AT 4 5
+   LABEL AT 24 4 the_ammo_loc
+END
+
+END.</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>2. Adding labels to chisel/pen2map
+<a name="2. Adding labels to chisel/pen2map"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> keep the
+comment grammer up to date <li></font></p>
+
+
+<p><b><small><small><font color="#196633">python/pen2map.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">roomDesc := &quot;ROOM&quot; integer
+             { doorDesc | wallDesc | treasureDesc | ammoDesc |
+               lightDesc | insideDesc | weaponDesc | monsterDesc |
+               spawnDesc | defaultDesc | soundDesc | labelDesc } =:</pre>
+
+
+<p><font color="#000000"><li> which states a room starts
+with a keyword <tt><small>ROOM</small></tt> followed by an
+integer followed by a description <ul type=square> <li> one
+of which is the <tt><small>labelDesc</small></tt> </ul>
+<li></font> <b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">labelDesc := &rsquo;LABEL&rsquo; &rsquo;AT&rsquo; posDesc string =:</pre>
+
+
+<p><font color="#000000"><li> the grammer comment is at the
+top of the source file in a multi line comment <li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">class roomInfo:
+    def __init__ (self, r, w, d):
+        self.walls = orderWalls (r, w)
+        ...
+        self.floorLevel = None
+        self.inside = None
+        self.defaultColours = {}
+        self.defaultTextures = {}
+        self.sounds = []
+        self.labels = []</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">     def addSound (self, s, pos):
+         self.sounds += [[s, pos]]
+     def addLabel (self, label, pos):
+        self.labels += [[label, pos]]</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def roomDesc ():
+    global curRoom, curInteger, curRoomNo, verbose
+    if expecting ([&rsquo;ROOM&rsquo;]):
+        expect (&quot;ROOM&quot;)
+        if integer ():
+            curRoomNo = curInteger
+            curRoom = newRoom (curRoomNo)
+            if debugging:
+                print(&quot;roomDesc&quot;, curRoomNo)
+            while expecting ([&rsquo;DOOR&rsquo;, &rsquo;WALL&rsquo;, &rsquo;TREASURE&rsquo;, &rsquo;AMMO&rsquo;, &rsquo;WEAPON&rsquo;, &rsquo;LIGHT&rsquo;, &rsquo;INSIDE&rsquo;, &rsquo;MONSTER&rsquo;, &rsquo;SPAWN&rsquo;, &rsquo;DEFAULT&rsquo;, &rsquo;SOUND&rsquo;, &rsquo;LABEL&rsquo;]):
+                if expecting ([&rsquo;DOOR&rsquo;]):
+                    doorDesc ()
+                elif expecting ([&rsquo;WALL&rsquo;]):
+                    wallDesc ()</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">                ...
+                elif expecting ([&rsquo;WEAPON&rsquo;]):
+                    weaponDesc ()
+                elif expecting ([&rsquo;LABEL&rsquo;]):
+                    labelDesc ()
+                elif expecting ([&rsquo;LIGHT&rsquo;]):
+                    lightDesc ()
+                elif expecting ([&rsquo;INSIDE&rsquo;]):
+                    insideDesc ()
+                elif expecting ([&rsquo;MONSTER&rsquo;]):
+                    monsterDesc ()
+                ...
+            expect (&rsquo;END&rsquo;)
+            return True
+        else:
+            errorLine (&rsquo;expecting an integer after ROOM&rsquo;)
+    return False</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+<pre style="margin-top: 1em">#
+#  labelDesc := &rsquo;LABEL&rsquo; &rsquo;AT&rsquo; posDesc string =:
+#
+
+
+def labelDesc ():
+    expect (&rsquo;LABEL&rsquo;)
+    expect (&rsquo;AT&rsquo;)
+    if posDesc ():
+        label = get ()
+        curRoom.addLabel (label, curPos)
+        return True
+    else:
+        errorLine (&rsquo;expecting a position for a label&rsquo;)
+    return False</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def generateWeapons (o, e):
+    n = 1
+    for r in list(rooms.keys ()):
+        if debugging:
+            print(rooms[r].weapons)
+        for weapon_kind, xy in rooms[r].weapons:
+            o.write (&quot;// entity &quot; + str (e) + &rsquo;\n&rsquo;)
+            o.write (&quot;{\n&quot;)
+            o.write (&rsquo;    &quot;inv_item&quot; &quot;4&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;classname&quot; &quot;&rsquo; + weapon_kind + &rsquo;&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;name&quot; &quot;&rsquo; + weapon_kind + &rsquo;&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;origin&quot; &quot;&rsquo;)
+            xyz = toIntList (xy) + [-invSpawnHeight]
+            xyz = subVec (xyz, [minx, miny, getFloorLevel (r)])
+            v = midReposition (xyz)
+            o.write (&rsquo;%f %f %f&quot;\n&rsquo; % (v[0], v[1], v[2]))
+            o.write (&quot;}\n&quot;)
+            n += 1
+            e += 1
+    return o, e</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def generateLabels (o, e):
+    n = 1
+    for r in list(rooms.keys ()):
+        if debugging:
+            print (rooms[r].labels)
+        for label_desc, xy in rooms[r].labels:
+            o.write (&quot;// entity &quot; + str (e) + &rsquo;\n&rsquo;)
+            o.write (&quot;{\n&quot;)
+            o.write (&rsquo;    &quot;classname&quot; &quot;item_default&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;label&quot; &quot;&rsquo; + label_desc + &rsquo;&quot;\n&rsquo;)
+            o.write (&rsquo;    &quot;origin&quot; &quot;&rsquo;)
+            xyz = toIntList (xy) + [-invSpawnHeight]
+            xyz = subVec (xyz, [minx, miny, getFloorLevel (r)])
+            v = midReposition (xyz)
+            o.write (&rsquo;%f %f %f&quot;\n&rsquo; % (v[0], v[1], v[2]))
+            o.write (&quot;}\n&quot;)
+            n += 1
+            e += 1
+    return o, e</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+python/pen2map.py</font></small></small></b></p>
+
+<pre style="margin-top: 1em">def generateMap (o):
+     o, e    = generateLights (o, e)
+     o, e    = generateAmmo (o, e)
+     o, e    = generateSounds (o, e)
+     o, e    = generateWeapons (o, e)
+     o, e    = generateLabels (o, e)
+     if statistics:
+         print(&quot;Total rooms =&quot;, len (list(rooms.keys ())))
+         print(&quot;Total cuboids =&quot;, len (list(cuboids.keys ())))</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Testing the tool chain
+<a name="3. Testing the tool chain"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+$HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>python3 txt2pen.py -l ../maps/label3.txt</b>
+<tt><br>
+$</tt> <b>python3 txt2pen.py -l -o tiny.pen
+../maps/label3.txt</b> <tt><br>
+$</tt> <b>cat tiny.pen</b> <tt><br>
+$</tt> <b>PYTHONPATH=student python3 pen2map.py tiny.pen</b>
+<tt><br>
+$</tt> <b>PYTHONPATH=student python3 pen2map.py -o tiny.map
+tiny.pen</b> <li> if this works then you can simplify these
+commands to: <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/label3.txt</b> <li>
+now download a new copy of doom3 and try out the new bot
+code <ul type=square> <li> you will need to remove the
+current pybot-dhewm3 code (or move it out of the way) </ul>
+<li> <tt><br>
+$</tt> <b>ssh mcgreg</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>git clone
+https://github.com/gaiusm/pybot-dhewm3</b> <tt><br>
+$</tt> <b>exit</b> <li> now recompile doom3 <li> start the
+python bot <li> <tt><br>
+$</tt> <b>cd
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot</b> <tt><br>
+$</tt> <b>python3 python_doommarine.py 0</b> <li> examine
+the code in
+<tt><small>$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/python_doommarine.py</small></tt>
+<li> look at the code which obtains the label doom3
+coordinate <ul type=square> <li> the python bot will briefly
+come to life and then print out the label
+position</font></p>
+
+<p style="margin-top: 1em"><font color="#000000"></ul>
+</ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Implementing labels in chisel/pen2map">1. Implementing labels in chisel/pen2map</a><br>
+<a href="#2. Adding labels to chisel/pen2map">2. Adding labels to chisel/pen2map</a><br>
+<a href="#3. Testing the tool chain">3. Testing the tool chain</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

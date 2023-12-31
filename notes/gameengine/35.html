@@ -1,0 +1,168 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:01 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Re-initialisation of the data directories
+<a name="1. Re-initialisation of the data directories"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you will need the latest directory
+configuration from here: <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>rm -f skeleton-doom3-data.tar.gz</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/skeleton-doom3-data.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf skeleton-doom3-data.tar.gz</b> <li> this
+will re-initialise doom3 directories and also configure
+<tt><small>emacs</small></tt> and
+<tt><small>gdb</small></tt> which is vital for compiling and
+debugging the game engine <br>
+</ul></p><hr>
+
+<h2>2. Download the doom3 engine source code
+<a name="2. Download the doom3 engine source code"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we make sure we all have the same
+directory structure as we will use emacs to compile/debug
+dhewm3 <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit/git-doom3</b> <li>
+and fetch the engine <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/git-doom3</b> <tt><br>
+$</tt> <b>git clone
+https://github.com/gaiusm/pybot-dhewm3</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>3. Compile the doom3 engine from the command line
+<a name="3. Compile the doom3 engine from the command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we will compile it from within
+<tt><small>emacs</small></tt> <li> start emacs and press F5
+to compile and debug doom3</p>
+
+<p></ul></p><hr>
+
+<h2>4. Generate a map for doom3
+<a name="4. Generate a map for doom3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> before we can run doom3 we need to
+generate a suitable map <li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/onebot.txt</b> <li>
+this will generate <tt><small>tiny.map</small></tt> which is
+used in the next few slides <br>
+</ul></p><hr>
+
+<h2>5. Running doom3
+<a name="5. Running doom3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> to run <tt><small>doom3</small></tt>
+type: <li></p>
+
+<p><tt>$</tt> <b>d3</b> <li> once the splash screen has
+finished press the <tt><small>~</small></tt> key <li> now
+type <tt><small>dmap tiny.map</small></tt>
+<ul type=square> <li> this will compile the map </ul> <li>
+and now <tt><small>map tiny.map</small></tt>
+<ul type=square> <li> which loads in the compiled map </ul>
+<li> you should see yourself and pybot appear in a room
+<ul type=square> <li> pybot will come and find you </ul>
+<li> once you have finished with the doom3 engine
+<ul type=square> <li> you will now need to use the command
+line to kill off the python bot (which will still be running
+in the background) </ul> <li> <tt><br>
+$</tt> <b>ps aux | grep python</b> <tt><br>
+$</tt> <b>kill -9</b> <i>python pid number</i> <li> make
+sure this process no longer appears in the process list
+(using <tt><small>ps</small></tt> ) <br>
+</ul></p><hr>
+
+<h2>6. Better Python and Doom3 running
+<a name="6. Better Python and Doom3 running"></a>
+</h2>
+
+
+<p><ul type=disc> <li> killing off the python bot can
+become tiresome <ul type=square> <li> so you can use
+<tt><small>mrun</small></tt> to spawn a process and send its
+output to another terminal window <li> when
+<tt><small>mrun</small></tt> stops, all its children windows
+are killed and all Python bots disappear </ul> <li> try
+running the game again using these commands: <li></p>
+
+<p><tt>$</tt> <b>cd Sandpit/git-doom3/pybot-dhewm3</b>
+<tt><br>
+$</tt> <b>./shell/debug-bots single-bot.par</b> <li> when
+doom3 finishes, press the enter key in the above window
+<ul type=square> <li> the Python window should also
+disappear and tidy up gracefully <br>
+</ul> </ul></p><hr>
+
+<h2>7. Further reading
+<a name="7. Further reading"></a>
+</h2>
+
+
+<p><ul type=disc> <li> examine the shell scripts
+<ul type=square> <li>
+<tt><small>./shell/debug-bots</small></tt> and
+<tt><small>./shell/debug-only-bots</small></tt> </ul> <li>
+write down an explanation of their function</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Re-initialisation of the data directories">1. Re-initialisation of the data directories</a><br>
+<a href="#2. Download the doom3 engine source code">2. Download the doom3 engine source code</a><br>
+<a href="#3. Compile the doom3 engine from the command line">3. Compile the doom3 engine from the command line</a><br>
+<a href="#4. Generate a map for doom3">4. Generate a map for doom3</a><br>
+<a href="#5. Running doom3">5. Running doom3</a><br>
+<a href="#6. Better Python and Doom3 running">6. Better Python and Doom3 running</a><br>
+<a href="#7. Further reading">7. Further reading</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

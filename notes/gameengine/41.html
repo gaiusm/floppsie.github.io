@@ -1,0 +1,376 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Implementing Select Weapon in the Python API
+<a name="1. Implementing Select Weapon in the Python API"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p align="left"><img src="grohtml-26891822.png" alt="Image grohtml-26891822.png"></p>
+
+<p style="margin-top: 1em"><li>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botbasic.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    #
+    #  changeWeapon - change to weapon, n.
+    #                 Attempt to change to weapon, n.
+    #                 n is a number 0..maxweapon
+    #                 The return value is the amount
+    #                 of ammo left for the weapon
+    #                 &gt;= 0 if the weapon exists
+    #                 or -1 if the weapon is not in
+    #                 the bots inventory.
+    #</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/botbasic.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">    def changeWeapon (self, n):
+        if debug_protocol:
+            print &quot;requesting change weapon to&quot;, n
+        s = &quot;change_weapon %d\n&quot; % (n)
+        self.s.send (s)
+        l = self.getLine ()
+        if debug_protocol:
+            print &quot;doom returned&quot;, l
+        return int (l)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>2. Test code for the python bot
+<a name="2. Test code for the python bot"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/python-bot/python_doommarine_1.py</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">b = botbasic.basic (&quot;localhost&quot;, &quot;python_doommarine_1&quot;)
+print &quot;success!  python doom marine is alive&quot;
+while True:
+    for w in range (1, 8):
+        print &quot;attempting to change to weapon&quot;, w,
+        print &quot;dhewm3 returns&quot;, b.changeWeapon (w)
+        time.sleep (3)</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Pybot.cpp server side change
+<a name="3. Pybot.cpp server side change"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  else if (idStr::Cmpn (data, &quot;get_pair_name_entity &quot;, 21) == 0)
+    rpcGetPairEntity (&amp;data[21]);
+  else if (idStr::Cmpn (data, &quot;get_entity_pos &quot;, 15) == 0)
+    rpcGetEntityPos (&amp;data[15]);
+  else if (idStr::Cmpn (data, &quot;change_weapon &quot;, 14) == 0)
+    rpcChangeWeapon (&amp;data[14]);
+  else
+    {
+      gameLocal.Printf (&quot;data = \&quot;%s\&quot;, len (data) = %d\n&quot;, data, (int) strlen (data));
+      ERROR (&quot;unrecognised rpc command&quot;);
+    }</pre>
+
+
+<p><font color="#000000"><li> notice how we check for the
+appropriate method to call
+<tt><small>rpcChangeWeapon</small></tt> by examining the
+first 14 characters of <tt><small>data</small></tt> <br>
+</ul></font></p><hr>
+
+<h2>4. Method declaration in pybot.h
+<a name="4. Method declaration in pybot.h"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.h</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  void rpcGetPairEntity (char *arg);
+  void rpcGetEntityPos (char *data);
+  void rpcChangeWeapon (char *data);
+  int myid;
+  char *name;</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>5. Implementation in pybot.cpp
+<a name="5. Implementation in pybot.cpp"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  rpcChangeWeapon - attempt to change weapon to the number in data.
+ *                    The amount of ammo is returned.  -1 means no weapon.
+ */
+
+void pyBotClass::rpcChangeWeapon (char *data)
+{
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcChangeWeapon (%s) call by python\n&quot;, data);
+
+  char buf[1024];
+  int weapon = atoi (data);
+  int ammo = -1;
+
+
+  if (weapon &gt;= 0)
+    ammo = dictionary-&gt;weapon (myid, weapon);
+  idStr::snPrintf (buf, sizeof (buf), &quot;%d\n&quot;, ammo);
+  if (protocol_debugging)
+    gameLocal.Printf (&quot;rpcChangeWeapon responding with: %s\n&quot;, buf);
+  buffer.pyput (buf);
+  state = toWrite;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. dict::weapon
+<a name="6. dict::weapon"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  bool aim (int id, int enemy);
+  int turn (int id, int angle, int angle_vel);
+  void select (int id, int mask);
+  int getHigh (void);
+  int weapon (int id, int new_weapon);
+ private:
+  item *entry[MAX_ENTRY];
+  int high;</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">int dict::turn (int id, int angle, int angle_vel)
+{
+  return entry[id]-&gt;turn (angle, angle_vel);
+}
+
+/*
+ *  weapon - change to new_weapon and return the amount of
+ *           ammo for this weapon.  -1 if the weapon is not
+ *           in the inventory.
+ */
+
+
+int int dict::weapon (int id, int new_weapon)
+{
+  return entry[id]-&gt;weapon (new_weapon);
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>7. item::weapon declaration
+<a name="7. item::weapon declaration"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">  int stepVec (int velforward, int velright, int dist);
+  int start_firing (void);
+  int stop_firing (void);
+  int ammo (void);
+  int weapon (int new_weapon);
+  int health (void);
+  void reload_weapon (void);
+  bool aim (idEntity *enemy);</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>8. item::weapon implementation
+<a name="8. item::weapon implementation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/ai/pybot.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+ *  weapon - attempt to select weapon, new_weapon.
+ *           If successful return the amount of ammo else return -1.
+ */
+
+
+int item::weapon (int new_weapon)
+{
+  switch (kind)
+    {
+    case item_player:
+      return idplayer-&gt;ChangeWeapon (new_weapon);
+    }
+  assert (false);
+  return 0;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>9. idPlayer::weapon implementation
+<a name="9. idPlayer::weapon implementation"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/Player.cpp</font></small></small></b></p>
+
+<pre style="margin-top: 1em">/*
+=============
+idPlayer::ChangeWeapon  (gaius)  (see StealWeapon)
+=============
+ */
+
+
+int idPlayer::ChangeWeapon (int new_weapon)
+{
+  inventory.weapons = -1;  // testing only!
+  if (new_weapon &gt;= 0 &amp;&amp; new_weapon &lt; MAX_WEAPONS)
+    {
+      if ((inventory.weapons &amp; (1 &lt;&lt; new_weapon)) != 0)
+        {
+          /*
+           *  player is carrying this weapon.
+           */
+          SelectWeapon (new_weapon, true);
+          return inventory.ammo[currentWeapon];
+        }
+    }
+  return -1;
+}</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>10. idPlayer::weapon prototype
+<a name="10. idPlayer::weapon prototype"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/git-doom3/pybot-dhewm3/neo/game/Player.h</font></small></small></b></p>
+
+<pre style="margin-top: 1em">        int Ammo (void);  // gaius
+        int Turn (int angle, int angle_vel);   // gaius
+        void doTurn (int angle);        // gaius
+        void select (int bitmask);  // gaius
+        int ChangeWeapon (int new_weapon);
+
+private:</pre>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>11. Conclusion
+<a name="11. Conclusion"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> comment this
+code and see if you can extend the API to include other
+features</font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Implementing Select Weapon in the Python API">1. Implementing Select Weapon in the Python API</a><br>
+<a href="#2. Test code for the python bot">2. Test code for the python bot</a><br>
+<a href="#3. Pybot.cpp server side change">3. Pybot.cpp server side change</a><br>
+<a href="#4. Method declaration in pybot.h">4. Method declaration in pybot.h</a><br>
+<a href="#5. Implementation in pybot.cpp">5. Implementation in pybot.cpp</a><br>
+<a href="#6. dict::weapon">6. dict::weapon</a><br>
+<a href="#7. item::weapon declaration">7. item::weapon declaration</a><br>
+<a href="#8. item::weapon implementation">8. item::weapon implementation</a><br>
+<a href="#9. idPlayer::weapon implementation">9. idPlayer::weapon implementation</a><br>
+<a href="#10. idPlayer::weapon prototype">10. idPlayer::weapon prototype</a><br>
+<a href="#11. Conclusion">11. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

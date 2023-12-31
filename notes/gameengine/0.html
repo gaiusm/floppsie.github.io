@@ -1,0 +1,333 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:51 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. CS3S665 Game engine design: Profecta scaenam
+<a name="1. CS3S665 Game engine design: Profecta scaenam"></a>
+</h2>
+
+
+<p><ul type=disc> <li> 100% coursework assessed
+<ul type=square> <li> two pieces of coursework </ul> <li>
+Coursework 1 <ul type=square> <li> enhancing Chisel and
+enhancing Python bots in Doom3 </ul> <li> Coursework 2
+<ul type=square> <li> enhancing a Physics engine to
+implement a 2D game in Python </ul> <li> both are available
+for view on
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/gameengine/html.html">http://floppsie.comp.glam.ac.uk/Southwales/gaius/gameengine/html.html</a></p>
+
+<p></ul></p><hr>
+
+<h2>2. Doom3
+<a name="2. Doom3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we will be using the dhewm3 fork of
+the doom3 code with heavy modifications which include:
+<ul type=square> <li> gore, speed ups <li> python bots!
+</ul> <li> about 681075 total lines of code
+<ul type=square> <li> however this includes many tools and
+libraries </ul> <li> actual engine is closer to 137905 lines
+of code</p>
+
+<p></ul></p><hr>
+
+<h2>3. Game engines
+<a name="3. Game engines"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there are over 50 open source game
+engines <ul type=square> <li> of differing size and quality
+</ul> <li> require a balance between: complexity and
+resource requirements <li> resource requirements are not
+always obvious <li> for example the time to recompile
+Panda3D was 50 minutes on a 4 GHz AMD black
+<ul type=square> <li> dhewm compiles in 3 minutes <li> pge
+compiles in 1 minute</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. Doom3 advantages
+<a name="4. Doom3 advantages"></a>
+</h2>
+
+
+<p><ul type=disc> <li> code base is very clean implemented
+in C++ <li> it does not use the STL <ul type=square> <li>
+most libraries are implemented from scratch <li> highly
+portable codebase and fast </ul> <li> Doom3 lineage is
+strong! <ul type=square> <li> many eyeballs keep bugs
+shallow </ul> <li> Doom3 codebase can be extended and makes
+an effective teaching tool <li> all maps and models are
+stored in text format! (Excluding images/sounds) <li> uses
+the MAP and BSP format which is the Rosetta stone to game
+engine design</p>
+
+<p></ul></p><hr>
+
+<h2>5. Python bot tournament
+<a name="5. Python bot tournament"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the teaching week after the
+coursework submission we will have a Python bot tournament
+<li> rules of the tournament <ul type=square> <li> given
+(three?) maps we will see how long your Python bot survives
+<li> against some monsters of doom3 </ul> <li> maps will be
+unseen, so your bot will have to adapt!
+<ul type=square> <li> whoever lives longest wins!</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>6. Morloc Tower
+<a name="6. Morloc Tower"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://www.mobygames.com/game/dunjonquest-morlocs-tower">Morloc Tower</a>
+was a game written in 1980 <li> the tower had six stories
+and consists of 30 rooms total <li> the wizard Morloc was
+the boss enemy which you had to defeat to complete the game
+<ul type=square> <li> the quicker you killed him the higher
+your score </ul> <li> it had adventure elements to the game
+(pick up magic sword or hand grenade) <ul type=square> <li>
+which would take time to find </ul> <li> there were smaller
+monsters to kill before you reached Morloc
+<ul type=square> <li> single player real-time adventure
+game</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>7. Penguin tower
+<a name="7. Penguin tower"></a>
+</h2>
+
+
+<p><ul type=disc> <li> Penguin tower is a multiplayer 2
+dimensional game which was inspired by Morloc Tower <li>
+Penguin Tower is a very different game it does retain a
+similar screen layout and many of the key commands are the
+same <li> the goal of the game is to stay alive as long as
+possible and to inflict the most damage on other players
+<ul type=square> <li> genre is a graphical multiuser dungeon
+with a limited graphical interface and limited number of
+objects and weapons </ul> <li> architecturally it consists
+of three main components, a client, a server and a protocol
+<li> the client is written in Python and it utilises the
+pygame libraries <li> the server is mostly written in
+Modula-2 and a small amount of C <ul type=square> <li> the
+protocol is entirely character and string based </ul> <li>
+the penguin tower server code was written during two Augusts
+in 1985 and 1986 and originally ran on a 6 Mhz PC clone
+connected by two Visual 200 terminals (making it a three
+player game). <li> the maps were drawn with simple ASCII
+characters, and it was quite playable (for those days!) <li>
+the 6 Mhz PC ran the server code quite comfortably, it
+occasionally slowed down, which perhaps added to its charm.
+<ul type=square> <li> normally when someone pulled the hand
+grenade</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>8. Penguin tower demo
+<a name="8. Penguin tower demo"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/games/ptower.html">demo screenshots</a></p>
+
+<p></ul></p><hr>
+
+<h2>9. Doom3 mod
+<a name="9. Doom3 mod"></a>
+</h2>
+
+
+<p><ul type=disc> <li> how difficult would it be to produce
+a Penguin Tower mod for Doom3? <ul type=square> <li> utilise
+the monsters from Doom3 <li> generate very simple maps in
+the style of (Morloc Tower and Penguin Tower) </ul> <li>
+very simple maps have the advantage of only having 90&deg;
+corners <ul type=square> <li> ideal teaching vehicle and
+also it should be possible to generate maps quickly</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>10. Penguin tower maps
+<a name="10. Penguin tower maps"></a>
+</h2>
+
+
+<p><ul type=disc> <li> there are a number of penguin tower
+maps and a tool to randomly create large maps <li> the
+Penguin tower file format is simple and easily
+extensible</p>
+
+<p></ul></p><hr>
+
+<h2>11. Penguin tower map: star.pen
+<a name="11. Penguin tower map: star.pen"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>ROOM 1
+
+WALL 1 1 1 20
+WALL 1 20 20 20
+WALL 20 20 20 1
+WALL 20 1 1 1
+
+
+DOOR 9 20 12 20  STATUS CLOSED LEADS TO 5
+DOOR 20 9 20 12  STATUS CLOSED LEADS TO 5
+END</pre>
+
+
+<p><li> etc <br>
+</ul></p><hr>
+
+<h2>12. Chisel
+<a name="12. Chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li>
+<a href="https://github.com/gaiusm/chisel">Chisel</a> <li>
+is a github project containing command line tools to create
+doom3 maps <li> the tools allow anyone with basic computer
+skills to generate small doom3 maps</p>
+
+<p></ul></p><hr>
+
+<h2>13. Map: one.txt
+<a name="13. Map: one.txt"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>define 1 room 1
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+define a ammo ammo_shells_large 16
+
+
+############################################################
+# 1    i       i                    i                      #
+#                                                          #
+# s        a                                          n    #
+#                            o                             #
+#                i                             i           #
+############################################################</pre>
+
+
+<p></ul></p><hr>
+
+<h2>14. Map: two.txt
+<a name="14. Map: two.txt"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>define 1 room 1
+define 2 room 2
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+define a ammo ammo_grenade 16
+
+
+##################################
+# 1          i   # 2        i    #
+#          o     #               #
+# s              .               #
+#                .               #
+#                .               #
+#                #       g   n   #
+#       i        #    i          #
+##################################</pre>
+
+
+<p></ul></p><hr>
+
+<h2>15. Compiling a map
+<a name="15. Compiling a map"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>txt2pen -o one.pen one.txt</b> <tt><br>
+$</tt> <b>pen2map -o one.map one.pen</b> <li> notice the txt
+file is compiled into a pen file <ul type=square> <li> the
+pen file is compiled into map file <br>
+</ul> </ul></p><hr>
+
+<h2>16. Conclusion
+<a name="16. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> continue next week!</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. CS3S665 Game engine design: Profecta scaenam">1. CS3S665 Game engine design: Profecta scaenam</a><br>
+<a href="#2. Doom3">2. Doom3</a><br>
+<a href="#3. Game engines">3. Game engines</a><br>
+<a href="#4. Doom3 advantages">4. Doom3 advantages</a><br>
+<a href="#5. Python bot tournament">5. Python bot tournament</a><br>
+<a href="#6. Morloc Tower">6. Morloc Tower</a><br>
+<a href="#7. Penguin tower">7. Penguin tower</a><br>
+<a href="#8. Penguin tower demo">8. Penguin tower demo</a><br>
+<a href="#9. Doom3 mod">9. Doom3 mod</a><br>
+<a href="#10. Penguin tower maps">10. Penguin tower maps</a><br>
+<a href="#11. Penguin tower map: star.pen">11. Penguin tower map: star.pen</a><br>
+<a href="#12. Chisel">12. Chisel</a><br>
+<a href="#13. Map: one.txt">13. Map: one.txt</a><br>
+<a href="#14. Map: two.txt">14. Map: two.txt</a><br>
+<a href="#15. Compiling a map">15. Compiling a map</a><br>
+<a href="#16. Conclusion">16. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

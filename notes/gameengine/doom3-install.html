@@ -1,0 +1,161 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:04 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. How to install the development tools and build doom3 at home on GNU/Linux
+<a name="1. How to install the development tools and build doom3 at home on GNU/Linux"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these instructions will hopefully
+show you how to install enough packages on your machine at
+home <ul type=square> <li> so that you can build the
+modified doom3 we are using in the coursework </ul> <li>
+these instructions assume <ul type=square> <li> you have a
+debian based installation (includes Mint or Ubuntu) <li> you
+can trouble shoot a few minor differences between these
+notes and your system </ul> <li> if you cannot get doom3
+working at home, please use the games development lab J109
+<ul type=square> <li> as these have been tailored your
+course </ul> <li> firstly we need to install a few packages,
+so open up a command tool and type: <li></p>
+
+<p><tt>$</tt> <b>sudo apt-get install emacs gdb gcc
+libsdl-dev libopenal-dev python libogg-dev cmake</b>
+<tt><br>
+$</tt> <b>sudo apt-get install g++ libsdl-dev libpthread-dev
+libcurl-dev libopenssl-dev</b> <tt><br>
+$</tt> <b>sudo apt install lib-openssl-dev
+libcurl4-openssl-dev</b> <tt><br>
+$</tt> <b>sudo apt install libvorbis-dev libjpeg-dev
+libsdl2-dev</b> <li> now make sure you have the same
+directory structure as we use in the labs: <li> <tt><br>
+$</tt> <b>mkdir -p $HOME/Sandpit/git-doom3</b> <li> and
+fetch the engine <li> <tt><br>
+$</tt> <b>cd $HOME/Sandpit/git-doom3</b> <tt><br>
+$</tt> <b>git clone
+https://github.com/gaiusm/pybot-dhewm3</b> <li> we need to
+configure the data directories: <li> <tt><br>
+$</tt> <b>cd $HOME</b> <tt><br>
+$</tt> <b>rm -f skeleton-doom3-data.tar.gz</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/targz/skeleton-doom3-data.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxf skeleton-doom3-data.tar.gz</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>2. Compile the doom3 engine from the command line
+<a name="2. Compile the doom3 engine from the command line"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we will compile it from within
+<tt><small>emacs</small></tt> <li> start emacs and press F5
+to compile and debug doom3</p>
+
+<p></ul></p><hr>
+
+<h2>3. Installing data files at home
+<a name="3. Installing data files at home"></a>
+</h2>
+
+
+<p><ul type=disc> <li> dhewm3 is the game engine which is
+free software (GPL) <li> the data files are not free and
+thus need to be bought from steam
+(<a href="https://github.com/gaiusm/pybot-dhewm3/blob/master/README.md">please see these notes</a>)
+and also the
+<a href="https://github.com/dhewm/dhewm3/wiki/FAQ">FAQ</a>
+<li> once you have your doom3 pk4 files they must be placed
+into the directory <tt><small>/usr/share/dhewm3</small></tt>
+<li> once you have copied the pk4 into /usr/share/dhewm3
+<ul type=square> <li> hint this is done in GNU/Linux by:
+</ul> <li></p>
+
+<p><tt>$</tt> <b>cd
+into_your_directory_where_the_pk4_files_exist</b> <tt><br>
+$</tt> <b>sudo mkdir -p /usr/share/dhewm3/base</b> <tt><br>
+$</tt> <b>sudo cp *.pk4 /usr/share/dhewm3/base</b> <li>
+where
+<tt><small>into_your_directory_where_the_pk4_files_exist</small></tt>
+will vary from user to user <li> now you can run a tool to
+verify you have the correct pk4 files <li> <tt><br>
+$</tt> <b>md5sum /usr/share/dhewm3/base/*.pk4</b></p>
+
+<pre>71b8d37b2444d3d86a36fd61783844fe  /usr/share/dhewm3/base/pak000.pk4
+4bc4f3ba04ec2b4f4837be40e840a3c1  /usr/share/dhewm3/base/pak001.pk4
+fa84069e9642ad9aa4b49624150cc345  /usr/share/dhewm3/base/pak002.pk4
+f22d8464997924e4913e467e7d62d5fe  /usr/share/dhewm3/base/pak003.pk4
+38561a3c73f93f2e6fd31abf1d4e9102  /usr/share/dhewm3/base/pak004.pk4
+2afd4ece27d36393b7538d55a345b90d  /usr/share/dhewm3/base/pak005.pk4
+a6e7003fa9dcc75073dc02b56399b370  /usr/share/dhewm3/base/pak006.pk4
+6319f086f930ec1618ab09b4c20c268c  /usr/share/dhewm3/base/pak007.pk4
+28750b7841de9453eb335bad6841a2a5  /usr/share/dhewm3/base/pak008.pk4</pre>
+
+
+<p></ul></p><hr>
+
+<h2>4. Running doom3 at home
+<a name="4. Running doom3 at home"></a>
+</h2>
+
+
+<p><ul type=disc> <li> the <tt><small>d3</small></tt>
+command is not on your machine, but you can either run
+dhewm3 by hand <li></p>
+
+<p><tt>$</tt> <b>$HOME/Sandpit/git-doom3/build/dhewm3</b>
+<li> or you can create a simple shell program which executes
+this command <li> <tt><br>
+$</tt> <b>sudo emacs /usr/local/bin/d3</b> <li> now type
+into the editor <li></p>
+<pre>#!/bin/bash
+
+$HOME/Sandpit/git-doom3/build/dhewm3</pre>
+
+<p><li> save the file <li> <tt><br>
+$</tt> <b>sudo chmod 755 /usr/local/bin/d3</b> <li> all
+done! You should be able to type <tt><small>d3</small></tt>
+from the command line and see doom3 appear</p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. How to install the development tools and build doom3 at home on GNU/Linux">1. How to install the development tools and build doom3 at home on GNU/Linux</a><br>
+<a href="#2. Compile the doom3 engine from the command line">2. Compile the doom3 engine from the command line</a><br>
+<a href="#3. Installing data files at home">3. Installing data files at home</a><br>
+<a href="#4. Running doom3 at home">4. Running doom3 at home</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

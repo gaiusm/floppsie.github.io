@@ -1,0 +1,132 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:40:59 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial 14
+<a name="1. Tutorial 14"></a>
+</h2>
+
+
+<p><ul type=disc> <li> during this tutorial we will
+<ul type=square> <li> understand the PGE API <li> create a
+small pinball game using PGE <li> understand how PGE
+integrates with PyGame</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. Using PGE to create a game
+<a name="2. Using PGE to create a game"></a>
+</h2>
+
+
+<p><ul type=disc> <li> full documentation about PGE is
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/homepage.html">available</a></p>
+
+<p></ul></p><hr>
+
+<h2>3. Creating a pinball game using PGE
+<a name="3. Creating a pinball game using PGE"></a>
+</h2>
+
+
+<p><ul type=disc> <li> start with the
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/pge/example_games.html">breakout game source code</a>
+and adapt it <li> throw away all the blue boxes and
+associated callbacks <li> see that the modified game still
+runs to completion</p>
+
+<p></ul></p><hr>
+
+<h2>4. Pinball
+<a name="4. Pinball"></a>
+</h2>
+
+
+<p><ul type=disc> <li> add some extra circles and maybe
+modify the triangles (smaller possibly) <li> add a score so
+that every time the ball hits a triangle you gain +20 points
+<ul type=square> <li> every time it hits a particular circle
+it gains +10 points </ul> <li> every time the points
+increase by a 100 an extra life should be granted <li> allow
+the user to fire a new pinball when the old pinball is lost
+<ul type=square> <li> decrease the life count as a pinball
+is released </ul> <li> add a firing shoot for the pinball
+<ul type=square> <li> allow the user to aim the ball with
+the mouse</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>5. Pinball flippers
+<a name="5. Pinball flippers"></a>
+</h2>
+
+
+<p><ul type=disc> <li> PGE is not capable of rotating
+objects, so you will have to think creatively to implement a
+way of &quot;interfering&quot; with the pinball <li> you
+could adjust the x movement of the ball slightly if the
+left/right mouse button was pressed <li> or you might
+introduce a fixed polygon (representing the flipper) as a
+paddle (aka breakout) <ul type=square> <li> the polygon
+could be deleted and moved upon mouse movement <li> be
+careful and ensure that the polygon resides along a, y =
+constant, line </ul> <li> what simple changes would you make
+to the API to create a simple flipper?</p>
+
+<p></ul></p><hr>
+
+<h2>6. Conclusion
+<a name="6. Conclusion"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we have <ul type=square> <li>
+understood more about the PGE API <li> created a small
+pinball game using PGE <li> understood how PGE integrates
+with PyGame </ul> <li> you might want to read around the
+subject by reading this paper
+<a href="../../../Papers/paper21/ieee.pdf">The Construction of a Predictive Collision 2D Game Engine</a></p>
+
+<p style="margin-top: 1em"></ul></p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#1. Tutorial 14">1. Tutorial 14</a><br>
+<a href="#2. Using PGE to create a game">2. Using PGE to create a game</a><br>
+<a href="#3. Creating a pinball game using PGE">3. Creating a pinball game using PGE</a><br>
+<a href="#4. Pinball">4. Pinball</a><br>
+<a href="#5. Pinball flippers">5. Pinball flippers</a><br>
+<a href="#6. Conclusion">6. Conclusion</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

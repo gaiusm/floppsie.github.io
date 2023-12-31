@@ -1,0 +1,232 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:03 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Python Bot Competition
+<a name="1. Python Bot Competition"></a>
+</h2>
+
+
+<p><ul type=disc> <li> rules <ul type=square> <li> you are
+given three maps in which your python bot has to survive
+<li> which ever bot kills the monsters quickest wins! <li>
+give it 4 minutes (max time) </ul> <li> the human player may
+not, shoot or spawn anything <ul type=square> <li> can move
+around though <li> can use &rsquo;god&rsquo; mode to avoid
+being killed! </ul> <li> open up a terminal and use the
+command line <li></p>
+
+<p><tt>$</tt> <b>gnome-clocks</b> <li> and select a stop
+watch <br>
+</ul></p><hr>
+
+<h2>2. Map 1: botwar1.txt
+<a name="2. Map 1: botwar1.txt"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/botwar1.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+
+
+define S monster monster_demon_tick
+define R ammo ammo_rockets_large 16
+define G ammo ammo_grenade_small 16
+define B ammo ammo_shells_large 16
+define L ammo moveable_item_rocketlauncher 1
+define A ammo item_medkit 1
+define M monster python_doommarine_mp</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/chisel/botwar1.txt</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">#####################
+# 1                 #
+#                   #
+#   s               #
+#       A  B        #
+#                   #
+#       L  G        #
+#                   #
+#       M  R        #
+#                   #############
+#                   #           #
+#                   # 2         #
+#                   #           #
+#                   .           #
+#                   .           #
+#                   #           #
+#                   #        S  #
+#                   #           #
+#################################</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>3. Map 2: botwar2.txt
+<a name="3. Map 2: botwar2.txt"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/botwar2.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+
+
+define S monster monster_demon_tick
+define R ammo ammo_rockets_large 16
+define G ammo ammo_grenade_small 16
+define B ammo ammo_shells_large 16
+define L ammo moveable_item_rocketlauncher 1
+define A ammo item_medkit 1
+define M monster python_doommarine_mp</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/chisel/botwar2.txt</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">#####################
+# 1                 #
+#                   #
+#   s               #
+#       A  B        #
+#                   #
+#       L  G        #
+#                   #
+#       M  R        #
+#                   #############
+#                   #           #
+#                   # 2         #
+#                   #           #
+#                   .           #
+#                   .           #
+#        S          #           #
+#                   #        o  #
+#                   #           #
+#################################</pre>
+
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>4. Map 3: botwar3.txt
+<a name="4. Map 3: botwar3.txt"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li></font></p>
+
+
+<p><b><small><small><font color="#196633">$HOME/Sandpit/chisel/botwar3.txt</font></small></small></b></p>
+
+<pre style="margin-top: 1em">define 1 room 1
+define 2 room 2
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+
+
+define S monster monster_demon_tick
+define R ammo ammo_rockets_large 16
+define G ammo ammo_grenade_small 16
+define B ammo ammo_shells_large 16
+define L ammo moveable_item_rocketlauncher 1
+define A ammo item_medkit 1
+define M monster python_doommarine_mp</pre>
+
+
+<p><font color="#000000"><li></font>
+<b><small><small><font color="#196633"><br>
+
+$HOME/Sandpit/chisel/botwar3.txt</font></small></small></b></p>
+
+
+<pre style="margin-top: 1em">#################
+# 1             #
+#               #
+#   s           #
+#       A  B    #
+#               #
+#       L  G    #
+#               #
+#       M  R    #
+#               ######################
+#               #           #        #
+#               # 2         . 3      #
+#               #           .        #
+#               .           #        #
+#               .           #        #
+#        S      #           #        #
+#               #        o  #   n    #
+#               #           #        #
+######################################</pre>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><tt><a name="index"></a></tt></font></p>
+<a href="#1. Python Bot Competition">1. Python Bot Competition</a><br>
+<a href="#2. Map 1: botwar1.txt">2. Map 1: botwar1.txt</a><br>
+<a href="#3. Map 2: botwar2.txt">3. Map 2: botwar2.txt</a><br>
+<a href="#4. Map 3: botwar3.txt">4. Map 3: botwar3.txt</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

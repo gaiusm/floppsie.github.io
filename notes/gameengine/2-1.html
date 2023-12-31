@@ -1,0 +1,396 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:05 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Relationship of Chisel within Game Engine Design
+<a name="1. Relationship of Chisel within Game Engine Design"></a>
+</h2>
+
+
+<p><ul type=disc> <li> in this module we will examine:
+<ul type=square> <li> tools necessary to develop game
+engines: <tt><small>gdb</small></tt> ,
+<tt><small>emacs</small></tt> and friends </ul> <li> examine
+how one can integrate Python into a game engine
+<tt><small>doom3</small></tt> <ul type=square> <li> exploit
+parallelism </ul> <li> examine and extend a small physics
+game engine and expose its API to Python <li> learn how to
+debug shared libraries and exploit remote debugging
+<ul type=square> <li> should a highly useful transferable
+skill <li> both doom3 and pge use shared libraries</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>2. VMWare and Raspberry Pi images
+<a name="2. VMWare and Raspberry Pi images"></a>
+</h2>
+
+
+<p><ul type=disc> <li> contains custom software highly
+taylored for our academic purpose <ul type=square> <li>
+customised doom3 <li> pge <li> chisel <li> darkradiant </ul>
+<li> we will be looking at: <ul type=square> <li> chisel
+<li> overview of game engines <li> an understanding of tools
+( <tt><small>gdb</small></tt> ,
+<tt><small>emacs</small></tt> ) <li> doom3 <li> BSP and MAP
+structure <li> <tt><small>pge</small></tt> and game
+physics</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>3. Chisel
+<a name="3. Chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> consists of a number of programs
+<ul type=square> <li> <tt><small>txt2pen</small></tt>
+converts a txt file into a pen file <li> recall the txt file
+is created in a text editor (emacs, gedit etc) <li> a pen
+file is the format used by penguin-tower <li>
+<tt><small>pen2map</small></tt> converts a penguin tower map
+into a doom3 map</p>
+
+<p></ul> </ul></p><hr>
+
+<h2>4. chisel/map/doors.txt
+<a name="4. chisel/map/doors.txt"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+<pre>define 1 room 1
+define 2 room 2
+define 3 room 3
+define s worldspawn
+define o monster monster_demon_imp
+define n monster monster_demon_hellknight
+define i light
+define a ammo ammo_shells_large 16
+
+
+##################################
+# 1              . 2             #
+#             i  #       i       #
+#  s             .               #
+#                #               #
+#          i     .               #
+#                #     i       o #
+#                .               #
+##################################</pre>
+
+
+<p></ul></p><hr>
+
+<h2>5. txt2pen
+<a name="5. txt2pen"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python3 txt2pen.py -o doors.pen
+../maps/doors.txt</b> <li> generates a
+<tt><small>doors.pen</small></tt> file from the
+<tt><small>../maps/doors.txt</small></tt> file <br>
+</ul></p><hr>
+
+<h2>6. doors.pen
+<a name="6. doors.pen"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<pre>ROOM 1
+   WALL
+     1 9  18 9
+     18 9  18 1
+     18 1  1 1
+     1 1  1 9
+   DOOR 18 8 18 8 STATUS OPEN LEADS TO 2
+   DOOR 18 6 18 6 STATUS OPEN LEADS TO 2
+   DOOR 18 4 18 4 STATUS OPEN LEADS TO 2
+   DOOR 18 2 18 2 STATUS OPEN LEADS TO 2
+   LIGHT AT 15 7
+   LIGHT AT 12 4
+   SPAWN PLAYER AT 4 6
+END</pre>
+
+
+<p><li></p>
+<pre>ROOM 2
+   WALL
+     18 9  34 9
+     34 9  34 1
+     34 1  18 1
+     18 1  18 9
+   DOOR 18 2 18 2 STATUS OPEN LEADS TO 1
+   DOOR 18 4 18 4 STATUS OPEN LEADS TO 1
+   DOOR 18 6 18 6 STATUS OPEN LEADS TO 1
+   DOOR 18 8 18 8 STATUS OPEN LEADS TO 1
+   MONSTER monster_demon_imp AT 32 3
+   LIGHT AT 26 7
+   LIGHT AT 24 3
+END
+
+END.</pre>
+
+<p></ul></p><hr>
+
+<h2>7. Obtaining chisel
+<a name="7. Obtaining chisel"></a>
+</h2>
+
+
+<p><ul type=disc> <li> chisel is already installed on your
+images, however you might want to get the latest from github
+<li></p>
+
+<p><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>mkdir Sandpit</b> <tt><br>
+$</tt> <b>cd Sandpit</b> <tt><br>
+$</tt> <b>rm -rf chisel</b> <tt><br>
+$</tt> <b>git clone https://github.com/gaiusm/chisel</b>
+<tt><br>
+</ul></tt></p><hr>
+
+<h2>8. Running: your copy of txt2pen
+<a name="8. Running: your copy of txt2pen"></a>
+</h2>
+
+
+<p><ul type=disc> <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit/chisel/python</b>
+<tt><br>
+$</tt> <b>python3 txt2pen.py -h</b></p>
+
+<pre>Usage: txt2pen [-dhvV] [-o outputfile] inputfile
+  -d debugging
+  -h help
+  -V verbose
+  -v version
+  -o outputfile name</pre>
+
+
+<p><li> <tt><br>
+$</tt> <b>python3 txt2pen.py -o doors.pen
+../maps/doors.txt</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>9. Operating system concepts!
+<a name="9. Operating system concepts!"></a>
+</h2>
+
+
+<p><ul type=disc> <li> we will be looking at networking in
+a game engine <li> also looking at architectural parallelism
+in doom3</p>
+
+<p></ul></p><hr>
+
+<h2>10. Architectural parallelism in doom3
+<a name="10. Architectural parallelism in doom3"></a>
+</h2>
+
+
+<p><ul type=disc> <li> within the the doom3 modifications
+to introduce Python bots <li> notice the calls to
+<tt><small>fork</small></tt> and
+<tt><small>execl</small></tt> <li></p>
+
+
+<p><b><small><small><font color="#196633">doom3/source/latest-git/dhewm3/neo/game/ai/pybot.cpp:1144</font></small></small></b></p>
+
+<pre style="margin-top: 1em">   char buffer[PATH_MAX];
+
+
+   idStr::snPrintf (buffer, sizeof (buffer), &quot;%s/%s/%s.py&quot;,
+                    getHome (), getDir (), name);
+   gameLocal.Printf (&quot;execl /usr/bin/python3 %s\n&quot;, buffer);
+   int pid = fork ();
+   if (pid == 0)
+      /* child process.  */
+      {
+         int r = execl (&quot;/usr/bin/python3&quot;, &quot;python3&quot;, buffer,
+                        (char *)NULL);
+         if (r != 0)
+           perror (&quot;execl&quot;);
+      }</pre>
+
+
+<p><font color="#000000"><li> we notice that
+<tt><small>doom3</small></tt> and
+<tt><small>python3</small></tt> are running in parallel
+<ul type=square> <li> allowing the bot to run its
+pathfinding and AI simulatenously as the engine <br>
+</ul> </ul></font></p><hr>
+
+<h2>11. chisel: txt2pen
+<a name="11. chisel: txt2pen"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> source is in
+one file:
+<tt><small>$HOME/Sandpit/chisel/python/txt2pen.py</small></tt>
+<ul type=square> <li> 690 lines of Python </ul> <li> uses
+the following command line options <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd
+$HOME/Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>python3 txt2pen.py -h</b></font></p>
+
+<pre>  -d debugging
+  -h help
+  -V verbose
+  -v version
+  -o outputfile name</pre>
+
+
+<p><font color="#000000"><li> notice the
+<tt><small>-o</small></tt> option which takes an additional
+argument (filename) <li> it uses the
+<tt><small>getopt</small></tt> module to handle the options
+<ul type=square> <li> see function
+<tt><small>handleOptions</small></tt> </ul> <li></font></p>
+<pre>def handleOptions ():
+    global debugging, verbose, outputName
+
+    outputName = None
+    try:
+       optlist, l = getopt.getopt(sys.argv[1:], &rsquo;:dho:vV&rsquo;)
+       for opt in optlist:
+           if opt[0] == &rsquo;-d&rsquo;:
+               debugging = True
+           elif opt[0] == &rsquo;-h&rsquo;:
+               usage (0)
+           elif opt[0] == &rsquo;-o&rsquo;:
+               outputName = opt[1]
+           elif opt[0] == &rsquo;-v&rsquo;:
+               printf (&quot;txtpen version &quot; + str (versionNumber) + &quot;\n&quot;)
+               sys.exit (0)
+           elif opt[0] == &rsquo;-V&rsquo;:
+               verbose = True
+       if l != []:
+           return (l[0], outputName)
+
+
+    except getopt.GetoptError:
+       usage (1)
+    return (None, outputName)</pre>
+
+
+<p><font color="#000000"><li> it uses a dictionary to
+maintain the defines <li> stores the map in a 2D list
+(array) <ul type=square> <li>
+<tt><small>mapGrid</small></tt> </ul> <li> it determines the
+walls of a room <ul type=square> <li> it finds the room
+number (location) <li> moves to the top left inside the room
+( <tt><small>generateRoom</small></tt> ) <li> it then
+attempts to turn left as it moves around the room (the wall
+is always on the left) <li> examine
+<tt><small>scanRoom</small></tt> for the implementation <li>
+it looks the square forward and square forward left
+comparing the two characters: <tt><small>##</small></tt> or
+<tt><small>--</small></tt> or <tt><small>#-</small></tt>
+<ul type=circle> <li> <tt><small>#</small></tt> wall and
+<tt><small>-</small></tt> for space <br>
+</ul> </ul> </ul></font></p><hr>
+
+<h2>12. Extending chisel
+<a name="12. Extending chisel"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> one of the
+obvious improvements is for chisel to automatically
+introduce lights <ul type=square> <li> add another option to
+enable automatic lighting <li> <tt><small>-l</small></tt>
+</ul> <li> copy <tt><small>scanRoom</small></tt> into a new
+function <tt><small>introduceLights</small></tt> <li> adapt
+this new function to add lights <ul type=square> <li> but
+only if the rooms has no user defined lights</font></p>
+
+<p><font color="#000000"></ul> </ul></font></p><hr>
+
+<h2>13. darkradiant
+<a name="13. darkradiant"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> change
+directory into <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>cd Sandpit/chisel/python</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/two.txt</b> <li> view
+your map using the tool, remember your output file will
+always be ( <tt><small>tiny.map</small></tt> )
+<ul type=square> <li> when running darkradiant you will need
+to configure the map directory <li> you can click on the
+right hand mouse button to fix/enable freelook <li> cursor
+keys will move you around the 3D space </ul> <li> <tt><br>
+$</tt> <b>darkradiant</b> <li> now change the map slightly
+<li> <tt><br>
+$</tt> <b>gedit ../maps/two.txt</b> <tt><br>
+$</tt> <b>./developer-txt2map ../maps/two.txt</b> <li> and
+view the changes using
+<tt><small>darkradiant</small></tt></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Relationship of Chisel within Game Engine Design">1. Relationship of Chisel within Game Engine Design</a><br>
+<a href="#2. VMWare and Raspberry Pi images">2. VMWare and Raspberry Pi images</a><br>
+<a href="#3. Chisel">3. Chisel</a><br>
+<a href="#4. chisel/map/doors.txt">4. chisel/map/doors.txt</a><br>
+<a href="#5. txt2pen">5. txt2pen</a><br>
+<a href="#6. doors.pen">6. doors.pen</a><br>
+<a href="#7. Obtaining chisel">7. Obtaining chisel</a><br>
+<a href="#8. Running: your copy of txt2pen">8. Running: your copy of txt2pen</a><br>
+<a href="#9. Operating system concepts!">9. Operating system concepts!</a><br>
+<a href="#10. Architectural parallelism in doom3">10. Architectural parallelism in doom3</a><br>
+<a href="#11. chisel: txt2pen">11. chisel: txt2pen</a><br>
+<a href="#12. Extending chisel">12. Extending chisel</a><br>
+<a href="#13. darkradiant">13. darkradiant</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>

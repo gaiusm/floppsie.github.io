@@ -1,0 +1,185 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Sun Dec 31 14:41:05 2023 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a></p>
+
+<h2>1. Tutorial: Penguin Tower
+<a name="1. Tutorial: Penguin Tower"></a>
+</h2>
+
+
+<p><ul type=disc> <li> is a multiplayer 2 dimensional game
+<ul type=square> <li> inspired by
+<a href="http://www.mobygames.com/game/dunjonquest-morlocs-tower">Morloc Tower</a>
+although Penguin Tower is very different </ul> <li> however
+the screen layout and many of the key commands are the same
+<li> you can download a copy of the game from
+<a href="http://floppsie.comp.glam.ac.uk/download/penguin-tower/penguin-tower-2.0.tar.gz">here</a>.
+<li> you then need to extract the archive using the
+following command line: <li></p>
+
+<p><tt>$</tt> <b>mkdir $HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>wget
+http://floppsie.comp.glam.ac.uk/download/penguin-tower/penguin-tower-2.0.tar.gz</b>
+<tt><br>
+$</tt> <b>tar zxvf penguin-tower-2.0.tar.gz</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>2. Creating important directories
+<a name="2. Creating important directories"></a>
+</h2>
+
+
+<p><ul type=disc> <li> these directories need to created
+before penguin tower can be built <li></p>
+
+<p><tt>$</tt> <b>mkdir -p $HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>mkdir -p $HOME/opt/bin</b> <tt><br>
+$</tt> <b>mkdir build-ptower</b> <tt><br>
+</ul></tt></p><hr>
+
+<h2>3. Building Penguin Tower
+<a name="3. Building Penguin Tower"></a>
+</h2>
+
+
+<p><ul type=disc> <li> you should be able to build it by
+typing: <li></p>
+
+<p><tt>$</tt> <b>cd $HOME/Sandpit</b> <tt><br>
+$</tt> <b>cd build-ptower</b> <tt><br>
+$</tt> <b>../penguin-tower-2.0/configure
+--prefix=$HOME/opt</b> <tt><br>
+$</tt> <b>make</b> <tt><br>
+$</tt> <b>cd ..</b> <li> <font color="#A51933">you need to
+check that the make program above exited with no error
+messages</font> <font color="#000000"><li> note the build
+will recreate all images in the build directory. <br>
+</ul></font></p><hr>
+
+<h2>4. Installing your own copy of Penguin Tower
+<a name="4. Installing your own copy of Penguin Tower"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you can
+install your own copy of Penguin Tower into your directory (
+<tt><small>$HOME/opt</small></tt> ) specified by the
+<tt><small>--prefix</small></tt> to the
+<tt><small>./configure</small></tt> command <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd $HOME/Sandpit</b>
+<tt><br>
+$</tt> <b>cd build-ptower</b> <tt><br>
+$</tt> <b>make install</b> <tt><br>
+$</tt> <b>cd ..</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>5. Penguin Tower keyboard controls
+<a name="5. Penguin Tower keyboard controls"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li>
+<a href="ptower.html">keyboard controls</a>.</font></p>
+
+<p><font color="#000000"></ul></font></p><hr>
+
+<h2>6. Configure notes
+<a name="6. Configure notes"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> you only need
+to execute <tt><small>../penguin-tower-2.0/configure
+--prefix=$HOME/opt</small></tt> once ever in this directory
+(unless you modify the package) <li> check out the
+documentation <a href="ptower.html">here</a>. <li> you can
+also run the system installed version by typing:
+<li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>penguin-tower
+mcgreg.comp.glam.ac.uk:7000</b> <tt><br>
+</ul></tt></font></p><hr>
+
+<h2>7. Running your own Penguin Tower server
+<a name="7. Running your own Penguin Tower server"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> can be done by
+opening a terminal and typing the following: <li></font></p>
+
+<p><font color="#000000"><tt>$</tt> <b>cd</b> <tt><br>
+$</tt> <b>./opt/bin/ptower-server
+./opt/share/ptower/maps/star</b> <li> to stop the server,
+type <tt><small>^C</small></tt> (press down the control key
+and then press the <tt><small>c</small></tt> key, now
+release both keys) <li> there are a number of maps in the
+<tt><small>$HOME/opt/share/penguin-tower/maps</small></tt>
+directory <ul type=square> <li> <tt><small>m1</small></tt> ,
+<tt><small>star</small></tt> and
+<tt><small>glover</small></tt> <li>
+<tt><small>star</small></tt> is the smallest (5 rooms) <br>
+</ul> </ul></font></p><hr>
+
+<h2>8. Tutorial work
+<a name="8. Tutorial work"></a>
+</h2>
+
+
+<p><font color="#000000"><ul type=disc> <li> examine the
+map file format in the maps directory <ul type=square> <li>
+try making a simple change and running Penguin Tower again
+</ul> <li> here is the documentation to
+<a href="http://floppsie.comp.glam.ac.uk/Southwales/gaius/games/ptower.html">Penguin Tower</a></font></p>
+
+
+<p style="margin-top: 1em"><font color="#000000"></ul></font></p> <hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+
+
+<p style="margin-top: 1em"><font color="#000000"><a name="index"></a></font></p>
+<a href="#1. Tutorial: Penguin Tower">1. Tutorial: Penguin Tower</a><br>
+<a href="#2. Creating important directories">2. Creating important directories</a><br>
+<a href="#3. Building Penguin Tower">3. Building Penguin Tower</a><br>
+<a href="#4. Installing your own copy of Penguin Tower">4. Installing your own copy of Penguin Tower</a><br>
+<a href="#5. Penguin Tower keyboard controls">5. Penguin Tower keyboard controls</a><br>
+<a href="#6. Configure notes">6. Configure notes</a><br>
+<a href="#7. Running your own Penguin Tower server">7. Running your own Penguin Tower server</a><br>
+<a href="#8. Tutorial work">8. Tutorial work</a><br>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><font color="#000000"><i><small>This document was
+produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></font></p> <hr>
+</body>
+</html>
