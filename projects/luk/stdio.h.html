@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="scn.h.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="storage.h.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="stdio.h.html"></a>
+<a name="section44"></a>
+<h4>StdIO.h</h4>
+
+<pre>
+#if !defined(StdIOH)
+#  define StdIOH
+
+/*
+   Author     : Gaius Mulley
+   Title      : StdIO
+   Date       : 12/2/86  [$Date: 1997-11-03 17:21:43 $]
+   SYSTEM     : UNIX SUN and Logitech M2
+   Description: Exports a general Read and Write procedure that ALL character
+                processes should use.
+   Version    : $Revision: 1.4 $
+*/
+
+typedef void (*StdIO_ProcWrite)(char);
+typedef void (*StdIO_ProcRead)(char *);
+
+
+/*
+   Read - is the generic procedure that all higher application layers
+          should use to receive a character.
+*/
+
+
+<a name="SEC1"></a>
+extern void StdIO_Read (char *ch);
+
+
+/*
+   Write - is the generic procedure that all higher application layers
+           should use to emit a character.
+*/
+
+<a name="SEC2"></a>
+extern void StdIO_Write (char ch);
+
+
+/*
+   PushOutput - pushes the current Write procedure onto a stack,
+                any future references to Write will actually invoke
+                procedure, p.
+*/
+
+<a name="SEC3"></a>
+extern void StdIO_PushOutput (void (*p)(char));
+
+
+/*
+   PopOutput - restores Write to use the previous output procedure.
+*/
+
+<a name="SEC4"></a>
+extern void StdIO_PopOutput (void);
+
+
+/*
+   GetCurrentOutput - returns the current output procedure.
+*/
+
+<a name="SEC5"></a>
+extern void *StdIO_GetCurrentOutput (void);
+
+
+/*
+   Init - initialize this module data structures.
+          This is only made available for M2RTS.
+*/
+
+<a name="SEC6"></a>
+extern void StdIO_Init (void);
+
+#endif
+
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

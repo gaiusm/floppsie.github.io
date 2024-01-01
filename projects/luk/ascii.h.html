@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+</tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="ascii.h.html"></a>
+<a name="section23"></a>
+<h4>ASCII.h</h4>
+
+<pre>#if !defined(ASCIIH)
+#   define ASCIIH
+
+/*
+   Author    : Gaius Mulley
+   Date      : 12/12/85
+   LastEdit  : 15/10/86
+   Desciption: Defines all ascii constants (as in man ASCII)
+               Note that lf, eof and EOL are added
+*/
+
+/* All the above are in order */
+
+#define ASCII_nul       '\0'
+#define ASCII_soh       '\001'
+#define ASCII_stx       '\002'
+#define ASCII_etx       '\003'
+#define ASCII_eot       '\004'
+#define ASCII_enq       '\005'
+#define ASCII_ack       '\006'
+#define ASCII_bel       '\007'
+#define ASCII_bs        '\b'
+#define ASCII_ht        '\t'
+#define ASCII_nl        '\n'
+#define ASCII_vt        '\013'
+#define ASCII_np        '\f'
+#define ASCII_cr        '\015'
+#define ASCII_so        '\016'
+#define ASCII_si        '\017'
+#define ASCII_dle       '\020'
+#define ASCII_dc1       '\021'
+#define ASCII_dc2       '\022'
+#define ASCII_dc3       '\023'
+#define ASCII_dc4       '\024'
+#define ASCII_nak       '\025'
+#define ASCII_syn       '\026'
+#define ASCII_etb       '\027'
+#define ASCII_can       '\030'
+#define ASCII_em        '\031'
+#define ASCII_sub       '\032'
+#define ASCII_esc       '\033'
+#define ASCII_fs        '\034'
+#define ASCII_gs        '\035'
+#define ASCII_rs        '\036'
+#define ASCII_us        '\037'
+#define ASCII_sp        ' '   /* All the above are in order */
+#define ASCII_lf        ASCII_nl
+#define ASCII_ff        ASCII_np
+#define ASCII_eof       ASCII_eot
+#define ASCII_tab       ASCII_ht
+#define ASCII_del       '\177'
+#define ASCII_EOL       ASCII_nl
+
+
+#endif
+
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

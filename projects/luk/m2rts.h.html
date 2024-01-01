@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="keyboardleds.h.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="monstrio.h.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="m2rts.h.html"></a>
+<a name="section37"></a>
+<h4>M2RTS.h</h4>
+
+<pre>#if !defined(M2RTSH)
+#   define M2RTSH
+
+#   if !defined(SYSTEMH)
+#      include &quot;SYSTEM.h&quot;
+#   endif
+
+/*
+   Author     : Gaius Mulley
+   Title      : M2RTS
+   Date       : Wed Jun 20 15:21:04 BST 1990
+   Description: Implements the run time system facilities of Modula-2.
+*/
+
+
+/*
+   ExecuteTerminationProcedures - calls each installed termination
+                                  procedure in reverse order.
+*/
+
+<a name="SEC1"></a>
+extern void M2RTS_ExecuteTerminationProcedures (void);
+
+
+/*
+   InstallTerminationProcedure - installs a procedure, p, which will
+                                 be called when the procedure
+                                 ExecuteTerminationProcedures
+                                 is invoked.  It returns TRUE is the
+                                 procedure is installed.
+*/
+
+<a name="SEC2"></a>
+extern BOOLEAN M2RTS_InstallTerminationProcedure (void (*p)(void));
+
+
+/*
+   ExecuteInitialProcedures - executes the initial procedures installed
+                              by InstallInitialProcedure.
+*/
+
+<a name="SEC3"></a>
+extern void M2RTS_ExecuteInitialProcedures (void);
+
+
+/*
+   InstallInitialProcedure - installs a procedure to be executed just
+                             before the BEGIN code section of the main
+                             program module.
+*/
+
+<a name="SEC4"></a>
+extern BOOLEAN M2RTS_InstallInitialProcedure (void (*p)(void));
+
+
+/*
+   Terminate - provides compatibility for pim.  It calls exit with
+               the exitcode provided in a prior call to ExitOnHalt
+               (or zero if ExitOnHalt was never called).  It does
+               not call ExecuteTerminationProcedures.
+*/
+
+<a name="SEC5"></a>
+extern void M2RTS_Terminate (void);
+
+
+/*
+   HALT - terminate the current program.
+*/
+
+<a name="SEC6"></a>
+extern void M2RTS_HALT (void);
+
+
+/*
+   Halt - provides a more user friendly version of HALT, which takes
+          four parameters to aid debugging.
+*/
+
+<a name="SEC7"></a>
+extern void M2RTS_Halt (const int file_LOW, const int file_HIGH, const char *file,
+			unsigned int line,
+			const int function_LOW, const int function_HIGH, const char *function,
+			const int description_LOW, const int description_HIGH, const char *description);
+
+
+
+#endif
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

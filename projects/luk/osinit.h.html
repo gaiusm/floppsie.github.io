@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="luk-types.h.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="osinit.h.html"></a>
+<a name="section53"></a>
+<h4>osinit.h</h4>
+
+<pre>
+#if !defined(osinitH)
+#   define osinitH
+
+/*
+    Title      : osinit
+    Author     : Gaius Mulley
+    System     : UNIX (gm2)
+    Date       : Wed Aug  3 13:27:10 1994
+    Last edit  : Wed Aug  3 13:27:10 1994
+    Description: provides an interface which contains all
+                 the initialization constants for the realtime system.
+*/
+
+#include &quot;luk-types.h&quot;
+
+/*
+   ScreenAddress - returns the start address of the video memory.
+*/
+
+<a name="SEC1"></a>
+extern void *osinit_ScreenAddress (void);
+
+
+/*
+   ExtendedMemoryEnd - returns the maximum extended memory address.
+*/
+
+<a name="SEC2"></a>
+extern void *osinit_ExtendedMemoryEnd (void);
+
+
+/*
+   ExtendedMemoryStart - returns the start of the extended memory.
+*/
+
+<a name="SEC3"></a>
+extern void *osinit_ExtendedMemoryStart (void);
+
+
+/*
+   BaseMemoryEnd - returns the maximum base memory address.
+*/
+
+<a name="SEC4"></a>
+extern void *osinit_BaseMemoryEnd (void);
+
+
+/*
+   BaseMemoryStart - returns the start of the base memory.
+*/
+
+<a name="SEC5"></a>
+extern void *osinit_BaseMemoryStart (void);
+
+
+/*
+   SizeOfOS - returns the size of the realtime system.
+*/
+
+<a name="SEC6"></a>
+extern unsigned int osinit_SizeOfOS (void);
+
+
+/*
+   DebuggingWithGDB - returns TRUE if we are remote debugging with gdb.
+*/
+
+<a name="SEC7"></a>
+extern boolean osinit_DebuggingWithGDB (void);
+
+
+/*
+   SetDebugging - sets the debugging variable.
+*/
+
+<a name="SEC8"></a>
+extern void osinit_SetDebugging (unsigned int d);
+
+
+/*
+   GetDebugging - returns the debugging variable.
+                  0  means not debugging with GDB
+                  1  means debugging via com1
+                  2  means debugging via com2
+*/
+
+<a name="SEC9"></a>
+extern unsigned int osinit_GetDebugging (void);
+
+
+/*
+   MainStackSize - returns the size of mains stack.
+*/
+
+<a name="SEC10"></a>
+extern unsigned int osinit_MainStackSize (void);
+
+
+/*
+   Init - retrieve all parameters from second bootstage.
+*/
+
+<a name="SEC11"></a>
+extern void osinit_Init (void);
+
+
+/*
+   ResetParameters - replaces the parameters back to the original position
+                     ready for a reboot.
+*/
+
+<a name="SEC12"></a>
+extern void osinit_ResetParameters (void);
+
+
+#endif
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

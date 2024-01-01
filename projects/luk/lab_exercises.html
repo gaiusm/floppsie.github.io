@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="news.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="licence.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li class="selected"><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="lab_exercises.html"></a>
+<h2>Lab exercises</h2>
+
+<p>The lab exercises are found under <tt>student-luk-1.0.3/lab</tt>.
+For each lab exercise you will need to:
+</p>
+
+<div class="itemize">
+<dl>
+<dt><tt>(i)</tt></dt>
+<dd><p>modify <tt>student-luk-1.0.3/Makefile.in</tt> to reflect the
+exercise being undertaken. This only needs to be done once.
+</p>
+
+</dd><dt><tt>(ii)</tt></dt>
+<dd><p>edit the appropriate file inside each lab directory and complete
+the code. Now you need to go through the edit, compile, build, run
+cycle until the code is perfect! Remember to <tt>make bootdisk</tt>
+every time you want to test your code!
+</p>
+
+</dd></dl>
+</div>
+<p>Each sub section below corresponds to a sub directory under
+<tt>student-luk-1.0.3/lab</tt>.
+</p>
+
+<a name="section6"></a>
+<h3>hello</h3>
+
+<p>In this directory is a simple application which just prints ``hello world''
+to the screen and terminates. It is a minimal application which tests
+whether the microkernel can build and boot correctly. This example is
+complete and does not require any source code changes.
+</p>
+
+<p>You need to modify the <tt>Makefile.in</tt> and set the <tt>APPLICATION</tt>
+variable to <tt>hello</tt>. So the top of <tt>Makefile.in</tt> should look
+like this:
+</p>
+
+<pre>#
+# ================
+# Makefile for luk
+# ================
+#
+# You can configure the microkernel building in the following
+# lines of code
+# 
+# uncomment _one_ of the following APPLICATIONs to build an
+# appropriate microkernel
+#
+#
+APPLICATION=hello
+# APPLICATION=debug
+# APPLICATION=scn
+# APPLICATION=boundedbuffer
+etc etc
+</pre>
+
+<a name="section7"></a>
+<h3>debug</h3>
+
+<p>In this exercise you should implement the function DebugString inside
+the file <tt>Debug.c</tt>. Notice that there are two parameters to
+DebugString the pointer to the start of the string and the maximum
+number of characters which maybe in the string.
+</p>
+
+<p>All characters from the pointer up until the <tt>&lt;nul&gt;</tt> character
+<tt>(char)0</tt> should be emitted. No more than the maximum number of
+characters should be emitted, in case there is no trailing
+<tt>(char)0</tt>.
+</p>
+
+<p>There is an initial attempt of <tt>Debug.c</tt> in this directory and
+this can be built using the generic building instructions found in
+this document.
+</p>
+
+<p>Your function <tt>DebugString</tt> must check for the character sequence
+'\' 'n' and this should be cause a newline to be printed. Hint you
+should call <tt>WriteLn</tt>.
+<a name="section8"></a>
+</p>
+
+<h3>scn</h3>
+
+<p>In this exercise you should complete the screen device driver Scn.c.
+</p>
+
+<p>There is an initial attempt of <tt>Scn.c</tt> in this directory and this
+can be built using the generic building instructions found in this
+document. You need to complete the function <tt>ScrollUp</tt> which
+should move each line up the screen and then finally blank the bottom
+line.
+</p>
+
+<p>The screen can be accessed via the pointer to array
+<tt>(*screen)[j][i]</tt>. The screen top row is accessed via
+<tt>(*screen)[0][i]</tt>. Where <tt>i</tt> can have any value
+<tt>0..Width-1</tt> which represents the columns (left to right).
+<a name="section9"></a>
+</p>
+
+<h3>boundedbuffer</h3>
+
+<p>In this exercise you must complete the bounded buffer module as discussed
+in the lecture.
+</p>
+
+<p>There is an initial attempt of BufferDevice.c in this directory and
+this can be built using the generic building instructions found in
+this document. Your task is to finish the two functions
+<tt>BufferDevice_InitBuffer</tt> and <tt>BufferDevice_ReadBuffer</tt>.
+Both functions have been discussed in the lectures and their
+associated notes.
+<a name="section10"></a>
+</p>
+
+<h3>executive</h3>
+
+<p>In this exercise you should complete the functions Resume and Wait
+in the executive.
+</p>
+
+<p>There is an initial attempt of Executive.c in this directory and this can
+be built using the generic building instructions found in this document.
+<a name="section11"></a>
+</p>
+
+<h3>timerhandler</h3>
+
+<p>In this exercise you should complete the functions ArmEvent and Timer
+in the file <tt>timerhandler/TimerHandler.c</tt>.
+</p>
+
+<p>There is an initial attempt of <tt>TimerHandler.c</tt> in this directory
+and this can be built using the generic building instructions found in
+this document.
+<a name="section12"></a>
+</p>
+
+<h3>processes</h3>
+
+<p>In this directory is an application which runs three processes running
+in separate windows. It is a test application which demonstrates that
+the Executive and Interrupts are functioning in the microkernel. This
+example is complete and does not require any source code modifications.
+<a name="section13"></a>
+</p>
+
+<h3>combined</h3>
+
+<p>This does not require any extra work, but allows students to see
+their combined C files all working in the microkernel. It will have
+been necessary to complete all previous exercises (bug free) to see
+this successfully work.
+</p>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

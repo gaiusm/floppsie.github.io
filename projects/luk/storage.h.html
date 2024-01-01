@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="stdio.h.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="strlib.h.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="storage.h.html"></a>
+<a name="section45"></a>
+<h4>Storage.h</h4>
+
+<pre>#if !defined(StorageH)
+#define StorageH
+
+#if !defined(SYSTEMH)
+#   include &quot;SYSTEM.h&quot;
+#endif
+
+
+/*
+   Author     : Gaius Mulley
+   Title      : Storage
+   Date       : Mon Jun 18 14:37:05 BST 1990
+   Description: Implements the dynamic Storage handler for the
+                Modula-2 compiler.
+   Last update: Mon Jun 18 14:37:41 BST 1990
+*/
+
+
+
+/*
+   ALLOCATE - attempt to allocate memory from the heap.
+              NIL is returned in, a, if ALLOCATE fails.
+*/
+
+<a name="SEC1"></a>
+extern void Storage_ALLOCATE (void **a, unsigned int Size);
+
+
+/*
+   DEALLOCATE - return, Size, bytes to the heap.
+*/
+
+<a name="SEC2"></a>
+extern void Storage_DEALLOCATE (void *a, unsigned int Size);
+
+
+/*
+   Available - returns TRUE if, Size, bytes can be allocated.
+*/
+
+<a name="SEC3"></a>
+extern boolean Storage_Available (unsigned int Size);
+
+
+/*
+   Init - initialise the free store for the entire system.
+*/
+
+<a name="SEC4"></a>
+extern void Storage_Init (void);
+
+#endif
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

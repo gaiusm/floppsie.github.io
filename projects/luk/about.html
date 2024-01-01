@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td align="right"><a accesskey="n" href="obtaining.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li class="selected"><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="about.html"></a>
+<h2>About LUK</h2>
+
+<p>LUK is a lean microkernel whose primary purpose is to teach the
+principles of microkernels. It runs on x86_32 PC hardware and
+boots from a USB memory stick. When it boots it is the sole
+system, there is no linux, windows or OSX.
+</p>
+
+<p>LUK is written in C, Modula-2 and assembly language. All the lab
+exercises are available in C and (or Modula-2) students can study the
+microkernel in either language if desired. Students do not need to
+be familiar with Modula-2 in order to complete the C lab exercises.
+</p>
+
+<p>LUK runs in 32 bit protected mode and can create an arbitary number
+of lightweight processes using the <tt>Executive</tt> module.
+It has a <tt>Timerhandler</tt> module for creating time related events
+a keyboard and screen device driver. There is also a very primative
+text based window device.
+</p>
+
+<p>LUK coordinates interrupts and processes via semaphores implemented in
+the <tt>Executive</tt>. It currently uses a simple round robin
+scheduler to allocate processor time to the runnable processes.
+</p>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

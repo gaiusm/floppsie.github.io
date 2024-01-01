@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU LUK</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="portio.h.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="scn.h.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="lab_exercises.html"><span>Lab exercises</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="system.h.html"></a>
+<a name="section42"></a>
+<h4>SYSTEM.h</h4>
+
+<pre>
+#if !defined(SYSTEMH)
+#   define SYSTEMH
+
+/*
+   Author     : Gaius Mulley
+   Title      : SYSTEM
+   Date       : 3/4/86
+   Description: Implements the SYSTEM dependant module
+                in the Modula-2 compiler.
+   Last update: 9/9/89  - types and pseudo procedures exported:
+                          ADR, SIZE, TSIZE.
+                29/7/94 - started to add items to SYSTEM.mod
+                          added In, Out.
+                3/8/94  - added TRANSFER
+                4/8/94  - added NEWPROCESS
+                10/8/94 - added IOTRANSFER
+                12/8/94 - added LISTEN
+                23/7/97 - removed port io and placed into separate module.
+                12/9/2011 - ported LUK to the GNU Modula-2.
+
+   $Version$
+
+   $Log: SYSTEM.def,v $
+   Revision 1.2  1996-07-26 12:05:09  gaius
+   added minor support modules for the larger test MorlocTower
+*/
+
+
+typedef enum {
+  On, Off
+} OnOrOff;
+
+#if !defined(SYSTEMC)
+/* opaque type declaration */
+typedef void *PROCESS;
+#endif
+
+
+/*
+   TRANSFER - save the current volatile environment into, p1.
+              Restore the volatile environment from, p2.
+*/
+
+
+<a name="SEC1"></a>
+extern void SYSTEM_TRANSFER (void **p1, void *p2);
+
+
+/*
+   NEWPROCESS - p is a parameterless procedure, a, is the origin of
+                the workspace used for the process stack and containing
+                the volatile environment of the process. n, is the amount
+                in bytes of this workspace. new, is the new process.
+*/
+
+<a name="SEC2"></a>
+extern void SYSTEM_NEWPROCESS (void (*p)(void), void *a, unsigned int n,
+			       void **new_);
+
+
+/*
+   IOTRANSFER - saves the current volatile environment into, First,
+                and restores volatile environment, Second.
+                When an interrupt, InterruptNo, is encountered then
+                the reverse takes place. (The then current volatile
+                environment is shelved onto Second and First is resumed).
+
+                NOTE: that upon interrupt the Second might not be the
+                      same process as that before the original call to
+                      IOTRANSFER.
+*/
+
+<a name="SEC3"></a>
+extern void SYSTEM_IOTRANSFER (void **First, void **Second,
+			       unsigned int InterruptNo);
+
+
+/*
+   LISTEN - briefly listen for any interrupts.
+*/
+
+<a name="SEC4"></a>
+extern void SYSTEM_LISTEN (void);
+
+
+/*
+   TurnInterrupts - switches interrupts on or off depending
+                    on Switch. It returns the old value.
+*/
+
+<a name="SEC5"></a>
+extern OnOrOff SYSTEM_TurnInterrupts (OnOrOff Switch);
+
+
+/*
+   Init - initialize SYSTEM data structures. IOTRANSFER process tables.
+*/
+
+<a name="SEC6"></a>
+extern void SYSTEM_Init (void);
+
+
+<a name="SEC7"></a>
+extern void SYSTEM_CheckOff (void);
+
+#endif
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>
