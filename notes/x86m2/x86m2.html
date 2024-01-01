@@ -1,0 +1,670 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Jan  1 18:43:37 2024 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title>x86m2</title>
+
+</head>
+<body>
+
+<h1 align="center">x86m2</h1>
+
+<a href="#NAME">NAME</a><br>
+<a href="#SYNOPSIS">SYNOPSIS</a><br>
+<a href="#DESCRIPTION">DESCRIPTION</a><br>
+<a href="#ENVIRONMENT">ENVIRONMENT</a><br>
+<a href="#OPTIONS">OPTIONS</a><br>
+<a href="#FEATURES">FEATURES</a><br>
+<a href="#Interface to C">Interface to C</a><br>
+<a href="#SYSTEM MODULE">SYSTEM MODULE</a><br>
+<a href="#TYPES">TYPES</a><br>
+<a href="#AUTHORS/CONTRIBUTORS">AUTHORS/CONTRIBUTORS</a><br>
+<a href="#AVAILABILITY">AVAILABILITY</a><br>
+
+<hr>
+
+
+<h2>NAME
+<a name="NAME"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">x86m2 - a
+complete modula-2 compiler conforming to PIM-2 Edition 2</p>
+
+<h2>SYNOPSIS
+<a name="SYNOPSIS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><b>x86m2 [-l]
+[-g] [-ng] [-p] [-bounds] [-students] [-Odynamic] [-Oi586]
+[-Oi686] [-On] [-O] [-Ouncalled] [-Omemcopy] [-nomath]
+[-M2RTS] [-m] [-S] [-16|-32] [-i386|-apu] [-gas|-masm|-bas]
+[-dryrun] [-v] [-o</b> <i>destinition</i><b>]
+[-orderfile</b> <i>yourfile</i><b>] [-orderonly] [-quiet]
+[-verbose] [-statistics] [-pedantic] [-M</b>
+<i>SearchPath</i><b>]</b> <i>ModuleName</i></p>
+
+<h2>DESCRIPTION
+<a name="DESCRIPTION"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em"><i>x86m2</i> is
+the driver program to a modula-2 compiler targetting 16 or
+32 bit x86. It takes a number of arguments and invokes many
+subcomponents to build, assemble and link a modula-2
+application. Many of the arguments given to <i>x86m2</i> are
+passed through to the subcomponents. For example in the
+synopsis given above the <b>-g</b> and the <b>-quiet</b>
+onwards are passed through to the main compiler component.
+However the purpose of <i>x86m2</i> is to shield the user of
+knowing the interaction of the subcomponents by presenting a
+simple interface.</p>
+
+<h2>ENVIRONMENT
+<a name="ENVIRONMENT"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">There are two
+useful environment variables that may be used with the
+modula-2 utilities, these are <b>M2PATH</b> and
+<b>M2OPTIONS</b>. The <b>M2PATH</b> can be set to determine
+the directory order that the compiler will search to find
+library modules. The path is specified by a path, a space
+and more paths ie:</p>
+
+<p style="margin-left:18%; margin-top: 1em"><b>export
+M2PATH=&quot;/user/bloggs/m2/comp/libs
+/usr/m2/libs&quot;</b></p>
+
+<p style="margin-left:11%; margin-top: 1em">This indicates
+that the compiler will search the directory
+/user/bloggs/m2/comp/libs before it searches /usr/m2/libs to
+find library modules. Note that you need to explicitly place
+a <b>.</b> in the <b>M2PATH</b> variable to make the
+compiler search your current working directory. Note that
+the default path for the compiler may vary depending upon
+the target. To find out the default path type: <i>x86m2 -apu
+-h</i> or <i>x86m2 -gas -h</i> or <i>x86m2 -bas -h</i>. <br>
+The <b>M2OPTIONS</b> environment variable can be set to
+contain any of the non path related options. Thus whenever
+the compiler is invoked <b>without</b> any command line
+options these environment options are used. Note that if an
+option is specified on the command line then
+<b>M2OPTIONS</b> is ignored. If the <b>-M</b> command line
+option is used then it too will override the <b>M2PATH</b>
+environment variable.</p>
+
+<p style="margin-left:11%; margin-top: 1em">This mechanism
+allows users to configure their environment and not have to
+tediously specify for every compilation the options
+required.</p>
+
+<h2>OPTIONS
+<a name="OPTIONS"></a>
+</h2>
+
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p style="margin-top: 1em">-l</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p style="margin-top: 1em">link the module specified on the
+command line. The module is assumed to have already been
+compiled.</p> </td></tr>
+</table>
+
+<p style="margin-left:11%;">-nomath</p>
+
+<p style="margin-left:22%;">tell the compiler that you do
+<i>not</i> expect to use the coprocessor. The compiler will
+generate an error if any source code attempts to generate
+coprocessor instructions. This option is useful for realtime
+systems which are targetted for processors without floating
+point instructions.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-M2RTS</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>do not automatically link with the module M2RTS. You
+should not specify this flag for normal UNIX applications.
+It <i>might</i> be appropriate to use this flag for a
+realtime system. (The linker will automatically include the
+module M2RTS even if no imports are specified in your
+program module. The UNIX environment requires M2RTS as HALT
+and some termination code is implemented inside this
+module).</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-m</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>at link stage display all the modules that are to be
+linked.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-g</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>compile or link generating GNU GDB compatible debugging
+information. Note that occasionally the line number
+debugging information is not absolutely correct if the -O
+option is also supplied. Most of the statements correspond
+with the line numbers but procedure calls at the end of an
+IF THEN END statement sequence maybe misaligned by a few
+source lines. The -O option removes dead code and sometimes
+rearranges code sequences.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-ng</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>do not generate GNU GDB compatible debugging
+information. This option will override a <b>-g</b> found in
+the environment.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-bounds</p>
+
+<p style="margin-left:22%;">generate code to check the
+bounds of subranges and array indexes. The default is that
+this flag is FALSE.</p>
+
+<p style="margin-left:11%;">-return</p>
+
+<p style="margin-left:22%;">generate code to check that
+functions always exit with a RETURN and do not fall out at
+the end. The default is that this flag is FALSE.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-p</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>generate profiling information. When the final binary is
+executed a profile trace is generated and this can be
+interpreted by the command <tt>gprof</tt>.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-O</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>switch on all code optimization within the compiler.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-Ocse</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>turn <i>off</i> common subexpressions optimization. This
+is useful if you are debugging source code as this
+optimization does not preserve line number ordering of
+assignments. (Perhaps this is a bug?)</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-Oi586</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>turn on pentium (i586) processor optimizations, such as
+pentium instructions and exploit the pentium pipeline. This
+can considerably improve the speed of the generated code. It
+enables efficient and inteligent pipelining, which
+understands cache lines, operand conflicts. It also aligns
+data on word and 16 byte boundaries where appropriate. can
+be used in conjunction with -Odynamic. This has just been
+implemented and has undergone limited testing (used on the
+compiler and not much else). Only use if desperate for
+speed. This flag tells the compiler to schedule i586
+instructions to exploit the pipeline.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-Oi686</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>turn on pentium (i686) processor optimizations.
+Currently this only enables the 686 cache line model and
+i586 optimizations.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-Ocache</p>
+
+<p style="margin-left:22%;">turn on cache
+optimizations.</p>
+
+<p style="margin-left:11%;">-Oworst</p>
+
+<p style="margin-left:22%;">tries to generate the worst
+code for the pipeline. Hopefully only used for testing out
+potential speed ups.</p>
+
+<p style="margin-left:11%;">-Ouncalled</p>
+
+<p style="margin-left:22%;">remove all procedures which are
+never called. Note that this may have no effect on the
+performance of the remaining code. Although it may have a
+secondary performance improvement as the binary might be
+smaller and thus consume less operating system
+resources.</p>
+
+<p style="margin-left:11%;">-Odynamic</p>
+
+<p style="margin-left:22%;">use the dynamic programming
+code generator. Produces much better code, as with most
+optimization techniques the debugging information becomes
+vague. In particular line numbers will not exactly match the
+code generated. Only use if you are desperate for speed.
+This flag will eventually be enabled with the -O option once
+the code generator has been thrashed through many different
+styles of code. Do not use this flag with the -16 flag.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="4%">
+
+
+<p>-On</p></td>
+<td width="7%"></td>
+<td width="78%">
+
+
+<p>tells the pipeline optimizer to find the optimal
+pipeline scheduling ordering for the next 3*n instructions.
+Default is -O2. Increasing beyond 4 causes compilation time
+to noticably increase.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-Omemcopy</p>
+
+<p style="margin-left:22%;">use the <tt>memcopy</tt>
+instruction for pushing and popping data from the stack.
+This optimization flag is only appropriate for the
+<i>-apu</i> processor. The default is not to use the
+flag.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-S</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>compile the module specified on the command line, only
+generate an assembly language file.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-16</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate 16 bit code and data.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-32</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate 32 bit code and data - the default.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-gas</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate GNU GAS assembler syntax.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-masm</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate Intel MASM assembler syntax.</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-bas</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate Bruce Evans assembler syntax. (Currently this
+only works with the -16 flag).</p></td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-apu</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate APU (Abtract Processor Code) machine language
+code.</p> </td></tr>
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="7%">
+
+
+<p>-i386</p></td>
+<td width="4%"></td>
+<td width="78%">
+
+
+<p>generate Intel i386 processor code.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-dryrun</p>
+
+<p style="margin-left:22%;">show what subcomponents will be
+invoked by <i>x86m2</i>, do not perform any compilation or
+linkage.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="3%">
+
+
+<p>-v</p></td>
+<td width="8%"></td>
+<td width="78%">
+
+
+<p>show the subcomponents that are invoked before actually
+invoking them.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-o <i>destinition</i></p>
+
+<p style="margin-left:22%;">place the output of the
+compiler into file <i>destinition</i><b>.</b></p>
+
+<p style="margin-left:11%;"><b>-orderfile</b>
+<i>yourfile</i></p>
+
+<p style="margin-left:22%;">the initialization order is
+specified by <i>yourfile</i>.</p>
+
+<p style="margin-left:11%;">-orderonly</p>
+
+<p style="margin-left:22%;">only create the order file, the
+name of which may have been specified by the previous
+<b>-orderfile</b> option.</p>
+
+<table width="100%" border="0" rules="none" frame="void"
+       cellspacing="0" cellpadding="0">
+<tr valign="top" align="left">
+<td width="11%"></td>
+<td width="9%">
+
+
+<p>-quiet</p></td>
+<td width="2%"></td>
+<td width="78%">
+
+
+<p>do not display any Pass 1, Pass 2, Pass 3, Pass 4
+messages, frequently found on modula-2 compilers.</p></td></tr>
+</table>
+
+<p style="margin-left:11%;">-verbose</p>
+
+<p style="margin-left:22%;">if an error occurs the
+erroneous text is displayed with an arrow indicating the
+approximate character in error. The line number and file is
+always displayed, but sometimes the compiler attributes the
+error to the following line to the error. The
+<b>-verbose</b> option is more accurate and more
+verbose!</p>
+
+<p style="margin-left:11%;">-statistics</p>
+
+<p style="margin-left:22%;">generates quadruple
+information: number of quadruples generated, number of
+quadruples remaining after optimization.</p>
+
+<p style="margin-left:11%;">-students</p>
+
+<p style="margin-left:22%;">checks for novice
+peculiarities. Note that these warnings are not the same as
+error messages. Hardened users of Modula-2 may wish to
+ignore this option as it checks to see whether a user has
+declared same named variables in nested scopes and whether a
+variable looks similar to a keyword (case difference etc).
+These are allowed in Modula-2 but could be considered poor
+programming style.</p>
+
+<p style="margin-left:11%;">-pedantic</p>
+
+<p style="margin-left:22%;">forces the compiler to reject
+nested <tt>WITH</tt> statements referencing the same record
+type. Does not allow multiple imports of the same item from
+a module. It also checks that: procedure variables are
+written to before being read; variables are not only written
+to but read from; variables are declared and used. If the
+compiler encounters a variable being read before written it
+will terminate with a message. It will check that
+<tt>FOR</tt> loop indices are not used outside the end of
+this loop without being reset.</p>
+
+<p style="margin-left:11%;">-M <i>SearchPath</i></p>
+
+<p style="margin-left:22%;">tells the compiler which
+directories to search, to find library modules. Typically
+one might specify <b>-M &quot;/user/bloggs/lib
+/user/m2/lib&quot;</b> to indicate that the directory
+/user/bloggs/lib should be searched first, and later
+/user/m2/lib should be searched if the required library
+module was not found in /user/bloggs/lib.</p>
+
+<p style="margin-left:22%; margin-top: 1em">The module name
+should be the exact module name, NOT the (possibly
+truncated) file name.</p>
+
+<h2>FEATURES
+<a name="FEATURES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The compiler
+generates error messages compatible with the emacs next
+error system.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The compiler
+gives substantial help in certain annoying modula-2 errors.
+For example it will list all the undeclared identifiers at
+the end of a compilation, it also lists all exported
+identifiers which have not been implemented, it will check
+parameters declarations carefully to see that the same types
+and names are used in the definition module and
+implementation module. Also, provided the <tt>-verbose</tt>
+option is used, the compiler will display any procedure
+parameters which conflict with the definition. The compiler
+will display any procedure parameters which conflict with
+declaration and give fairly precise details about where the
+conflict occurred.</p>
+
+<p style="margin-left:11%; margin-top: 1em">The compiler
+allows abstract data types to be <b>ANY</b> type, not just
+restricted to a pointer type. It also allows declarations in
+any order (type declarations may be in any order the
+software developper desires, not the way the compiler
+desires). So for example constants and enumerated types may
+be declared at the bottom of a module etc.</p>
+
+<h2>Interface to C
+<a name="Interface to C"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">There is an
+example of how to interface modula-2 in the library
+directory. The modula-2 compiler can be configured to push
+parameters from right to left (the default) or alternatively
+from left to right. To alter the default you need to alter
+the BOOLEAN constant in <tt>M2Configure.def</tt> and
+<tt>make.rules</tt>.</p>
+
+<p style="margin-left:11%; margin-top: 1em">An example of
+interfacing modula-2 to C is contained within the interface
+file <b>libc.def</b> and <b>libc.c</b>.</p>
+
+<h2>SYSTEM MODULE
+<a name="SYSTEM MODULE"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">The system
+module for this compiler really exists rather than being a
+pseudo module as in many modula-2 compilers. The compiler
+internally declares <tt>ADDRESS, WORD, BYTE, ADR, TSIZE,
+SIZE</tt> and these are exported by <tt>SYSTEM.def</tt>. The
+module system is actually parsed by the compiler and
+therefore one can add functions like <tt>IOTRANSFER,
+TRANSFER, PROCESS, NEWPROCESS</tt>.</p>
+
+<h2>TYPES
+<a name="TYPES"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">In addition to
+the base types normally found in Modula-2 compilers the
+following types are also implemented: LONGINT and LONGREAL.
+These types are 64 bits in length. The module MATH exports
+trigonometrical functions such as sin, cos and tan which
+when compiled produce inline code.</p>
+
+<h2>AUTHORS/CONTRIBUTORS
+<a name="AUTHORS/CONTRIBUTORS"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Please email
+the author,
+<a href="mailto:gaiusmod2@gmail.com">gaiusmod2@gmail.com</a>
+with any queries, suggestions, improvements, grumbles etc. A
+great debt of thanks goes to:</p>
+
+<p style="margin-left:14%; margin-top: 1em">- Stuart Lewis
+and all his budding first year programmers who identified so
+many bad error messages, identified so many warning
+improvements and for finding bugs/limitations in various
+library modules. <br>
+- Keith Verheyden for test driving many of the alpha
+releases.</p>
+
+<p style="margin-left:11%; margin-top: 1em">without which
+the compiler would not be nearly as useful.</p>
+
+<h2>AVAILABILITY
+<a name="AVAILABILITY"></a>
+</h2>
+
+
+<p style="margin-left:11%; margin-top: 1em">Source is
+available from:
+<a href="https://github.com/gaiusm/x86m2">https://github.com/gaiusm/x86m2</a>
+The compiler is held under the GPL and the libraries are
+under LGPL.</p>
+<hr>
+</body>
+</html>
