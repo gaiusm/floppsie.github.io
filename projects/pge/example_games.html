@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU PGE</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="news.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="licence.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li class="selected"><a href="example_games.html"><span>Example Games</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li><a href="module.html"><span>Module</span></a></li>
+<li><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="example_games.html"></a>
+<h2>Example Games</h2>
+
+<p>The example game source code can be found under <tt>pge-4.0/examples</tt>.
+</p>
+
+<p>Each game corresponds to a sub directory under
+<tt>student-pge-4.0/lab</tt>. Currently there is source code
+for two complete games: breakout and matchsticks. The example frozenbubble is
+not implemented but added as an idea to guide future development of <tt>pge</tt>.
+</p>
+
+<a name="section7"></a>
+<h4>Overview of breakout</h4>
+
+<p>Here is a very basic version of upside down breakout. You can interfere
+with the gold ball by pressing the mouse left and right buttons. If the
+ball hits the triangles it gains a small amount of velocity. All other
+collisions are very slightly inelastic.
+</p>
+
+<a name="section8"></a>
+<h4>Interesting aspects of the breakout implementation</h4>
+
+<p>It uses timers to coordinate the time left and it uses event callbacks
+to handle mouse presses. Each blue box is deleted with a callback upon
+collision.
+<a name="section9"></a>
+</p>
+
+<h4>Overview of matchsticks</h4>
+
+<p>Here is a very basic game called matchsticks. The idea is to control
+the gold ball and hit the light wood boxes encapsulating the blue balls.
+If a blue ball hits the floor it is deleted. You need to make all blue
+balls disappear before you run out of time.
+</p>
+
+<p>You can interfere with the gold ball by pressing the mouse left and
+right buttons. If the ball hits the triangles it gains a small amount
+of velocity. All other collisions are very slightly inelastic.
+</p>
+
+<a name="section10"></a>
+<h4>Interesting aspects of the matchsticks implementation</h4>
+
+<p>It uses timers to coordinate the time left and it uses event callbacks
+to handle mouse presses. The blue balls initially are free moving and
+they quickly change internally to the stationary state. Once they are
+hit or a matchstick is deleted all objects in the stationary state
+become free moving again.
+<a name="section11"></a>
+</p>
+
+<h4>Overview of frozenbubble</h4>
+
+<p>Here is a very basic game of frozebubble.
+</p>
+
+<p>You control the initial projection vector of the gold ball from the
+mouse position. If the gold ball hits any other ball in a suspended
+state it becomes free moving.
+</p>
+
+<a name="section12"></a>
+<h4>Interesting aspects of the frozenbubble implmentation</h4>
+
+<p>This game uses the collision callbacks to resume movement for a
+suspended ball.
+</p>
+
+<a name="section13"></a>
+<h4>Ideas on how to extend PGE</h4>
+
+<p>If you are a second year student at the University of South Wales you
+should skip this section.
+</p>
+
+<p>Here are a list of possible extensions to pge which might be useful.
+</p>
+
+<ul type=disc><li>add invisibility colour for objects.
+
+<li>allow fixed objects to be repositioned by Python.
+
+<li>allow fixed objects to be rotated (repositioned) about their centre of gravity.
+
+<li>introduce the concept of an object moving along a vector.
+Use object.constain (vector).
+
+<li>per object elasticity.
+
+<li>per object gravity.
+
+</ul><p>Implementing per object gravity and rotation about the centre of
+gravity would allow frozen bubble to be completed using PGE.
+</p>
+
+<a name="section14"></a>
+<h4>Breakout source code</h4>
+
+<p>Here is the declaration section of breakout code.
+</p>
+
+<pre>#!/usr/bin/env python3
+
+import pge, sys, time
+from pygame.locals import *
+
+print (&quot;starting breakout&quot;)
+pge.interactive ()
+pge.record ()
+
+wood_light = pge.rgb (166.0/256.0, 124.0/256.0, 54.0/256.0)
+wood_dark = pge.rgb (76.0/256.0, 47.0/256.0, 0.0)
+red = pge.rgb (1.0, 0.0, 0.0)
+green = pge.rgb (0.0, 1.0, 0.0)
+blue = pge.rgb (0.0, 0.0, 1.0)
+
+dark_red = pge.rgb (166.0/255.0, 25.0/255.0, 50.0/255.0)
+dark_green = pge.rgb (25.0/255.0, 100.0/255.0, 50.0/255.0)
+dark_blue = pge.rgb (25.0/255.0, 50.0/255.0, 150.0/255.0)
+
+steel = pge.rgb (0.5, 0.5, 0.5)
+copper = pge.rgb (0.5, 0.3, 0.2)
+gold = pge.rgb (0.8, 0.6, 0.15)
+ball_size = 0.02
+border = 0.01
+white = pge.rgb (1.0, 1.0, 1.0)
+gap = 0.01
+blocks = []
+winner = False
+loser = False
+seconds_left = None
+previous = None
+slowdown = 6
+</pre>
+
+<p>The callback functions.
+</p>
+
+<pre>def finish_game (e = None, f = None):
+    sys.exit (0)
+
+
+def myquit (e):
+    print (&quot;goodbye&quot;)
+    finish_game ()
+
+
+def key_pressed (e):
+    if e.key == K_ESCAPE:
+        myquit (e)
+
+
+def placeBorders (thickness, color):
+    print (&quot;placeBorders&quot;)
+    e1 = pge.box (0.0, 0.0, 1.0, thickness, color).fix ()
+    e2 = pge.box (0.0, 0.0, thickness, 1.0, color).fix ()
+    e3 = pge.box (1.0-thickness, 0.0, thickness, 1.0, color).fix ()
+    e4 = pge.box (0.0, 1.0-thickness, 1.0, thickness, color).fix ()
+    return e1, e2, e3, e4
+
+
+def placeBall (kind, x, y, r):
+    return pge.circle (x, y, r, kind)
+
+
+def push_it (o, e):
+    p = e.collision_between ()
+    if p != None and p != []:
+        for i in p:
+            if i != o:
+                i.put_xvel (i.get_xvel () * 1.15)
+                i.put_yvel (i.get_yvel () * 1.15)
+
+
+def placeTriangle (p0, p1, p2, colour):
+    t = pge.poly3 (p0[0], p0[1], p1[0], p1[1], p2[0], p2[1], colour).on_collision (push_it).fix ()
+
+
+def delete_me (o, e):
+    global blocks, winner, loser
+
+    blocks.remove (o)
+    o.rm ()
+    if blocks == []:
+        if not loser:
+            winner = True
+            pge.text (0.2, 0.3, &quot;Winner&quot;, white, 100, 1)
+            pge.at_time (4.0, finish_game)
+
+
+def box_of (pos, width, height, color):
+    global blocks
+
+    blocks += [pge.box (pos[0], pos[1], width, height, color).fix ().on_collision (delete_me)]
+</pre>
+
+<p>Timer and event based callbacks.
+</p>
+
+<pre>def mouse_hit (e):
+    global gb
+    mouse = pge.pyg_to_unit_coord (e.pos)
+    if e.button == 1:
+        gb.put_xvel (gb.get_xvel ()-0.3)
+    elif e.button == 3:
+        gb.put_xvel (gb.get_xvel ()+0.3)
+    elif gb.moving_towards (mouse[0], mouse[1]):
+        ball = gb.get_unit_coord ()
+        # print (&quot;mouse =&quot;, mouse, &quot;ball =&quot;, ball)
+        gb.apply_impulse (pge.sub_coord (mouse, ball), 0.4)
+    else:
+        gb.put_yvel (gb.get_yvel ()+0.4)
+
+
+def place_boxes ():
+    for y in range (3):
+        for x in range (9):
+            box_of ([((float)(x))/10.0+0.06, (float)(y)/10.0+0.03], 0.08, 0.08, dark_blue)
+
+def timer (e = None, f = None):
+    global seconds_left, previous
+    if seconds_left &gt;= 0:
+        pge.at_time (1.0, timer)
+        s = &quot;%d&quot; % seconds_left
+        if previous != None:
+            previous.rm ()
+        previous = pge.text (0.8, 0.9, s, white, 100, 1)
+        seconds_left -= 1
+
+
+def out_of_time ():
+    global loser, winner
+    if not winner:
+        loser = True
+        pge.text (0.3, 0.7, &quot;Loser&quot;, white, 100, 1)
+        pge.at_time (4.0, finish_game)
+</pre>
+
+<p>The main function.
+</p>
+
+<pre>def main ():
+    global gb, winner, loser, seconds_left
+
+    t1 = placeTriangle ([0.2, 0.4], [0.4, 0.4], [0.3, 0.5], white)
+    t2 = placeTriangle ([0.6, 0.4], [0.8, 0.4], [0.7, 0.5], white)
+    b1, b2, b3, b4 = placeBorders (border, wood_dark)
+
+    place_boxes ()
+    gb = placeBall (gold, 0.19, 0.8, 0.05).mass (1.25)
+
+    print (&quot;before run&quot;)
+    pge.gravity ()
+    pge.dump_world ()
+    pge.draw_collision (True, False)
+    pge.slow_down (slowdown)  # slows down real time by a factor of
+    pge.register_handler (myquit, [QUIT])
+    pge.register_handler (key_pressed, [KEYDOWN])
+    pge.register_handler (mouse_hit, [MOUSEBUTTONDOWN])
+    pge.display_set_mode ([800, 800])
+    seconds_left = 10*slowdown
+    timer ()
+    pge.run (10.0)
+    out_of_time ()
+    pge.run (4.0)
+    pge.finish ()
+
+
+print (&quot;before main()&quot;)
+main ()
+</pre>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="automatically created by texi2tr, see www.nongnu.org/gm2">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<link rel="stylesheet" type="text/css" href="texi2tr.css" />
+</head>
+
+<body>
+
+  <!-- site wide top running header menu -->
+  <ul id="overview">
+    <li class="home">
+      <a href="homepage.html">Home</a>
+    </li>
+
+    <li>
+      <a href="news.html">News</a>
+    </li>
+    <li>
+      <a href="development.html">Development</a>
+    </li>
+    <li>
+      <a href="community.html">Community</a>
+    </li>
+  </ul>
+  <div id="heading">
+      <h1>GNU PGE</h1>
+
+    <div id="navigation">
+      <table width="100%" cellpadding="2" cellspacing="2">
+	<tr valign="middle">
+
+	  <td><a accesskey="p" href="using.html"><img width="48" alt="Prev" src="prev.png" border="0" height="48"></img></a></td>
+	  <td align="right"><a accesskey="n" href="libraries.html"><img width="48" alt="Next" src="next.png" border="0" height="48"></img></a></td></tr></table></div><div id="tabmenu">
+<ul id="tab">
+<li><a href="about.html"><span>About</span></a></li>
+<li><a href="obtaining.html"><span>Obtaining</span></a></li>
+<li><a href="dependencies.html"><span>Dependencies</span></a></li>
+<li><a href="building.html"><span>Building</span></a></li>
+<li><a href="example_games.html"><span>Example Games</span></a></li>
+<li><a href="licence.html"><span>Licence</span></a></li>
+<li><a href="gnu_project.html"><span>GNU Project</span></a></li>
+<li class="selected"><a href="module.html"><span>Module</span></a></li>
+<li><a href="libraries.html"><span>Libraries</span></a></li>
+<li><a href="indices.html"><span>Indices</span></a></li>
+
+</ul>
+</div>
+</div>
+ <div class="page">
+  <div class="plain">
+<a name="module.html"></a>
+<a name="section21"></a>
+<h3>PGE Python API</h3>
+
+<a name="section22"></a>
+<h4>class object</h4>
+
+<p>object - the class of objects in the 2D world. An object can either
+be a colour, circle, polygon, spring or text. A text
+object can not exist in level 0. Objects are drawn
+from lowest level to highest level. Only objects in
+level 0 are processed by the physics engine.
+All other levels are eye candy.
+</p>
+
+<a name="SEC1"></a>
+<a name="section23"></a>
+<h4>object.velocity (self, vx, vy)</h4>
+
+<p>velocity - Pre-condition: a circle or polygon object
+which is not fixed and exists at level 0.
+Post-condition: assign the velocity (vx, vy)
+to this object.
+</p>
+
+<a name="SEC2"></a>
+<a name="section24"></a>
+<h4>object.accel (self, ax, ay)</h4>
+
+<p>accel - Pre-condition: a circle or polygon object
+which is not fixed and exists at level 0.
+Post-condition: assign the accel (vx, vy)
+to this object.
+</p>
+
+<a name="SEC3"></a>
+<a name="section25"></a>
+<h4>object.fix (self)</h4>
+
+<p>fix - Pre-condition: the object is either a circle or polygon
+which exists in level 0.
+Post-condition: mark this object as fixed to its initial
+position.
+</p>
+
+<a name="SEC4"></a>
+<a name="section26"></a>
+<h4>object.unfix (self)</h4>
+
+<p>unfix - Pre-condition: the object is either a circle or polygon
+which exists in level 0.
+Post-condition: mark this object as unfixed.
+</p>
+
+<a name="SEC5"></a>
+<a name="section27"></a>
+<h4>object.is_fixed (self)</h4>
+
+<p>is_fixed - returns True if the object is fixed in the world.
+</p>
+
+<a name="SEC6"></a>
+<a name="section28"></a>
+<h4>object.mass (self, m)</h4>
+
+<p>mass - Pre-condition: the object is either a circle or polygon
+which exists in level 0. The object must not be fixed.
+Post-condition: object is given mass, m.
+</p>
+
+<a name="SEC7"></a>
+<a name="section29"></a>
+<h4>object.apply_impulse (self, unit_vec, magnitude)</h4>
+
+<p>apply_impulse - Pre-condition: the object is either a circle or polygon
+which exists in level 0. The object must not be fixed.
+Post-condition: the object is given an impulse along vector,
+unit_vec, with a, magnitude.
+unit_vec is a list of two elements [x, y]
+magnitude is a float.
+</p>
+
+<a name="SEC8"></a>
+<a name="section30"></a>
+<h4>object.on_collision_with (self, another, p)</h4>
+
+<p>on_collision_with - Pre-condition: the object is either a circle or polygon
+which exists in level 0.
+Post-condition: when this object collides
+with any object in the list, another,
+then function, p, is called.
+The parameter, another, is a list of objects.
+p must be a function which receives two parameters
+an object and an event.
+</p>
+
+<a name="SEC9"></a>
+<a name="section31"></a>
+<h4>object.on_collision (self, p)</h4>
+
+<p>on_collision - Pre-condition: the object is either a circle or polygon
+which exists in level 0.
+Post-condition: when this object collides call function, p.
+p is a function with two parameters, o and e.
+o is this object.
+e is the event.
+</p>
+
+<a name="SEC10"></a>
+<a name="section32"></a>
+<h4>object.rm (self)</h4>
+
+<p>rm - Pre-condition: the object can be a circle, polygon or text at any level.
+Post-condition: the object is removed.
+</p>
+
+<a name="SEC11"></a>
+<a name="section33"></a>
+<h4>object.get_param (self)</h4>
+
+<p>get_param - Pre-condition: self is a polygon or circle object.
+Post-condition: returns user data given to this object.
+</p>
+
+<a name="SEC12"></a>
+<a name="section34"></a>
+<h4>object.set_param (self, value)</h4>
+
+<p>set_param - Pre-condition: self is a polygon or circle object.
+Post-condition: assigns value as the user data to this object.
+</p>
+
+<a name="SEC13"></a>
+<a name="section35"></a>
+<h4>object.set_width (self, value)</h4>
+
+<p>set_width - Pre-condition: self is a polygon or circle object.
+Post-confition: assigns an overall width value to an object.
+This value is not used by the physics engine.
+It is only present for user convenience.
+</p>
+
+<a name="SEC14"></a>
+<a name="section36"></a>
+<h4>object.get_width (self)</h4>
+
+<p>get_width - Pre-condition: self is a polygon or circle object which has
+had a user defined width set. Post-condition: returns the
+overall width value for this object.
+</p>
+
+<a name="SEC15"></a>
+<a name="section37"></a>
+<h4>object.get_mass (self)</h4>
+
+<p>get_mass - Pre-condition: self is a polygon or circle object.
+Post-condition: return the mass of this object.
+</p>
+
+<a name="SEC16"></a>
+<a name="section38"></a>
+<h4>object.get_colour (self)</h4>
+
+<p>get_colour - Pre-condition: self is a polygon or circle object.
+Post-condition: return the colour of this object.
+</p>
+
+<a name="SEC17"></a>
+<a name="section39"></a>
+<h4>object.set_colour (self, c)</h4>
+
+<p>set_colour - Pre-condition: self is a polygon or circle object.
+Post-condition: this object will be displayed in colour, c.
+</p>
+
+<a name="SEC18"></a>
+<a name="section40"></a>
+<h4>object.set_alpha (self, value)</h4>
+
+<p>set_alpha - Pre-condition: self is a polygon or circle object.
+Post-condition: this object will be displayed with
+its colour having an alpha value.
+</p>
+
+<a name="SEC19"></a>
+<a name="section41"></a>
+<h4>object.get_unit_coord (self)</h4>
+
+<p>get_unit_coord - Pre-condition: object must be a circle.
+Post-condition: return a list [x, y] representing the
+coordinate center of this object. Each x, y
+value will be between 0.0 and 1.0.
+</p>
+
+<a name="SEC20"></a>
+<a name="section42"></a>
+<h4>object.get_xpos (self)</h4>
+
+<p>get_xpos - Pre-condition: object must be a circle or polygon.
+Post-condition: return the x position of this object.
+The value will be between 0.0 and 1.0.
+</p>
+
+<a name="SEC21"></a>
+<a name="section43"></a>
+<h4>object.get_ypos (self)</h4>
+
+<p>get_ypos - Pre-condition: object must be a circle or polygon.
+Post-condition: return the y position of this object.
+The value will be between 0.0 and 1.0.
+</p>
+
+<a name="SEC22"></a>
+<a name="section44"></a>
+<h4>object.get_xvel (self)</h4>
+
+<p>get_xvel - Pre-condition: object must be a circle or polygon.
+Post-condition: return the x velocity of this object.
+</p>
+
+<a name="SEC23"></a>
+<a name="section45"></a>
+<h4>object.get_yvel (self)</h4>
+
+<p>get_yvel - Pre-condition: object must be a circle or polygon.
+Post-condition: return the y velocity of this object.
+</p>
+
+<a name="SEC24"></a>
+<a name="section46"></a>
+<h4>object.get_xaccel (self)</h4>
+
+<p>get_xaccel - Pre-condition: object must be a circle or polygon.
+Post-condition: return the x accel of this object.
+</p>
+
+<a name="SEC25"></a>
+<a name="section47"></a>
+<h4>object.get_yaccel (self)</h4>
+
+<p>get_yaccel - Pre-condition: object must be a circle or polygon.
+Post-condition: return the y accel of this object.
+</p>
+
+<a name="SEC26"></a>
+<a name="section48"></a>
+<h4>object.put_xvel (self, f)</h4>
+
+<p>put_xvel - Pre-condition: object must be a circle or polygon.
+Post-condition: assigns a float, f, as the x velocity of this
+object.
+</p>
+
+<a name="SEC27"></a>
+<a name="section49"></a>
+<h4>object.put_yvel (self, f)</h4>
+
+<p>put_yvel - Pre-condition: object must be a circle or polygon.
+Post-condition: assigns a float, f, as the y velocity of this
+object.
+</p>
+
+<a name="SEC28"></a>
+<a name="section50"></a>
+<h4>object.put_xaccel (self, f)</h4>
+
+<p>put_xaccel - Pre-condition: object must be a circle or polygon.
+Post-condition: assigns a float, f, as the x
+acceleration of this object.
+</p>
+
+<a name="SEC29"></a>
+<a name="section51"></a>
+<h4>object.put_yaccel (self, f)</h4>
+
+<p>put_xaccel - Pre-condition: object must be a circle or polygon.
+Post-condition: assigns a float, f, as the y
+acceleration of this object.
+</p>
+
+<a name="SEC30"></a>
+<a name="section52"></a>
+<h4>object.moving_towards (self, x, y)</h4>
+
+<p>moving_towards - Pre-condition: object must be a non fixed
+circle or polygon.
+Post-condition: returns True if this object
+is moving towards point [x, y].
+x and y must be in the range of 0.0 and 1.0.
+</p>
+
+<a name="SEC31"></a>
+<a name="section53"></a>
+<h4>object.draw (self, c, w)</h4>
+
+<p>draw - draw a spring using colour, c, and a width, w.
+It is drawn under the objects it connects.
+The spring object is returned.
+</p>
+
+<a name="SEC32"></a>
+<a name="section54"></a>
+<h4>object.end (self, c)</h4>
+
+<p>end - draw the objects at the end of the spring with
+colour, c, when the object comes to rest.
+</p>
+
+<a name="SEC33"></a>
+<a name="section55"></a>
+<h4>object.mid (self, c)</h4>
+
+<p>mid - draw a debugging frame when the spring reaches its rest point.
+The objects connected by the spring are drawn with colour, c.
+</p>
+
+<a name="SEC34"></a>
+<a name="section56"></a>
+<h4>object.when (self, l, p)</h4>
+
+<p>when - when spring reaches a length, l, call function, p.
+p is a function with two parameters, o and e.
+o is this object.
+e is the event.
+</p>
+
+<a name="SEC35"></a>
+<a name="section57"></a>
+<h4>object.set_visible (self, value)</h4>
+
+<p>set_visible - turns on/off the visibility of an object.
+value is a boolean, True for visible and
+False for invisible.
+</p>
+
+<a name="SEC36"></a>
+<a name="section58"></a>
+<h4>object.rgb (r, g, b)</h4>
+
+<p>rgb - Pre-condition: None.
+Post-condition: create a colour object from the red, green, blue triple.
+The r, g, b, values must between 0.0 and 1.0.
+</p>
+
+<a name="SEC37"></a>
+<a name="section59"></a>
+<h4>object.white ()</h4>
+
+<p>white - Pre-condition: None.
+Post-condition: return a colour object representing the colour white.
+</p>
+
+<a name="SEC38"></a>
+<a name="section60"></a>
+<h4>object.update_fps (e, o)</h4>
+
+<p>update_fps - default call back used by local_fps.
+e is the event and o is the object which will be None.
+</p>
+
+<a name="SEC39"></a>
+<a name="section61"></a>
+<h4>object.local_fps ()</h4>
+
+<p>local_fps - generate a simple frames per second on the screen.
+</p>
+
+<a name="SEC40"></a>
+<a name="section62"></a>
+<h4>object.text (x, y, s, c, size, level)</h4>
+
+<p>text - place text string, s, at position [x, y] in colour, c.
+The size will be in font size and placed in the foreground or
+background depending upon level. You are not allowed
+to place text in level zero.
+</p>
+
+<a name="SEC41"></a>
+<a name="section63"></a>
+<h4>object.box (x, y, w, h, c, level = 0)</h4>
+
+<p>box - create a box at position, [x, y]. x and y have the range 0.0 to 1.0.
+w and h are the width and height and are in the range 0.0 to 1.0.
+c is a colour object.
+level is optional, if it is not present it defaults to zero.
+Otherwise the level determines whether it exists in the foreground
+or background.
+</p>
+
+<a name="SEC42"></a>
+<a name="section64"></a>
+<h4>object.poly3 (x0, y0, x1, y1, x2, y2, c, level = 0)</h4>
+
+<p>poly3 - create a triangle at position, [x0, y0], [x1, y1], [x2, y2] all
+values have the range 0.0 to 1.0.
+c is a colour object.
+level is optional, if it is not present it defaults to zero.
+Otherwise the level determines whether it exists in the foreground
+or background.
+</p>
+
+<a name="SEC43"></a>
+<a name="section65"></a>
+<h4>object.poly4 (x0, y0, x1, y1, x2, y2, x3, y3, c, level = 0)</h4>
+
+<p>poly4 - create a polygon of four vertices at position, [x0, y0],
+[x1, y1], [x2, y2], [x3, y3] all
+values have the range 0.0 to 1.0.
+c is a colour object.
+level is optional, if it is not present it defaults to zero.
+Otherwise the level determines whether it exists in the foreground
+or background.
+The coordinates must either be given in clockwise or anticlockwise
+order.
+</p>
+
+<a name="SEC44"></a>
+<a name="section66"></a>
+<h4>object.spring (ob1, ob2, k, d, l = None)</h4>
+
+<p>spring - place a spring of at rest length, l, and Hook's
+value of, k, between object ob1 and object ob2.
+The objects, ob1, and, ob2, must be either
+a circle or a polygon. A spring only exists at
+level 0 (in the physics engine).
+If, l, is omitted then it is assumed that the
+spring starts at rest between, ob1, and, ob2.
+Parameter d is the damping force.
+</p>
+
+<a name="SEC45"></a>
+<a name="section67"></a>
+<h4>object.circle (x, y, r, c, level = 0)</h4>
+
+<p>circle - place a circle at coordinate (x, y)
+The circle has a radius, r, and is filled with colour, c.
+If the level == 0 it is placed into the physics engine.
+A level &lt; 0 is placed into the background.
+A level &gt; 0 is placed into the foreground.
+</p>
+
+<a name="section68"></a>
+<h4>class event</h4>
+
+<p>the event class is used by the user through call back functions. In particular
+the user can find out the collision_between two objects, cancel a timer event or
+query whether a timer event was cancelled.
+</p>
+
+<a name="SEC46"></a>
+<a name="section69"></a>
+<h4>event.collision_between (self)</h4>
+
+<p>collision_between - Pre-condition: event object must a collision event.
+Post-condition: returns a list of two objects which
+are in collision.
+</p>
+
+<a name="SEC47"></a>
+<a name="section70"></a>
+<h4>event.cancel (self)</h4>
+
+<p>cancel - Pre-condition: event must be a timer event.
+Post-condition: timer event is cancelled.
+</p>
+
+<a name="SEC48"></a>
+<a name="section71"></a>
+<h4>event.was_cancelled (self)</h4>
+
+<p>was_cancelled - Pre-condition: event must be a timer event.
+Post-condition: returns True if this event was cancelled.
+</p>
+
+<a name="SEC49"></a>
+<a name="section72"></a>
+<h4>event.get_timer_id (self)</h4>
+
+<p>get_timer_id - Pre-condition: event must be a timer event
+Post-condition: timer id is returned.
+</p>
+
+<a name="SEC50"></a>
+<a name="section73"></a>
+<h4>event.at_time (t, p)</h4>
+
+<p>at_time - informs the physics engine to create a call to function, p, at
+time, t, in the future. It returns a integer reference for the
+timed function.
+Pre-condition: t is a time seconds (float) in the future.
+p, is a function which takes two parameters
+the first parameter is the event and the
+second is an unused parameter.
+The second parameter is only there to allow
+coexistance with other call back functions.
+Post-condition: function p is placed into the timer list
+and a timer id (integer) is returned.
+</p>
+
+<a name="SEC51"></a>
+<a name="section74"></a>
+<h4>event.at_cancel (i)</h4>
+
+<p>at_cancel - Pre-condition: the integer reference for the timed function.
+Post-condition: cancel the timed function.
+</p>
+
+<a name="SEC52"></a>
+<a name="section75"></a>
+<h4>event.record ()</h4>
+
+<p>record - record the game. A file output.raw will be created which
+can be post processed by pgeplayback.
+Pre-condition: None.
+Post-condition: the record flag is set and the game will
+be recorded.
+</p>
+
+<a name="SEC53"></a>
+<a name="section76"></a>
+<h4>event.gravity (value=-9.81)</h4>
+
+<p>gravity - Pre-condition: None.
+Post-condition: turn on pge world gravity, if parameter
+is missing the default of 9.81ms^2 is used.
+</p>
+
+<a name="SEC54"></a>
+<a name="section77"></a>
+<h4>event.get_font (size)</h4>
+
+<p>get_font - Pre-condition: None.
+Post-condition: return the font corresponding
+to size pixels height.
+</p>
+
+<a name="SEC55"></a>
+<a name="section78"></a>
+<h4>event.register_handler (function, pyeventlist)</h4>
+
+<p>register_handler - Pre-condition: None.
+Post-condition: call, function, if any event in pyeventlist
+occurs.
+</p>
+
+<a name="SEC56"></a>
+<a name="section79"></a>
+<h4>event.deregister_handler (pyeventlist)</h4>
+
+<p>deregister_handler - Pre-condition: None.
+Post-condition: remove the handlers for pyeventlist.
+</p>
+
+<a name="SEC57"></a>
+<a name="section80"></a>
+<h4>event.runpy (t=-1)</h4>
+
+<p>runpy - Pre-condition: all objects have been initialised correctly in the 2D world.
+Post-condition: runs pge for time, t, seconds and also
+process the pygame events the objects appear in the Pygame screen.
+</p>
+
+<a name="SEC58"></a>
+<a name="section81"></a>
+<h4>event.runbatch (t)</h4>
+
+<p>runbatch - Pre-condition: all objects have been initialised correctly in the 2D world.
+Post-condition: runs pge for time, t. If t &lt; 0.0 then simulate for 30.0 seconds max.
+Nothing is rendered visually, but the graphics can be directed to a file using the
+record function.
+</p>
+
+<a name="SEC59"></a>
+<a name="section82"></a>
+<h4>event.display_set_mode (r)</h4>
+
+<p>display_set_mode - Pre-condition: this must be called before pge.run.
+The parameter is a list [x, y].
+Current limitation the y parameter
+is overwritten by the x value.
+Post-condition: the resolution will be used when pge.run.
+is called.
+</p>
+
+<a name="SEC60"></a>
+<a name="section83"></a>
+<h4>event.display_fullscreen (b)</h4>
+
+<p>display_fullscreen - Pre-condition: this must be called before pge.run.
+Post-condition: configure the Pygame to use fullscreen.
+</p>
+
+<a name="SEC61"></a>
+<a name="section84"></a>
+<h4>event.fps (f)</h4>
+
+<p>fps - Pre-condition: this must be called before pge.run.
+Post-condition: the game engine will render the world at, f, frames per second.
+</p>
+
+<a name="SEC62"></a>
+<a name="section85"></a>
+<h4>event.get_frame_no ()</h4>
+
+<p>get_frame_no - return the current frame number.
+</p>
+
+<a name="SEC63"></a>
+<a name="section86"></a>
+<h4>event.run (t=-1)</h4>
+
+<p>run - Pre-condition: all objects and any screen resolution must be configured.
+Post-condition: runs pge for time, t, seconds and also
+process the pygame events
+</p>
+
+<a name="SEC64"></a>
+<a name="section87"></a>
+<h4>event.batch ()</h4>
+
+<p>batch - Pre-condition: None.
+Post-condition: configures pge to run in batch mode, without any display
+and without any pygame. No input events are allowed in this mode.
+</p>
+
+<a name="SEC65"></a>
+<a name="section88"></a>
+<h4>event.interactive ()</h4>
+
+<p>interactive - Pre-condition: None.
+Post-condition: configures pge to use pygame and it allows interactivity from
+the python pygame event queue.
+</p>
+
+<a name="SEC66"></a>
+<a name="section89"></a>
+<h4>event.finish_record ()</h4>
+
+<p>finish_record - Pre-condition: record must have been called.
+Post-condition: finish recording the game and flush the record file.
+</p>
+
+  </div>
+ </div>
+</div>
+</body>
+</html>
