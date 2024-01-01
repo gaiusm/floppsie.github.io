@@ -1,0 +1,83 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Jan  1 18:40:02 2024 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a> x86m2</p>
+
+<p style="margin-top: 1em">What is x86m2? x86m2 is a
+<i>complete</i> Modula-2 compiler for GNU/Linux which obeys
+the 2nd Edition Programming in Modula-2 by N. Wirth. It
+generates code for the 8086 and 80?86 families and the is32
+abstract machine. In particular it can generate pipelined
+Pentium code with detailed timing calculations presented in
+comments in the assembly language. It will bootstrap itself
+using a modified version of p2c 1.20 (which comes with the
+source distribution). x86m2 generates GDB debugging
+information and error messages are emacs compatible. FAQ
+<a href="m2-faq.html">x86m2-faq</a> Licence and Availability
+x86m2 is covered by the GNU CopyLeft
+<a href="http://www.gnu.org/copyleft/gpl.html">license</a>
+version 2. Source code is available from github: Download
+<a href="https://github.com/gaiusm/x86m2">https://github.com/gaiusm/x86m2</a></p>
+
+<p style="margin-top: 1em">Details
+<a href="x86m2.html">x86m2 manual page</a> <br>
+<a href="ChangeLog.html">Release notes</a> Building x86m2
+yourself Note x86m2 can only be built on a 32 bit x86
+machine. Download the sources:</p>
+
+<p style="margin-top: 1em">$ git clone
+https://github.com/gaiusm/x86m2 <br>
+$ mkdir build-x86m2 <br>
+$ cd build-x86m2 <br>
+$ ../x86m2/configure <br>
+$ make all <br>
+$ sudo make install <br>
+Changes in the latest release Fixed an atan bug and
+introduced <tt>EXPORT UNQUALIFIED</tt> to allow user to
+create definition modules for foreign language libraries.
+This enables users to interface to C libraries without
+having to write wrapper libraries. See libm.def for a brief
+example.</p>
+
+<p style="margin-top: 1em">Finally added syntax error
+recovery. The ASM syntax has changed to the GNU syntax. Note
+that not all the GNU options are implemented, floating point
+operands to ASM statements are not supported. Reporting bugs
+Please email
+<a href="mailto:gaiusmod2@gmail.com">gaiusmod2@gmail.com</a>
+with any bug reports, suggestions and grumbles.</p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!-- Creator     : groff version 1.22.4 -->
+<!-- CreationDate: Mon Jan  1 18:40:02 2024 -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<meta name="Content-Style" content="text/css">
+<style type="text/css">
+       p       { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       pre     { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       table   { margin-top: 0; margin-bottom: 0; vertical-align: top }
+       h1      { text-align: center }
+</style>
+<title></title>
+ <link rel="stylesheet" type="text/css" href="/css/gp.css" />
+ <link rel="icon" type="image/png" href="/graphics/gnu-groff-mini.png" />
+</head>
+<body bgcolor="#FFFFFF">
+
+
+
+<p><a href="#index">Index</a> Q. How can I use shared
+libraries from x86m2? A. Probably best to use GNU Modula-2
+which works well with shared libraries. For example using
+gm2 you can convert Modula-2 modules into python modules
+fairly easily.</p><hr>
+
+<p>Q. How can I use libvga from x86m2? A. Here is a copy of
+libvga.def</p>
+<pre>DEFINITION MODULE libvga ;
+
+(*
+    Title      : libvga
+    Description: Provides a Modula-2 interface to the GNU/Linux vga C
+                 user library. This definition module only provides basic
+                 primitives.
+*)
+
+EXPORT UNQUALIFIED GraphicsMode,
+                   vga_setmode, vga_hasmode,
+                   vga_clear, vga_flip,
+                   vga_getxdim, vga_getydim,
+                   vga_screenon, vga_screenoff,
+                   vga_getpixel, vga_drawpixel, vga_drawline, vga_setcolor,
+                   vga_getch ;
+
+TYPE
+   GraphicsMode = (Text,
+                   G320x200x16,
+                   G640x200x16,
+                   G640x350x16,
+                   G640x480x16,
+                   G320x200x256,
+                   G320x240x256,
+                   G320x400x256,
+                   G360x480x256,
+                   G640x480x2,
+                   G640x480x256,
+                   G800x600x256,
+                   G1024x768x256,
+                   G640x480x32K,
+                   G640x480x64K,
+                   G800x600x32K,
+                   G800x600x64K,
+                   G1024x768x32K,
+                   G1024x768x64K,
+                   G640x480x16M,
+                   G800x600x16M,
+                   G1024x768x16M,
+                   G320x200x32K,
+                   G320x200x64K,
+                   G320x200x16M) ;
+
+
+PROCEDURE vga_setmode (m: GraphicsMode) ;
+PROCEDURE vga_hasmode (m: GraphicsMode) : BOOLEAN ;
+PROCEDURE vga_clear ;
+PROCEDURE vga_flip ;
+PROCEDURE vga_getxdim () : CARDINAL ;
+PROCEDURE vga_getydim () : CARDINAL ;
+PROCEDURE vga_screenon ;
+PROCEDURE vga_screenoff ;
+PROCEDURE vga_getpixel (x, y: CARDINAL) : CARDINAL ;
+PROCEDURE vga_drawpixel (x, y: CARDINAL) ;
+PROCEDURE vga_drawline (x1, y1, x2, y2: CARDINAL) ;
+PROCEDURE vga_setcolor (colour: CARDINAL) ;
+PROCEDURE vga_getch () : CHAR ;
+
+END libvga.</pre>
+
+<p>our test program follows:</p>
+<pre>MODULE gtest ;
+
+IMPORT StdIO ;
+FROM libvga IMPORT GraphicsMode,
+                    vga_setmode, vga_clear, vga_screenon, vga_screenoff, vga_drawline,
+                    vga_getxdim, vga_getydim, vga_getch ;
+
+
+VAR
+   ch: CHAR ;
+BEGIN
+   vga_setmode(G320x200x16) ;
+   vga_screenoff ;
+   vga_drawline(1, 1, vga_getxdim(), 1);
+   vga_drawline(vga_getxdim(), 1, vga_getxdim(), vga_getydim());
+   vga_screenon ;
+   ch := vga_getch() ;
+   vga_setmode(Text)
+END gtest.</pre>
+
+
+<p>we compile <tt>gtest.mod</tt> via:</p>
+
+<pre>x86m2 -g gtest
+x86m2 -o gtest -M &quot;/usr/share/x86m2/libs /usr/lib .&quot; -g -l -lm gtest</pre>
+
+
+<p>note that you will need x86m2-4.3 (which is currently
+not formally released, but if you are desperate you can
+check out the
+<a href="sources from CVS">GNUModula2.html#GM2 development download via CVS</a>).
+Note that the module you are linking must be the final
+argument to <tt>x86m2</tt>.</p><hr>
+
+<p>Q. How can I get better optimization when compiling with
+x86m2? A. Use the <tt>-O -Odynamic</tt> flag <br>
+If that is not good enough see below</p><hr>
+
+<p>Q. How do I enable pentium U/V slot optimization? try:
+<tt>-O -Odynamic -Oi586 -O2</tt> for pentium I <br>
+try: <tt>-O -Odynamic -Oi686 -O2</tt> for pentium II <br>
+If this is still not good enough try increasing -O2 to -O3
+to -O4 etc (though this will cause compile time to
+rise).</p>
+
+<p style="margin-top: 1em">Note that the line number
+debugging information produced by <tt>-g</tt> might not be
+correct as instruction sequences are reordered.</p><hr>
+
+<p>Q. How can I get even better optimization when
+compiling? A. it might be worth examining gm2 which uses the
+x86m2 front end and the gcc back end.</p><hr>
+
+<h2>Index
+<a name="Index"></a>
+</h2>
+
+ 
+<p style="margin-top: 1em"><a name="index"></a></p>
+<a href="#Index">Index</a><br>
+
+<hr>
+
+<p><i><small>This document was produced using
+<a href="http://groff.ffii.org/">groff-1.22</a>.</small></i></p> <hr>
+</body>
+</html>
